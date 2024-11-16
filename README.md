@@ -31,20 +31,19 @@ Le projet a été conçu dans le cadre de la matière *Infrastructures et Systè
 ## **Structure du projet**
 tusmo-solver/
 ├── solver.py 
-├── web_interface.py
 ├── dictionnaire.txt
-├── requirements.txt
 ├── .gitignore
 ├── README.md
+├tusmo_web/
+├── app.py
 ├── static/
 │   ├── styles.css
 │   ├── script.js
 │   └── images/
 ├── templates/
 │   └── index.html
-└── tests/ *(optionnel)*
-    ├── test_solver.py
-    └── test_web.py
+├── requirements.txt
+
 
 
 ---
