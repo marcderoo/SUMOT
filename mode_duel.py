@@ -2,24 +2,27 @@ import random
 import os
 
 from bs4 import BeautifulSoup
+import requests
+
 
 
 def obtenir_definition(mot):
-    """Récupère une définition pour le mot depuis une source externe (exemple avec Wiktionary)."""
+    """Récupère uniquement la définition principale pour le mot depuis le Wiktionnaire."""
     url = f"https://fr.wiktionary.org/wiki/{mot}"
     try:
         response = requests.get(url)
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, "html.parser")
-            definition = soup.find("ol")
+            definition = soup.find("ol")  # Trouve la liste ordonnée
             if definition:
-                return definition.find("li").text
+                premier_element = definition.find("li")  # Trouve la première entrée de la liste
+                if premier_element:
+                    # Ne garde que le texte avant les points ou les puces inutiles
+                    texte_principal = premier_element.text.split("\n")[0]  # Sépare sur les sauts de ligne et prend le premier élément
+                    return texte_principal.strip()  # Nettoie les espaces autour du texte
         return "Définition introuvable."
     except Exception as e:
         return f"Erreur lors de la récupération de la définition : {e}"
-
-
-
 
 
 
@@ -33,7 +36,7 @@ def charger_dictionnaire(fichier):
 
 def choisir_mot(mots):
     """Choisit un mot aléatoire depuis la liste des mots."""
-    return "parc"
+    return "tabouret"
 
 
 def colorier_mot_graphique(mot_propose, mot_a_trouver):
@@ -148,7 +151,7 @@ def jouer():
         if mot_propose == mot_a_trouver:
             print("🎉 Félicitations, vous avez trouvé le mot !")
             definition = obtenir_definition(mot_a_trouver)
-            (f"Définition de '{mot_a_trouver}' : {definition}")
+            print(f"Définition de '{mot_a_trouver}' : {definition}")
             break
 
         # Tour du bot
