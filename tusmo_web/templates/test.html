@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Effet texte amusant</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #282c34;
+      color: white;
+    }
+
+    .text-container {
+      font-size: 3rem;
+      font-weight: bold;
+      font-family: "Comic Sans MS", "Chalkboard SE", cursive;
+      position: relative;
+      color: #ffcc00;
+      opacity: 0; /* Masqué au départ */
+      transform: scale(0); /* Réduit à 0 */
+      animation: grow 2s ease-out forwards; /* Animation pour agrandir */
+    }
+
+    @keyframes grow {
+      0% {
+        opacity: 0;
+        transform: scale(0);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(5); /* Taille gigantesque */
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1); /* Taille normale */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="text-container">
+    Bravo !
+  </div>
+</body>
+</html>
