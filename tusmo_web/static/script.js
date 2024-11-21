@@ -53,17 +53,27 @@ function verify(written_word){
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const MAX = Math.max(NBLETTERS, NBTRY);
     // Ajouter des règles CSS à l'élément <style>
     style.innerHTML = `
+        :root {
+            --outer-margin-top: 8px;
+            --outer-margin-bottom: 8px;
+            --outer-margin-left: 8px;
+            --outer-margin-right: 8px;
+            --nb-letters: ${NBLETTERS};
+            --nb-try: ${NBTRY};
+            --gap: 0.8vmin;
+        }
         .grid-container {
-            grid-template-columns: repeat(${NBLETTERS}, 1fr); /* 7 colonnes égales */
-            grid-template-rows: repeat(${NBTRY}, 1fr);   /* 6 lignes égales */
-            width: ${Math.ceil(90 / MAX) * NBLETTERS}vmin; /* Adapte la largeur à 90% de la plus petite dimension */
-            height: ${Math.ceil(90 / MAX) * NBTRY}vmin; /* Adapte la hauteur pour rester carrée */
+            grid-template-columns: repeat(var(--nb-letters), 1fr); /* 7 colonnes égales */
+            grid-template-rows: repeat(var(--nb-try), 1fr);   /* 6 lignes égales */
+            aspect-ratio: var(--nb-letters) / var(--nb-try); /* Ratio largeur / hauteur */
+            inline-size: min(100%, calc((100vh - var(--outer-margin-top) - var(--outer-margin-bottom)) * (var(--nb-letters) / var(--nb-try)))); /* Gère la largeur */
+            block-size: min(100%, calc((100vw - var(--outer-margin-left) - var(--outer-margin-right)) * (var(--nb-try) / var(--nb-letters)))); /* Gère la hauteur */
+            gap: var(--gap); /* Gap entre deux cellules */
         }
         .cell {
-            font-size: ${Math.ceil(90 / MAX) * NBTRY / 12}vmin; /* Optionnel : taille du texte */
+            font-size: calc((min(calc(100vh - var(--outer-margin-top) - var(--outer-margin-bottom)), calc((100vw - var(--outer-margin-left) - var(--outer-margin-right)) * (var(--nb-try) / var(--nb-letters)))) - (var(--nb-try) - 1) * var(--gap)) / var(--nb-try) / 2); /* Taille du texte = hauteur d'une cellule / 2*/
         }
     `;
 

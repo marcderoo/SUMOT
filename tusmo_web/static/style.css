@@ -11,7 +11,6 @@ body {
 .grid-container {
     display: grid;
     margin: auto; /* Centrer horizontalement et verticalement */
-    gap: 0.8vmin; /* Espacement entre les cellules */
   }
   
   /* Style des cellules */
