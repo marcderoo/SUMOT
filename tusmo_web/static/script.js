@@ -11,6 +11,7 @@ let dico = [];
 
 let confirmed = false;
 let end = false;
+let validLetters = [];
 
 fetch(`dico/${FIRSTLETTER}_${NBLETTERS}.txt`)
   .then(response => {
@@ -28,7 +29,7 @@ fetch(`dico/${FIRSTLETTER}_${NBLETTERS}.txt`)
   });
 
 function verify(written_word){
-    res = []
+    let res = []
 
     dic_real_word = real_word.split('').reduce((acc, char) => {
         acc[char] = (acc[char] || 0) + 1;
@@ -84,59 +85,130 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let i = 0; i < NBLETTERS * NBTRY; i++) {
       const cell = document.createElement('div');
       cell.className = 'cell';
-      if (i === 0) cell.innerHTML = FIRSTLETTER;
+      if (i === 0){
+        cell.innerHTML = FIRSTLETTER;
+        validLetters.push(FIRSTLETTER);
+      } else if (i < NBLETTERS) {
+        validLetters.push(false);
+      }
       container.appendChild(cell);
     }
-  });
+
+    // Génération des lettres de l'alphabet
+    const alphabetContainer = document.querySelector('.alphabet-grid');
+    const azerty = [
+        'AZERTYUIOP',
+        'QSDFGHJKLM',
+        'WXCVBN'
+    ];
+
+    azerty.forEach(row => {
+        const rowContainer = document.createElement('div');
+        rowContainer.classList.add('alphabet-row');
+
+        row.split('').forEach(letter => {
+            const letterCell = document.createElement('div');
+            letterCell.classList.add('alphabet-cell');
+            letterCell.textContent = letter;
+            letterCell.setAttribute('data-letter', letter);
+            rowContainer.appendChild(letterCell);
+        });
+
+        alphabetContainer.appendChild(rowContainer);
+    });
+});
 
 document.addEventListener('keydown', function(event) {
     const cells = Array.from(document.querySelectorAll("div.cell"));
-    let lastFilledCell = null;
-    for (let i = cells.length - 1; i >= 0; i--) {
-        if (cells[i].innerHTML !== "") {
-            lastFilledCell = { cell: cells[i], index: i };
+    let cellBeforeFirstEmptyCell = null;
+    for (let i = 0; i < cells.length; i++) {
+        if (cells[i].innerHTML == "" || cells[i].classList.contains("placeholder")) {
+            cellBeforeFirstEmptyCell = { cell: cells[i - 1], index: i - 1 };
             break;
         }
     }
 
-    // Vérifier si la touche est une lettre (a-z ou A-Z)
     if(!end){
         if (event.key.length === 1 && /[a-zA-Z]/.test(event.key)) {
-            if((lastFilledCell.index + 1) % NBLETTERS !== 0 || confirmed){
-                if(lastFilledCell.index % NBLETTERS !== 0 || cells[lastFilledCell.index].innerHTML !== event.key.toUpperCase()){
-                    cells[lastFilledCell.index + 1].innerHTML = event.key.toUpperCase();
+            if((cellBeforeFirstEmptyCell.index + 1) % NBLETTERS !== 0 || confirmed){
+                if(cellBeforeFirstEmptyCell.index % NBLETTERS !== 0 || cells[cellBeforeFirstEmptyCell.index].innerHTML !== event.key.toUpperCase()){
+                    if(cells[cellBeforeFirstEmptyCell.index + 1].innerHTML != event.key.toUpperCase()){
+                        cells[cellBeforeFirstEmptyCell.index + 1].classList.remove("valid");
+                    }
+
+                    cells[cellBeforeFirstEmptyCell.index + 1].classList.remove("placeholder");
+                    cells[cellBeforeFirstEmptyCell.index + 1].innerHTML = event.key.toUpperCase();
                     confirmed = false;
+                } else {
+                    cells[cellBeforeFirstEmptyCell.index].classList.remove("valid");
                 }
             }
         } else if (event.key == "Backspace"){
-            if (lastFilledCell && lastFilledCell.index % NBLETTERS !== 0) {
-                lastFilledCell.cell.innerHTML = ""; // Efface le contenu
+            if (cellBeforeFirstEmptyCell && cellBeforeFirstEmptyCell.index % NBLETTERS !== 0) {
+                if(validLetters[cellBeforeFirstEmptyCell.index % NBLETTERS]){
+                    cells[cellBeforeFirstEmptyCell.index].innerHTML = validLetters[cellBeforeFirstEmptyCell.index % NBLETTERS];
+                    cells[cellBeforeFirstEmptyCell.index].classList.add("valid");
+                    cells[cellBeforeFirstEmptyCell.index].classList.add("placeholder");
+                } else {
+                    cells[cellBeforeFirstEmptyCell.index].innerHTML = "";
+                }
             }
         } else if (event.key == "Enter"){
-            if ((lastFilledCell.index + 1) % NBLETTERS === 0) {
-                const word = cells.slice(lastFilledCell.index + 1 - NBLETTERS, lastFilledCell.index + 1).map(cell => cell.innerHTML).join("");
+            if ((cellBeforeFirstEmptyCell.index + 1) % NBLETTERS === 0) {
+                const word = cells.slice(cellBeforeFirstEmptyCell.index + 1 - NBLETTERS, cellBeforeFirstEmptyCell.index + 1).map(cell => cell.innerHTML).join("");
                 if(dico.includes(word.toLowerCase())){
-                  res = verify(word);
+                  const res = verify(word);
                   for(let i = 0; i < res.length; i++){
-                      cells[lastFilledCell.index + 1 - NBLETTERS + i].classList.add(res[i] === 2 ? "valid" : (res[i] === 1 ? "good" : "unvalid"));
+                      cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.add(res[i] === 2 ? "valid" : (res[i] === 1 ? "good" : "unvalid"));
+                      const alphabetLetter = document.querySelector(`div.alphabet-cell[data-letter="${cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].innerHTML}"`);
+                      if(res[i] == 2){
+                        validLetters[i] = cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].innerHTML;
+                        alphabetLetter.classList.remove("good");
+                        alphabetLetter.classList.add("valid");
+                      }
+                      else if (res[i] == 1 && !alphabetLetter.classList.contains("valid")){
+                        alphabetLetter.classList.add("good");
+                      }
                   }
-      
+
                   confirmed = true;
                   if(res.every(e => e === 2)){
                       end = true;
                       confetti.launch();
+
+                      const dialog = document.createElement("dialog");
+                      dialog.innerHTML = `<h2 style="margin-top: 0px;">Le saviez-vous ?</h2>
+Gagner signifie acquérir par son travail, par son initiative ou par l’effet des circonstances, du hasard.`
+
+                      document.body.appendChild(dialog);
+                      dialog.showModal();
                   } else {
-                      cells[lastFilledCell.index + 1].innerHTML = FIRSTLETTER;
+                    for(let i = 0; i < res.length; i++){
+                        if(validLetters[i]){
+                            cells[cellBeforeFirstEmptyCell.index + 1 + i].innerHTML = validLetters[i];
+                            cells[cellBeforeFirstEmptyCell.index + 1 + i].classList.add("valid");
+                            cells[cellBeforeFirstEmptyCell.index + 1 + i].classList.add("placeholder");
+                        }                                          
+                    }
+                    cells[cellBeforeFirstEmptyCell.index + 1].classList.remove("placeholder");
                   }
                 } else {
-                  cells.slice(lastFilledCell.index + 1 - NBLETTERS, lastFilledCell.index + 1).forEach(elmt => elmt.classList.add("uncorrect"));
+                  cells.slice(cellBeforeFirstEmptyCell.index + 1 - NBLETTERS, cellBeforeFirstEmptyCell.index + 1).forEach(elmt => elmt.classList.add("uncorrect"));
                   end = true;
                   setTimeout(function(){
-                    cells.slice(lastFilledCell.index + 1 - NBLETTERS, lastFilledCell.index + 1).forEach(elmt => {
-                      elmt.innerHTML = "";
-                      elmt.classList.remove("uncorrect")
-                    });
-                    cells[lastFilledCell.index + 1 - NBLETTERS].innerHTML = FIRSTLETTER;
+                    for(let i = 0; i < NBLETTERS; i++){
+                        cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.remove("uncorrect");
+                        cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].innerHTML = "";
+
+                        if(validLetters[i]){
+                            cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].innerHTML = validLetters[i];
+                            cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.add("valid"); 
+                            cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.add("placeholder");
+                        }
+                        cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS].innerHTML = FIRSTLETTER;
+                        cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS].classList.add("valid"); 
+                        cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS].classList.remove("placeholder");
+                    }
                     end = false;
                   }, 300);
                 }
