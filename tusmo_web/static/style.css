@@ -1,40 +1,236 @@
-/* Conteneur de la grille */
+/* Style de la grille du jeu */
 body {
-    font-family: sans-serif;
-    text-align:center;
-    background-color: rgba(0, 0, 30, 0.95);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  font-family: sans-serif;
+  text-align: center;
+  background-color: rgba(0, 0, 30, 0.95);
+  display: grid;
+  justify-content: center;
+  align-items: center;
 }
 
 .grid-container {
-    display: grid;
-    margin: auto; /* Centrer horizontalement et verticalement */
-    gap: 0.8vmin; /* Espacement entre les cellules */
-  }
-  
-  /* Style des cellules */
-  .cell {
-    background-color: white; /* Couleur des cellules */
-    display: flex; /* Centrer le contenu */
-    justify-content: center;
-    align-items: center;
-    border-radius: 10%;
-  }
+  display: grid;
+  margin: auto; /* Centrer horizontalement et verticalement */
+  gap: 0.8vmin; /* Espacement entre les cellules */
+}
 
-  .valid {
-    background-color: limegreen;
-  }
+/* Style des cellules */
+.cell {
+  background-color: #f0f0f0; /* Couleur des cellules */
+  display: flex; /* Centrer le contenu */
+  justify-content: center;
+  align-items: center;
+  border-radius: 10%;
+}
 
-  .good {
-    background-color: yellow;
-  }
+.valid {
+  background-color: #4caf50;
+}
 
-  .unvalid {
-    background-color: lightgray;
-  }
+.good {
+  background-color: #ffc107;
+}
 
-  .uncorrect {
-    background-color: #FE1B00	;
-  }
+.unvalid {
+  background-color: lightgray;
+}
+
+.uncorrect {
+  background-color: #f44336;
+}
+
+
+
+
+
+
+
+
+
+/* Conteneur pour l'alphabet */
+.alphabet-container {
+  margin-left: 2em; /* Espace entre la grille et l'alphabet */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.alphabet-grid {
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 0.5rem;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 600px; /* Ajustez si nécessaire */
+}
+
+.alphabet-row {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.alphabet-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
+  border-radius: 10%;
+  width: 3rem; /* Taille ajustable */
+  height: 3rem; /* Taille ajustable */
+  font-size: 1.5rem; /* Taille de la lettre */
+  font-weight: bold;
+  text-transform: uppercase;
+  cursor: default;
+  user-select: none;
+}
+
+.alphabet-cell.valid {
+  background-color: #4caf50;
+  color: black;
+}
+
+.alphabet-cell.good {
+  background-color: #ffc107;
+  color: black;
+}
+
+.alphabet-cell.unvalid {
+  background-color: #f44336;
+  color: black;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* Style de fond pour le menu */
+.menu-background {
+  background-color: rgba(0, 0, 30, 0.95);
+  color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+}
+
+/* Conteneur principal */
+.menu-container {
+  text-align: center;
+  padding: 2em;
+}
+
+/* Titre du jeu */
+.menu-title {
+  font-size: 4em;
+  margin-bottom: 1em;
+  color: #f0f0f0; /* Couleur générale du texte */
+  font-weight: bold;
+}
+
+.menu-title .highlight {
+  display: inline-block; /* Permet de contrôler la taille du surlignage */
+  width: 1em; /* Taille fixe pour chaque "case" */
+  height: 1em; /* Maintient la hauteur pour que chaque lettre ait une case égale */
+  text-align: center; /* Centrer la lettre dans la case */
+  line-height: 1em; /* Centre verticalement la lettre */
+  padding: 0 0.2em; /* Espacement autour de la lettre */
+  border-radius: 5px; /* Coins arrondis */
+}
+
+.menu-title .T {
+  background-color: #4caf50; /* Fond vert */
+}
+
+.menu-title .s {
+  background-color: #ffc107; /* Fond jaune */
+}
+
+.menu-title .o {
+  background-color: #f44336; /* Fond rouge */
+}
+
+
+
+
+/* Conteneur des boutons */
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+}
+
+/* Boutons */
+.menu-button {
+  background: linear-gradient(145deg, limegreen, yellow);
+  color: black;
+  border: none;
+  font-size: 1.5em;
+  font-weight: bold;
+  padding: 1em 2em;
+  border-radius: 1em;
+  cursor: pointer;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.menu-button:hover {
+  background: limegreen;
+  transform: scale(1.1);
+  box-shadow: 0px 6px 12px rgba(0, 255, 0, 0.5);
+}
+
+.menu-button:active {
+  transform: scale(1.05);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Conteneur pour le bouton Home */
+.home-button-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+
+
+/* Bouton Home */
+.home-button {
+  background: linear-gradient(145deg, limegreen, yellow);
+  color: black;
+  border: none;
+  font-size: 1em;
+  font-weight: bold;
+  padding: 0.5em 1em;
+  border-radius: 1em;
+  cursor: pointer;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.home-button:hover {
+  background: limegreen;
+  transform: scale(1.1);
+  box-shadow: 0px 6px 12px rgba(0, 255, 0, 0.5);
+}
+
+.home-button:active {
+  transform: scale(1.05);
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+
+
+
