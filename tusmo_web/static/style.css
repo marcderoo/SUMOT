@@ -42,7 +42,12 @@ body {
 
 
 
-
+.game-info {
+  font-size: 1.5em;
+  color: white;
+  text-align: center;
+  margin-bottom: 10px;
+}
 
 
 
@@ -171,27 +176,24 @@ body {
 
 /* Boutons */
 .menu-button {
-  background: linear-gradient(145deg, limegreen, yellow);
-  color: black;
+  background: #f0f0f0;
+  color: rgba(0, 0, 30, 0.95);
   border: none;
   font-size: 1.5em;
   font-weight: bold;
   padding: 1em 2em;
   border-radius: 1em;
   cursor: pointer;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
 }
 
 .menu-button:hover {
-  background: limegreen;
+  background: #f0f0f0;
   transform: scale(1.1);
-  box-shadow: 0px 6px 12px rgba(0, 255, 0, 0.5);
 }
 
 .menu-button:active {
   transform: scale(1.05);
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 
@@ -206,31 +208,120 @@ body {
 
 /* Bouton Home */
 .home-button {
-  background: linear-gradient(145deg, limegreen, yellow);
-  color: black;
+  background: #f0f0f0;
+  color: rgba(0, 0, 30, 0.95);
   border: none;
   font-size: 1em;
   font-weight: bold;
   padding: 0.5em 1em;
   border-radius: 1em;
   cursor: pointer;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
   text-decoration: none;
   display: inline-block;
 }
 
 .home-button:hover {
-  background: limegreen;
+  background: #f0f0f0;
   transform: scale(1.1);
-  box-shadow: 0px 6px 12px rgba(0, 255, 0, 0.5);
 }
 
 .home-button:active {
   transform: scale(1.05);
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+
+dialog {
+  position: fixed;
+  padding: 30px;
+  background: linear-gradient(to bottom, #FFF, #F4F4F4) #FFF;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  transform-origin: 50% 50%;
+  animation: dialog 300ms cubic-bezier(.3,0,.1,1.4) forwards 1;
+  will-change: transform, opacity;
+  border: none !important;
+  border-radius: 10px;
+  max-width: 60%;
+}
+
+dialog:focus-visible {
+  outline: none; /* Désactive l'indicateur de focus par défaut */
+}
+
+dialog button {
+  pointer-events: auto; /* S'assure que le bouton peut être cliqué */
+}
+
+@keyframes dialog {
+  from {
+    transform: scale(0.1);
+    opacity: 0;
+  }
+}
+
+dialog::backdrop {
+  opacity: 0;
+  will-change: opacity;
+
+  background: radial-gradient(circle at center, rgba(50,50,50,0.5), rgba(0,0,0,0.5));
+  animation: backdrop 500ms ease forwards 1;
+}
+
+@keyframes backdrop {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 
 
 
+
+
+/* Conteneur des règles */
+.rules-container {
+  margin: 2em auto;
+  padding: 2em;
+  background-color: #f7f7f7;
+  border-radius: 10px;
+  max-width: 600px;
+  text-align: center;
+}
+
+/* Titre stylisé en dehors du conteneur */
+.rules-title {
+  font-size: 4em;
+  margin-bottom: 1em;
+  color: #f0f0f0; /* Couleur générale du texte */
+  font-weight: bold;
+}
+
+.rules-title .highlight {
+  display: inline-block; /* Permet de contrôler la taille du surlignage */
+  width: 1em; /* Taille fixe pour chaque "case" */
+  height: 1em; /* Maintient la hauteur pour que chaque lettre ait une case égale */
+  text-align: center; /* Centrer la lettre dans la case */
+  line-height: 1em; /* Centre verticalement la lettre */
+  border-radius: 5px; /* Coins arrondis */
+}
+
+.rules-title .R { background-color: #4caf50; }
+.rules-title .G { background-color: #ffc107; }
+.rules-title .S { background-color: #f44336; }
+
+/* Contenu des règles */
+.rules-content {
+  font-size: 1.1em; /* Réduit légèrement la taille du texte */
+  line-height: 1.6; /* Réduit l'interligne pour une meilleure compacité */
+}
+
+.rules-content ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 1em 0;
+}
+
+.rules-content li {
+  margin: 0.5em 0;
+  font-weight: bold;
+}

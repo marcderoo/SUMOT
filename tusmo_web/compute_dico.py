@@ -1,7 +1,7 @@
 import os
 from tqdm import tqdm
 
-def organize_words(input_file, output_dir):
+def organize_words(input_file, scnd_input_file, output_dir):
     """
     Organize words from a file into a folder structure.
 
@@ -14,7 +14,11 @@ def organize_words(input_file, output_dir):
 
     # Charger les mots depuis le fichier
     with open(input_file, 'r') as file:
-        words = list(set([line.strip() for line in file if line.strip()]))  # Retirer les espaces vides
+        words = set([line.strip() for line in file if line.strip() and len(line) >= 7 and len(line) <= 10])  # Retirer les espaces vides
+
+    # Charger les mots depuis le fichier
+    with open(scnd_input_file, 'r') as file:
+        words = words.union(set([line.strip() for line in file if line.strip() and len(line) >= 7 and len(line) <= 10]))  # Retirer les espaces vides
 
     # Progression sur les mots
     for word in tqdm(words, desc="Processing words"):
@@ -32,5 +36,6 @@ def organize_words(input_file, output_dir):
 
 # Exemple d'utilisation
 input_file = "dictionnaire_clean.txt"  # Remplacez par le chemin vers votre fichier d'entrée
+scnd_input_file = "small_dico.txt"
 output_dir = "dico"  # Répertoire de sortie
-organize_words(input_file, output_dir)
+organize_words(input_file, scnd_input_file, output_dir)

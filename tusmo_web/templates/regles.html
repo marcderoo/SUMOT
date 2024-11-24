@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Règles du jeu - Tusmo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="home-button-container">
+        <a href="/" class="home-button">Home</a>
+    </div>
+
+    <!-- Titre avec surlignage alterné -->
+    <h1 class="rules-title">
+        <span class="R">R</span>
+        <span class="E">È</span>
+        <span class="G">G</span>
+        <span class="L">L</span>
+        <span class="E">E</span>
+        <span class="S">S</span>
+    </h1>
+
+    <div class="rules-container">
+        <div class="rules-content">
+            <p>1. Vous avez <strong>6 essais</strong> pour trouver le mot mystère.</p>
+            <p>2. Le mot doit <strong>commencer par la lettre donnée</strong>.</p>
+            <p>3. Signification des couleurs :</p>
+            <ul>
+                <li><strong>ROUGE</strong> : Une lettre bien placée.</li>
+                <li><strong>JAUNE</strong> : Une lettre existe mais est mal placée.</li>
+                <li><strong>BLEU</strong> : Une lettre n'existe pas dans le mot.</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

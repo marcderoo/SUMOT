@@ -1,10 +1,11 @@
-from flask import Flask, render_template, send_file, redirect, url_for
+from flask import Flask, render_template, send_file, redirect, url_for, jsonify, request
 import random
+import os
 
 app = Flask(__name__)
 
 dico = []
-with open("dictionnaire_clean.txt", 'r') as file:
+with open("small_dico.txt", 'r') as file:
     dico = list(set([line.strip() for line in file if line.strip()]))
 
 # Route d'accueil
@@ -19,11 +20,11 @@ def solo():
 
 @app.route('/versus_ia')
 def versus_ia():
-    return "Versus IA mode: Coming soon!"
+    return render_template('versusia.html')
 
 @app.route('/regles')
 def regles():
-    return "Règles: Coming soon!"
+    return render_template('regles.html')
 
 @app.route('/dico/<filename>')
 def get_dico(filename):

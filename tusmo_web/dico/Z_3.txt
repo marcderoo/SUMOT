@@ -1,5 +1,0 @@
-zig
-zen
-zut
-zou
-zoo

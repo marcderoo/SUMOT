@@ -4,18 +4,17 @@
         <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
         <script>let real_word = "{{ data }}";</script>
         <script src="{{ url_for('static', filename='confetti.js') }}"></script>
-        <script src="{{ url_for('static', filename='script.js') }}"></script>
+        <script src="{{ url_for('static', filename='versus.js') }}"></script>
     </head>
     <body>
         <div class="home-button-container">
             <a href="/" class="home-button">Home</a>
         </div>
-        <div class="game-info">
-            <span id="word-number">Mot 1</span> - <span id="score">Score : 0</span>
+        <div class="grid-container">
         </div>
-        <div class="grid-container"></div>
         <div class="alphabet-container">
-            <div class="alphabet-grid"></div>
-        </div>              
+            <div class="alphabet-grid">
+            </div>
+        </div>
     </body>
 </html>
