@@ -125,8 +125,6 @@ document.addEventListener('keydown', function(event) {
                     cells[cellBeforeFirstEmptyCell.index + 1].classList.remove("placeholder");
                     cells[cellBeforeFirstEmptyCell.index + 1].innerHTML = event.key.toUpperCase();
                     confirmed = false;
-                } else {
-                    cells[cellBeforeFirstEmptyCell.index].classList.remove("valid");
                 }
             }
         } else if (event.key == "Backspace"){
@@ -167,22 +165,22 @@ document.addEventListener('keydown', function(event) {
 
                       const dialog = document.createElement("dialog");
                       dialog.innerHTML = `<h2 style="margin-top: 0px;">Le saviez-vous ?</h2>
-Gagner signifie acquérir par son travail, par son initiative ou par l’effet des circonstances, du hasard.<br><br>
-<div class="
-    next-button
-" onclick=document.getElementById("form-end").submit()>Mot Suivant <span style="
-    border-style: solid;
-    border-width: 0.25em 0.25em 0 0;
-    content: '';
-    display: inline-block;
-    height: 0.45em;
-    position: relative;
-    top: 0.20em;
-    transform: rotate(45deg);
-    vertical-align: top;
-    width: 0.45em;
-    left: 0em;
-"></span></div><br><br>`
+                        Gagner signifie acquérir par son travail, par son initiative ou par l’effet des circonstances, du hasard.<br><br>
+                        <div class="
+                            next-button
+                        " onclick=document.getElementById("form-end").submit()>Mot Suivant <span style="
+                            border-style: solid;
+                            border-width: 0.25em 0.25em 0 0;
+                            content: '';
+                            display: inline-block;
+                            height: 0.45em;
+                            position: relative;
+                            top: 0.20em;
+                            transform: rotate(45deg);
+                            vertical-align: top;
+                            width: 0.45em;
+                            left: 0em;
+                        "></span></div><br><br>`
 
                       document.body.appendChild(dialog);
 
