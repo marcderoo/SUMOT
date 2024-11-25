@@ -1,4 +1,5 @@
-from flask import Flask, render_template, send_file, redirect, url_for, jsonify, request
+from flask import Flask, render_template, send_file, request, redirect, url_for
+import json
 import random
 import os
 
@@ -13,10 +14,21 @@ with open("small_dico.txt", 'r') as file:
 def menu():
     return render_template('menu.html')
 
-@app.route('/solo')
+@app.route('/solo', methods=['POST', 'GET'])
 def solo():
+    score = 0
+    count = 1
+    
+    if request.method == 'POST':
+        score = request.form.get('score', 0, type=int)  # Récupération de 'score' depuis le formulaire
+        count = request.form.get('count', 1, type=int)  # Récupération de 'count' depuis le formulaire
+
     random_word = random.choice(dico).upper()  # Mot mystère
-    return render_template('index.html', data=random_word)
+    return render_template('index.html', data={
+        "word": random_word,
+        "score": score,
+        "count": count
+    })
 
 @app.route('/versus_ia')
 def versus_ia():

@@ -56,25 +56,11 @@ function verify(written_word){
 document.addEventListener('DOMContentLoaded', () => {
     // Ajouter des règles CSS à l'élément <style>
     style.innerHTML = `
-        :root {
-            --outer-margin-top: 8px;
-            --outer-margin-bottom: 8px;
-            --outer-margin-left: 8px;
-            --outer-margin-right: 8px;
-            --nb-letters: ${NBLETTERS};
-            --nb-try: ${NBTRY};
-            --gap: 0.8vmin;
-        }
         .grid-container {
-            grid-template-columns: repeat(var(--nb-letters), 1fr); /* 7 colonnes égales */
-            grid-template-rows: repeat(var(--nb-try), 1fr);   /* 6 lignes égales */
-            aspect-ratio: var(--nb-letters) / var(--nb-try); /* Ratio largeur / hauteur */
-            inline-size: min(100%, calc((100vh - var(--outer-margin-top) - var(--outer-margin-bottom)) * (var(--nb-letters) / var(--nb-try)))); /* Gère la largeur */
-            block-size: min(100%, calc((100vw - var(--outer-margin-left) - var(--outer-margin-right)) * (var(--nb-try) / var(--nb-letters)))); /* Gère la hauteur */
-            gap: var(--gap); /* Gap entre deux cellules */
+            grid-template-columns: repeat(${NBLETTERS}, 1fr); /* 7 colonnes égales */
+            grid-template-rows: repeat(${NBTRY}, 1fr);   /* 6 lignes égales */
         }
         .cell {
-            font-size: calc((min(calc(100vh - var(--outer-margin-top) - var(--outer-margin-bottom)), calc((100vw - var(--outer-margin-left) - var(--outer-margin-right)) * (var(--nb-try) / var(--nb-letters)))) - (var(--nb-try) - 1) * var(--gap)) / var(--nb-try) / 2); /* Taille du texte = hauteur d'une cellule / 2*/
         }
     `;
 
@@ -158,7 +144,6 @@ document.addEventListener('keydown', function(event) {
                 const word = cells.slice(cellBeforeFirstEmptyCell.index + 1 - NBLETTERS, cellBeforeFirstEmptyCell.index + 1).map(cell => cell.innerHTML).join("");
                 if(dico.includes(word.toLowerCase())){
                   const res = verify(word);
-                  attempts++;
                   for(let i = 0; i < res.length; i++){
                       cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.add(res[i] === 2 ? "valid" : (res[i] === 1 ? "good" : "unvalid"));
                       const alphabetLetter = document.querySelector(`div.alphabet-cell[data-letter="${cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].innerHTML}"`);
@@ -174,24 +159,64 @@ document.addEventListener('keydown', function(event) {
 
                   confirmed = true;
                   if(res.every(e => e === 2)){
-                    const wordScore = calculateScore(attempts); // Calcule le score pour ce mot
-                    totalScore += wordScore; // Ajoute au score total
-                    end = true;
-                    confetti.launch();
+                      end = true;
+                      confetti.launch();
+                      
+                      count += 1;
+                      score += 100 - Math.floor(cellBeforeFirstEmptyCell.index / NBLETTERS) * 10;
 
-                    const dialog = document.createElement("dialog");
-                    dialog.innerHTML = `
-                    <h2 style="margin-top: 0px;">Le saviez-vous ?</h2>
-                    <p>Gagner signifie acquérir par son travail, par son initiative ou par l’effet des circonstances, du hasard.</p>
-                    <button id="next-word">Mot suivant</button>`
+                      const dialog = document.createElement("dialog");
+                      dialog.innerHTML = `<h2 style="margin-top: 0px;">Le saviez-vous ?</h2>
+Gagner signifie acquérir par son travail, par son initiative ou par l’effet des circonstances, du hasard.<br><br>
+<div class="
+    next-button
+" onclick=document.getElementById("form-end").submit()>Mot Suivant <span style="
+    border-style: solid;
+    border-width: 0.25em 0.25em 0 0;
+    content: '';
+    display: inline-block;
+    height: 0.45em;
+    position: relative;
+    top: 0.20em;
+    transform: rotate(45deg);
+    vertical-align: top;
+    width: 0.45em;
+    left: 0em;
+"></span></div><br><br>`
 
-                    document.body.appendChild(dialog);
-                    dialog.showModal();
+                      document.body.appendChild(dialog);
 
-                    dialog.addEventListener('close', () => {
-                        dialog.remove(); // Supprime le dialog existant
-                        generateNewWord(); // Génère un nouveau mot
-                    });
+                      dialog.showModal();
+
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.id = 'form-end';
+                        form.action = window.location.href;
+                        form.hidden = true;
+
+                        const countInput = document.createElement('input');
+                        countInput.type = 'hidden';
+                        countInput.name = 'count';
+                        countInput.id = 'count';
+                        countInput.value = count; 
+
+                        const scoreInput = document.createElement('input');
+                        scoreInput.type = 'hidden';
+                        scoreInput.name = 'score';
+                        scoreInput.id = 'score';
+                        scoreInput.value = score; 
+
+                        form.appendChild(countInput);
+                        form.appendChild(scoreInput);
+
+                        document.body.appendChild(form);
+
+                        dialog.addEventListener('keydown', function(event) {
+                            if(event.key == "Enter"){
+                                form.submit();
+                            }
+                        })
+
                   } else {
                     for(let i = 0; i < res.length; i++){
                         if(validLetters[i]){
@@ -214,10 +239,16 @@ document.addEventListener('keydown', function(event) {
                             cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].innerHTML = validLetters[i];
                             cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.add("valid"); 
                             cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.add("placeholder");
-                        }
-                        cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS].innerHTML = FIRSTLETTER;
+                        }                
+                    }
+                    
+                    cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS].innerHTML = FIRSTLETTER;
+                    cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS].classList.remove("placeholder");
+
+                    if(cellBeforeFirstEmptyCell.index + 1 - NBLETTERS != 0){
                         cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS].classList.add("valid"); 
-                        cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS].classList.remove("placeholder");
+                    } else {
+                        cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS].classList.remove("valid"); 
                     }
                     end = false;
                   }, 300);
@@ -228,101 +259,3 @@ document.addEventListener('keydown', function(event) {
         }
     }
 });
-
-
-
-// Générer un nouveau mot, update score. (ne marche pas bien)
-
-let currentWordNumber = 1; // Numéro du mot en cours
-let currentScore = 0; // Score actuel
-let totalScore = 0; // Score total
-let attempts = 0; // Nombre d'essais pour le mot courant
-const maxWords = 3; // Limite de mots à deviner dans une partie
-
-function updateGameInfo() {
-    document.getElementById("word-number").textContent = `Mot ${currentWordNumber}`;
-    document.getElementById("score").textContent = `Score : ${totalScore}`;
-}
-
-function calculateScore(attempts) {
-    const maxScore = 100; // Score maximum pour un mot
-    return Math.max(0, maxScore - (attempts - 1) * 10); // Réduction de 10 points par essai supplémentaire
-}
-
-function endGame() {
-    const dialog = document.createElement("dialog");
-    dialog.innerHTML = `
-        <h2>Résumé de la partie</h2>
-        <p>Nombre de mots trouvés : ${currentWordNumber - 1}</p>
-        <p>Score total : ${totalScore}</p>
-        <button id="close-dialog">OK</button>
-    `;
-    document.body.appendChild(dialog);
-    dialog.showModal();
-
-    document.getElementById("close-dialog").addEventListener("click", () => {
-        dialog.close();
-        window.location.reload(); // Redémarre le jeu
-    });
-}
-
-function generateNewWord() {
-    if (currentWordNumber > maxWords) {
-        endGame();
-        return;
-    }
-
-    // Génération aléatoire d'une lettre initiale et d'une longueur
-    const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const randomLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
-    const randomLength = Math.floor(Math.random() * 4) + 6; // Longueurs entre 6 et 9 inclus
-
-    const filePath = `dico/${randomLetter}_${randomLength}.txt`;
-
-    fetch(filePath)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`Fichier non trouvé : ${filePath}`);
-            }
-            return response.text();
-        })
-        .then(data => {
-            const words = data.split("\r\n").filter(word => word.length === randomLength);
-            if (words.length === 0) {
-                throw new Error(`Aucun mot valide trouvé dans le fichier : ${filePath}`);
-            }
-
-            const newWord = words[Math.floor(Math.random() * words.length)];
-            NBLETTERS = newWord.length;
-            FIRSTLETTER = newWord[0];
-            real_word = newWord;
-
-            // Réinitialiser la grille et les variables
-            const container = document.querySelector('.grid-container');
-            container.innerHTML = "";
-            validLetters = [];
-            confirmed = false;
-            end = false;
-
-            // Générer une nouvelle grille
-            for (let i = 0; i < NBLETTERS * NBTRY; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'cell';
-                if (i === 0) {
-                    cell.innerHTML = FIRSTLETTER;
-                    validLetters.push(FIRSTLETTER);
-                } else if (i < NBLETTERS) {
-                    validLetters.push(false);
-                }
-                container.appendChild(cell);
-            }
-
-            currentWordNumber++;
-            attempts = 0;
-            updateGameInfo();
-        })
-        .catch(error => {
-            console.error(error);
-            alert("Une erreur est survenue lors du chargement du mot. Réessayez.");
-        });
-}

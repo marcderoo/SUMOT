@@ -1,4 +1,8 @@
 /* Style de la grille du jeu */
+html {
+  height: 100%;
+}
+
 body {
   font-family: sans-serif;
   text-align: center;
@@ -6,12 +10,17 @@ body {
   display: grid;
   justify-content: center;
   align-items: center;
+  grid-template-rows: 28px 3fr 1fr;
+  gap: 20px;
+  padding: 10px;
+  height: calc(100% - 28px);
 }
 
 .grid-container {
   display: grid;
   margin: auto; /* Centrer horizontalement et verticalement */
-  gap: 0.8vmin; /* Espacement entre les cellules */
+  height: 100%; /* Occupe la hauteur définie par la grille */
+  gap : 0.5rem;
 }
 
 /* Style des cellules */
@@ -21,6 +30,8 @@ body {
   justify-content: center;
   align-items: center;
   border-radius: 10%;
+  aspect-ratio: 1;
+  font-weight: bold;
 }
 
 .valid {
@@ -46,7 +57,6 @@ body {
   font-size: 1.5em;
   color: white;
   text-align: center;
-  margin-bottom: 10px;
 }
 
 
@@ -54,10 +64,10 @@ body {
 
 /* Conteneur pour l'alphabet */
 .alphabet-container {
-  margin-left: 2em; /* Espace entre la grille et l'alphabet */
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 100%; /* Occupe la hauteur définie par la grille */
 }
 
 .alphabet-grid {
@@ -66,14 +76,14 @@ body {
   gap: 0.5rem;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  max-width: 600px; /* Ajustez si nécessaire */
+  height: 100%;
 }
 
 .alphabet-row {
   display: flex;
   justify-content: center;
   gap: 0.5rem;
+  height: 100%;
 }
 
 .alphabet-cell {
@@ -82,13 +92,9 @@ body {
   align-items: center;
   background-color: #f0f0f0;
   border-radius: 10%;
-  width: 3rem; /* Taille ajustable */
-  height: 3rem; /* Taille ajustable */
-  font-size: 1.5rem; /* Taille de la lettre */
+  aspect-ratio: 1;
+  height: 100%;
   font-weight: bold;
-  text-transform: uppercase;
-  cursor: default;
-  user-select: none;
 }
 
 .alphabet-cell.valid {
@@ -273,19 +279,45 @@ dialog::backdrop {
   to { opacity: 1; }
 }
 
+.next-button {
+  position: absolute;
+  border: 1px solid black;
+  width: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #f0f0f0;
+  color: rgba(0, 0, 30, 0.95);
+  font-size: 1em;
+  font-weight: bold;
+  padding: 0.5em 1em;
+  border-radius: 1em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  bottom: 25px;
+  transform-origin: center;
+}
 
-
-
+.next-button:hover {
+  background: #f0f0f0;
+  transform: translateX(-50%) scale(1.1);
+}
 
 
 /* Conteneur des règles */
 .rules-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   margin: 2em auto;
   padding: 2em;
   background-color: #f7f7f7;
   border-radius: 10px;
-  max-width: 600px;
   text-align: center;
+  max-width: 600px;
+  width: 100%;
 }
 
 /* Titre stylisé en dehors du conteneur */
@@ -294,6 +326,10 @@ dialog::backdrop {
   margin-bottom: 1em;
   color: #f0f0f0; /* Couleur générale du texte */
   font-weight: bold;
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .rules-title .highlight {
