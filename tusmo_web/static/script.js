@@ -76,17 +76,16 @@ function verify(written_word){
 
 document.addEventListener('DOMContentLoaded', () => {
     // Ajouter des règles CSS à l'élément <style>
-    style.innerHTML = `
+    style.sheet.insertRule(`
         .grid-container {
             grid-template-columns: repeat(${NBLETTERS}, 1fr); /* 7 colonnes égales */
             grid-template-rows: repeat(${NBTRY}, 1fr);   /* 6 lignes égales */
-        }
-        .cell {
-        }
-    `;
+        }`, 0);
 
     // Sélection du conteneur de la grille
     const container = document.querySelector('.grid-container');
+
+    let lastCell = null;
   
     // Générer les NBLETTERS x NBTRY cellules
     for (let i = 0; i < NBLETTERS * NBTRY; i++) {
@@ -99,7 +98,29 @@ document.addEventListener('DOMContentLoaded', () => {
         validLetters.push(false);
       }
       container.appendChild(cell);
+      lastCell = cell;
     }
+
+    const updateFontSize = (first = false, cell = lastCell, grid = true) => {
+        const cellWidth = cell.offsetWidth; // Largeur du conteneur
+        const fontSize = cellWidth * 3 / 8; // 50% de la largeur du conteneur
+        const idx = grid ? 1 : 2;
+        const class_ = grid ? "cell" : "alphabet-cell";
+
+        if(!first){
+            style.sheet.deleteRule(idx);
+        }
+
+        style.sheet.insertRule(`
+        .${class_} {
+            font-size : ${fontSize}px
+        }`, idx);
+    };
+    const resizeObserver = new ResizeObserver(() => {
+        updateFontSize(); // Appelle la mise à jour à chaque changement de taille
+    });
+    resizeObserver.observe(lastCell);
+    updateFontSize(true);
 
     // Génération des lettres de l'alphabet
     const alphabetContainer = document.querySelector('.alphabet-grid');
@@ -108,6 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'QSDFGHJKLM',
         'WXCVBN'
     ];
+    let lastCellAlphabet = null;
 
     azerty.forEach(row => {
         const rowContainer = document.createElement('div');
@@ -119,10 +141,17 @@ document.addEventListener('DOMContentLoaded', () => {
             letterCell.textContent = letter;
             letterCell.setAttribute('data-letter', letter);
             rowContainer.appendChild(letterCell);
+            lastCellAlphabet = letterCell;
         });
 
         alphabetContainer.appendChild(rowContainer);
     });
+
+    const resizeObserverAlphabet = new ResizeObserver(() => {
+        updateFontSize(false, lastCellAlphabet, false); // Appelle la mise à jour à chaque changement de taille
+    });
+    resizeObserverAlphabet.observe(lastCellAlphabet);
+    updateFontSize(true, lastCellAlphabet, false);
 });
 
 document.addEventListener('keydown', function(event) {
