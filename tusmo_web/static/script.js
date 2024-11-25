@@ -13,6 +13,27 @@ let confirmed = false;
 let end = false;
 let validLetters = [];
 
+const anecdotes = [
+    '"Motus" a été créé par Thierry Beccaro, le célèbre animateur français. L’émission a été lancée en 1990 et a rencontré un grand succès grâce à son concept à la fois simple et stimulant. L’émission a duré plusieurs années, avec des saisons ponctuées de rebondissements et de surprises.',
+    "Le concept de \"Motus\" est inspiré de celui du jeu de société Mastermind, où il faut deviner un code de couleurs. Dans \"Motus\", le défi est de deviner un mot de 5 ou 6 lettres en un nombre limité d'essais",
+    'Au-delà de l’aspect télévisé, "Motus" est un jeu populaire dans les foyers français, avec des versions adaptées pour les jeux de société. Les familles adorent se défier en devinant des mots, et cela a renforcé la popularité du programme en dehors du petit écran.',
+    "La plus grosse cagnotte de l'histoire de \"Motus\" est de 17 600 €7 (soit 22 émissions sans une Super partie gagnée)."
+]
+let def =  anecdotes[Math.floor(Math.random() * anecdotes.length)];
+
+fetch(`def/${real_word.toLowerCase()}`)
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.text();
+  })
+  .then(data => {
+    if(data != "err"){
+        def = `${real_word.charAt(0).toUpperCase() + real_word.slice(1).toLowerCase()} : ${data.toLowerCase()}`;
+    }
+  })
+
 fetch(`dico/${FIRSTLETTER}_${NBLETTERS}.txt`)
   .then(response => {
     if (!response.ok) {
@@ -165,7 +186,7 @@ document.addEventListener('keydown', function(event) {
 
                       const dialog = document.createElement("dialog");
                       dialog.innerHTML = `<h2 style="margin-top: 0px;">Le saviez-vous ?</h2>
-                        Gagner signifie acquérir par son travail, par son initiative ou par l’effet des circonstances, du hasard.<br><br>
+                        ${def}<br><br>
                         <div class="
                             next-button
                         " onclick=document.getElementById("form-end").submit()>Mot Suivant <span style="

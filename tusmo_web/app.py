@@ -1,7 +1,7 @@
-from flask import Flask, render_template, send_file, request, redirect, url_for
-import json
+from flask import Flask, render_template, send_file, request
 import random
-import os
+import requests
+from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
@@ -41,6 +41,28 @@ def regles():
 @app.route('/dico/<filename>')
 def get_dico(filename):
     return send_file('dico/' + filename)
+
+@app.route('/def/<mot>')
+def get_def(mot):
+    """Récupère uniquement la définition principale pour le mot depuis le Wiktionnaire."""
+    url = f"https://fr.wiktionary.org/wiki/{mot}"
+    try:
+        # Ajout d'un timeout pour éviter une requête qui traîne trop longtemps
+        response = requests.get(url, timeout=5)
+        response.raise_for_status()  # Lève une exception pour les codes d'erreur HTTP
+
+        soup = BeautifulSoup(response.text, "html.parser")
+        definition = soup.find("ol")  # Recherche de la liste ordonnée des définitions
+
+        if definition:
+            premier_element = definition.find("li")  # Cherche le premier élément de la liste
+            if premier_element:
+                # Extraire la première ligne avant les retours à la ligne
+                return premier_element.text.split("\n")[0].strip()
+        return "err"  # Cas où aucune définition n'est trouvée
+    except Exception as e:
+        return f"err"  # erreurs générales
+
 
 if __name__ == '__main__':
     app.run(debug=True)
