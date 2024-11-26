@@ -13,7 +13,7 @@ body {
   grid-template-rows: 28px 3fr 1fr;
   gap: 20px;
   padding: 10px;
-  height: calc(100% - 28px);
+  height: calc(100% - 38px);
 }
 
 .grid-container {
@@ -70,7 +70,7 @@ body {
   align-items: center;
   box-sizing: border-box;/* Intégrer le padding dans le calcul de l'élément */
   padding: 0.25rem;/* Pour facilier les calculs, le width de la grille ressemble alors a 1/2 * gap + cell + gap + cell + ... 1/2 * gap et la height à 1/2 * gap + cell + gap + cell + ... 1/2 * gap, on a donc height / width = 3 * (gap + cell) / (10 * (gap + cell)) = 3 / 10*/
-  height: min(100%, 30vw);/* Occupe la hauteur définie par la grille (ou moins si la largeur dépasse (100vw * height / width = 100vw * 3 / 10 = 30 vw))*/
+  height: min(100%, calc(0.3 * (100vw - 20px)));/* Occupe la hauteur définie par la grille (ou moins si la largeur dépasse (height / width = 0.3))*/
 }
 
 .alphabet-grid {

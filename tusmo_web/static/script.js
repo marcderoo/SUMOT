@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .grid-container {
             grid-template-columns: repeat(${NBLETTERS}, 1fr); /* 7 colonnes égales */
             grid-template-rows: repeat(${NBTRY}, 1fr);   /* 6 lignes égales */
-            height: min(100%, ${100 * NBTRY / NBLETTERS}vw); /* Occupe la hauteur définie par la grille (ou moins si la largeur dépasse)*/
+            height: min(100%, calc(${NBTRY / NBLETTERS} * (100vw - 20px))); /* Occupe la hauteur définie par la grille (ou moins si la largeur dépasse)*/
         }`, 0);
 
     // Sélection du conteneur de la grille
