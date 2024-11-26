@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateFontSize(true, lastCellAlphabet, false);
 });
 
-document.addEventListener('keydown', function(event) {
+const enterKey = function(key) {
     const cells = Array.from(document.querySelectorAll("div.cell"));
     let cellBeforeFirstEmptyCell = { cell : cells[cells.length - 1], index : cells.length - 1 };
     for (let i = 0; i < cells.length; i++) {
@@ -166,19 +166,19 @@ document.addEventListener('keydown', function(event) {
     }
 
     if(!end){
-        if (event.key.length === 1 && /[a-zA-Z]/.test(event.key)) {
+        if (key.length === 1 && /[a-zA-Z]/.test(key)) {
             if((cellBeforeFirstEmptyCell.index + 1) % NBLETTERS !== 0 || confirmed){
-                if(cellBeforeFirstEmptyCell.index % NBLETTERS !== 0 || cells[cellBeforeFirstEmptyCell.index].innerHTML !== event.key.toUpperCase()){
-                    if(cells[cellBeforeFirstEmptyCell.index + 1].innerHTML != event.key.toUpperCase()){
+                if(cellBeforeFirstEmptyCell.index % NBLETTERS !== 0 || cells[cellBeforeFirstEmptyCell.index].innerHTML !== key.toUpperCase()){
+                    if(cells[cellBeforeFirstEmptyCell.index + 1].innerHTML != key.toUpperCase()){
                         cells[cellBeforeFirstEmptyCell.index + 1].classList.remove("valid");
                     }
 
                     cells[cellBeforeFirstEmptyCell.index + 1].classList.remove("placeholder");
-                    cells[cellBeforeFirstEmptyCell.index + 1].innerHTML = event.key.toUpperCase();
+                    cells[cellBeforeFirstEmptyCell.index + 1].innerHTML = key.toUpperCase();
                     confirmed = false;
                 }
             }
-        } else if (event.key == "Backspace"){
+        } else if (key == "Backspace"){
             if (cellBeforeFirstEmptyCell && cellBeforeFirstEmptyCell.index % NBLETTERS !== 0) {
                 if(validLetters[cellBeforeFirstEmptyCell.index % NBLETTERS]){
                     cells[cellBeforeFirstEmptyCell.index].innerHTML = validLetters[cellBeforeFirstEmptyCell.index % NBLETTERS];
@@ -188,7 +188,7 @@ document.addEventListener('keydown', function(event) {
                     cells[cellBeforeFirstEmptyCell.index].innerHTML = "";
                 }
             }
-        } else if (event.key == "Enter"){
+        } else if (key == "Enter"){
             if ((cellBeforeFirstEmptyCell.index + 1) % NBLETTERS === 0) {
                 const word = cells.slice(cellBeforeFirstEmptyCell.index + 1 - NBLETTERS, cellBeforeFirstEmptyCell.index + 1).map(cell => cell.innerHTML).join("");
                 if(dico.includes(word.toLowerCase())){
@@ -361,8 +361,6 @@ document.addEventListener('keydown', function(event) {
                   }, 300);
                 }
             }
-        } else {
-            console.log(event.key);
         }
     }
-});
+}

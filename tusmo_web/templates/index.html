@@ -6,6 +6,9 @@
 </script>
 <script src="{{ url_for('static', filename='confetti.js') }}"></script>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
+<script>
+    document.addEventListener('keydown', (event) => enterKey(event.key));
+</script>
 <div class="home-button-container" onclick='window.location.href="/"'>
     <a class="home-button">
         <span style="

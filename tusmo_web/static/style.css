@@ -150,6 +150,7 @@ body {
   margin-bottom: 1em;
   color: #f0f0f0; /* Couleur générale du texte */
   font-weight: bold;
+  margin-top: 0px;
 }
 
 .menu-title .highlight {

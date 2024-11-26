@@ -1,34 +1,60 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-        <script>let real_word = "{{ data }}";</script>
-        <script src="{{ url_for('static', filename='confetti.js') }}"></script>
-        <script src="{{ url_for('static', filename='versus.js') }}"></script>
-    </head>
-    <body>
-        <div class="home-button-container" onclick='window.location.href="/"'>
-            <a class="home-button">
-                <span style="
-                    border-style: solid;
-                    border-width: 0.25em 0.25em 0 0;
-                    content: '';
-                    display: inline-block;
-                    height: 0.45em;
-                    position: relative;
-                    top: 0.20em;
-                    transform: rotate(-135deg);
-                    vertical-align: top;
-                    width: 0.45em;
-                    left: 0.14em;
-                "></span>
-            </a>
-        </div>
-        <div class="grid-container">
-        </div>
-        <div class="alphabet-container">
-            <div class="alphabet-grid">
-            </div>
-        </div>
-    </body>
-</html>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<script>let real_word = "{{ data.word }}";
+    let score = parseInt("{{ data.score }}");
+    let count = parseInt("{{ data.count }}");
+</script>
+<script src="{{ url_for('static', filename='confetti.js') }}"></script>
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+<script>
+    const PLAYERTURN = 0;
+    document.addEventListener('keydown', (event) => {
+        let cells = Array.from(document.querySelectorAll("div.cell"));
+        let cellBeforeFirstEmptyCellIdx = cells.length - 1;
+        for (let i = 0; i < cells.length; i++) {
+            if (cells[i].innerHTML == "" || cells[i].classList.contains("placeholder")) {
+                cellBeforeFirstEmptyCellIdx = i - 1;
+                break;
+            }
+        }
+        
+        if(Math.floor(cellBeforeFirstEmptyCellIdx / NBLETTERS) === PLAYERTURN){
+            enterKey(event.key);
+
+            cells = Array.from(document.querySelectorAll("div.cell"));
+            let cellBeforeFirstEmptyCellValid = false;
+            for (let i = 0; i < cells.length; i++) {
+                if (cells[i].innerHTML == "" || cells[i].classList.contains("placeholder")) {
+                    cellBeforeFirstEmptyCellValid = cells[i - 1].classList.contains("valid");
+                    break;
+                }
+            }
+            if(cellBeforeFirstEmptyCellValid){
+                console.log("IA turn");
+            }
+        }
+    });
+</script>
+<div class="home-button-container" onclick='window.location.href="/"'>
+    <a class="home-button">
+        <span style="
+            border-style: solid;
+            border-width: 0.25em 0.25em 0 0;
+            content: '';
+            display: inline-block;
+            height: 0.45em;
+            position: relative;
+            top: 0.20em;
+            transform: rotate(-135deg);
+            vertical-align: top;
+            width: 0.45em;
+            left: 0.14em;
+        "></span>
+    </a>
+</div>
+<div class="game-info">
+    <span id="word-number">Mot {{ data.count }}</span> - <span id="score">Score : {{ data.score }}</span>
+</div>
+<div class="grid-container"></div>
+<div class="alphabet-container">
+    <div class="alphabet-grid"></div>
+</div>      

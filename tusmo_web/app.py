@@ -30,9 +30,21 @@ def solo():
         "count": count
     })
 
-@app.route('/versus_ia')
+@app.route('/versus_ia', methods=['POST', 'GET'])
 def versus_ia():
-    return render_template('versusia.html')
+    score = 0
+    count = 1
+    
+    if request.method == 'POST':
+        score = request.form.get('score', 0, type=int)  # Récupération de 'score' depuis le formulaire
+        count = request.form.get('count', 1, type=int)  # Récupération de 'count' depuis le formulaire
+
+    random_word = random.choice(dico).upper()  # Mot mystère
+    return render_template('versusia.html', data={
+        "word": random_word,
+        "score": score,
+        "count": count
+    })
 
 @app.route('/regles')
 def regles():
