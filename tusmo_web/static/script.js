@@ -94,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
       cell.className = 'cell';
       if (i === 0){
         cell.innerHTML = FIRSTLETTER;
+        if(PLAYERTURN !== -1) cell.classList.add(PLAYERTURN === 0 ? "player-cell" : "ia-cell");
         validLetters.push(FIRSTLETTER);
       } else if (i < NBLETTERS) {
         validLetters.push(false);
@@ -155,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateFontSize(true, lastCellAlphabet, false);
 });
 
-const enterKey = function(key) {
+const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
     const cells = Array.from(document.querySelectorAll("div.cell"));
     let cellBeforeFirstEmptyCell = { cell : cells[cells.length - 1], index : cells.length - 1 };
     for (let i = 0; i < cells.length; i++) {
@@ -175,6 +176,12 @@ const enterKey = function(key) {
 
                     cells[cellBeforeFirstEmptyCell.index + 1].classList.remove("placeholder");
                     cells[cellBeforeFirstEmptyCell.index + 1].innerHTML = key.toUpperCase();
+                    if(player == 0){
+                        cells[cellBeforeFirstEmptyCell.index + 1].classList.add("player-cell");
+                    } else if (player == 1){
+                        cells[cellBeforeFirstEmptyCell.index + 1].classList.add("ia-cell");
+                        cells[cellBeforeFirstEmptyCell.index + 1 - ((cellBeforeFirstEmptyCell.index + 1) % NBLETTERS)].classList.remove("ia-cell-blinking");
+                    }
                     confirmed = false;
                 }
             }
@@ -187,6 +194,8 @@ const enterKey = function(key) {
                 } else {
                     cells[cellBeforeFirstEmptyCell.index].innerHTML = "";
                 }
+                cells[cellBeforeFirstEmptyCell.index].classList.remove("player-cell");
+                cells[cellBeforeFirstEmptyCell.index].classList.remove("ia-cell");
             }
         } else if (key == "Enter"){
             if ((cellBeforeFirstEmptyCell.index + 1) % NBLETTERS === 0) {
@@ -276,6 +285,12 @@ const enterKey = function(key) {
                             }                                          
                         }
                         cells[cellBeforeFirstEmptyCell.index + 1].classList.remove("placeholder");
+                        if(player == 1){
+                            cells[cellBeforeFirstEmptyCell.index + 1].classList.add("player-cell");
+                        } else if (player == 0) {
+                            cells[cellBeforeFirstEmptyCell.index + 1].classList.add("ia-cell");
+                            cells[cellBeforeFirstEmptyCell.index + 1].classList.add("ia-cell-blinking");
+                        }
                     } else {/* Looser Scren*/
                         end = true;
                         
@@ -344,15 +359,22 @@ const enterKey = function(key) {
 
                         if(validLetters[i]){
                             cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].innerHTML = validLetters[i];
-                            cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.add("valid"); 
-                            cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.add("placeholder");
-                        }                
+                            cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.add("valid");
+                            cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.add("placeholder"); 
+                        }            
+                        
+                        if(i === 0){
+                            cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS].innerHTML = FIRSTLETTER;
+                            cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS].classList.remove("placeholder");
+                        } else {
+                            cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.remove("player-cell");
+                            cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.remove("ia-cell");
+                        }
                     }
                     
-                    cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS].innerHTML = FIRSTLETTER;
-                    cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS].classList.remove("placeholder");
 
-                    if(cellBeforeFirstEmptyCell.index + 1 - NBLETTERS != 0){
+
+                    if(cellBeforeFirstEmptyCell.index + 1 - NBLETTERS !== 0){
                         cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS].classList.add("valid"); 
                     } else {
                         cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS].classList.remove("valid"); 

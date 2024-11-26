@@ -17,8 +17,8 @@
             }
         }
         
-        if(Math.floor(cellBeforeFirstEmptyCellIdx / NBLETTERS) === PLAYERTURN){
-            enterKey(event.key);
+        if(Math.floor(cellBeforeFirstEmptyCellIdx / NBLETTERS) % 2 === PLAYERTURN){
+            enterKey(event.key, 0);
 
             cells = Array.from(document.querySelectorAll("div.cell"));
             let cellBeforeFirstEmptyCellValid = false;

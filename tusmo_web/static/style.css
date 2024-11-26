@@ -370,3 +370,27 @@ dialog::backdrop {
   margin: 0.5em 0;
   font-weight: bold;
 }
+
+.player-cell {
+  border: 4px solid indianred;
+}
+
+.ia-cell {
+  border: 4px solid deepskyblue;
+}
+
+@keyframes blinking {
+  0% {
+    border-color: deepskyblue; /* Couleur initiale */
+  }
+  50% {
+    border-color: transparent; /* Rendre la bordure invisible */
+  }
+  100% {
+    border-color: deepskyblue; /* Retour à la couleur initiale */
+  }
+}
+
+.ia-cell-blinking {
+  animation: blinking 2s infinite; /* Animation qui boucle infiniment */
+}
