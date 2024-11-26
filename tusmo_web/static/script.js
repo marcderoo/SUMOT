@@ -157,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 document.addEventListener('keydown', function(event) {
     const cells = Array.from(document.querySelectorAll("div.cell"));
-    let cellBeforeFirstEmptyCell = null;
+    let cellBeforeFirstEmptyCell = { cell : cells[cells.length - 1], index : cells.length - 1 };
     for (let i = 0; i < cells.length; i++) {
         if (cells[i].innerHTML == "" || cells[i].classList.contains("placeholder")) {
             cellBeforeFirstEmptyCell = { cell: cells[i - 1], index: i - 1 };
@@ -267,14 +267,72 @@ document.addEventListener('keydown', function(event) {
                         })
 
                   } else {
-                    for(let i = 0; i < res.length; i++){
-                        if(validLetters[i]){
-                            cells[cellBeforeFirstEmptyCell.index + 1 + i].innerHTML = validLetters[i];
-                            cells[cellBeforeFirstEmptyCell.index + 1 + i].classList.add("valid");
-                            cells[cellBeforeFirstEmptyCell.index + 1 + i].classList.add("placeholder");
-                        }                                          
+                    if(cellBeforeFirstEmptyCell.index !== cells.length - 1){
+                        for(let i = 0; i < res.length; i++){
+                            if(validLetters[i]){
+                                cells[cellBeforeFirstEmptyCell.index + 1 + i].innerHTML = validLetters[i];
+                                cells[cellBeforeFirstEmptyCell.index + 1 + i].classList.add("valid");
+                                cells[cellBeforeFirstEmptyCell.index + 1 + i].classList.add("placeholder");
+                            }                                          
+                        }
+                        cells[cellBeforeFirstEmptyCell.index + 1].classList.remove("placeholder");
+                    } else {/* Looser Scren*/
+                        end = true;
+                        
+                        count += 1;
+  
+                        const dialog = document.createElement("dialog");
+                        dialog.innerHTML = `Dommage 😢, la réponse était : ${real_word} ...<br><br><h2 style="margin-top: 0px;">Le saviez-vous ?</h2>
+                          ${def}<br><br>
+                          <div class="
+                              next-button
+                          " onclick=document.getElementById("form-end").submit()>Mot Suivant <span style="
+                              border-style: solid;
+                              border-width: 0.25em 0.25em 0 0;
+                              content: '';
+                              display: inline-block;
+                              height: 0.45em;
+                              position: relative;
+                              top: 0.20em;
+                              transform: rotate(45deg);
+                              vertical-align: top;
+                              width: 0.45em;
+                              left: 0em;
+                          "></span></div><br><br>`
+  
+                        document.body.appendChild(dialog);
+  
+                        dialog.showModal();
+  
+                          const form = document.createElement('form');
+                          form.method = 'POST';
+                          form.id = 'form-end';
+                          form.action = window.location.href;
+                          form.hidden = true;
+  
+                          const countInput = document.createElement('input');
+                          countInput.type = 'hidden';
+                          countInput.name = 'count';
+                          countInput.id = 'count';
+                          countInput.value = count; 
+  
+                          const scoreInput = document.createElement('input');
+                          scoreInput.type = 'hidden';
+                          scoreInput.name = 'score';
+                          scoreInput.id = 'score';
+                          scoreInput.value = score; 
+  
+                          form.appendChild(countInput);
+                          form.appendChild(scoreInput);
+  
+                          document.body.appendChild(form);
+  
+                          dialog.addEventListener('keydown', function(event) {
+                              if(event.key == "Enter"){
+                                  form.submit();
+                              }
+                          })                        
                     }
-                    cells[cellBeforeFirstEmptyCell.index + 1].classList.remove("placeholder");
                   }
                 } else {
                   cells.slice(cellBeforeFirstEmptyCell.index + 1 - NBLETTERS, cellBeforeFirstEmptyCell.index + 1).forEach(elmt => elmt.classList.add("uncorrect"));
