@@ -3,9 +3,17 @@
 ## ** A FAIRE **
 On trouvera ci-dessous la liste des tâches à effectuer avant la prochaine réunion : (Ajouter ✅ lorsque c'est fait, et ajouter ❌ lorsqu'il y a un problème)
 
-- Réunion de lancement pour répartir les tâches et partager les idées
--
--
+- Conteneurisation : docker (MARC)
+- Tests unitaires js (ARNAUD)
+- Tests unitaires python (MERYEM)
+- Typing (MERYEM)
+- Documentation (python-doc / js-doc : directement dans le code : ca compile en markdown) (a la fin)
+- ReadMe (a la fin)
+- Aide de l'IA en mode solo (ARNAUD)
+- Algo génétique pour optimiser l'IA (MAX)
+  
+- Revoir les defs 
+- Idées d'amélioration (IA en moins de mots possibles / mots par thèmes / récompenses avec le score)
 
 ## **Description**
 Ce projet vise à développer une version du jeu **Tusmo** qui propose une IA en aide ou à affronter. L'objectif est de fournir :
