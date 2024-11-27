@@ -35,7 +35,7 @@ def charger_dictionnaire(fichier):
 
 def choisir_mot(mots):
     """Choisit un mot aléatoire depuis la liste des mots."""
-    return "coiffeur"
+    return random.choice(mots)
 
 
 
@@ -71,7 +71,6 @@ def colorier_mot_graphique(mot_propose, mot_a_trouver):
 
 
 
-
 def bot_proposition_facile(mots_possibles, historiques):
     """Le bot se base uniquement sur les lettres bien placées (vertes) pour faire ses propositions."""
     for proposition, resultat in historiques:
@@ -79,15 +78,16 @@ def bot_proposition_facile(mots_possibles, historiques):
         for mot in mots_possibles:
             valide = True
             for i, lettre in enumerate(proposition):
-                # Filtrer uniquement avec les lettres vertes
+                # Vérifie uniquement les lettres "vertes"
                 if resultat[i] == "vert" and mot[i] != lettre:
                     valide = False
                     break
-                # Ignorer les lettres non vertes dans ce niveau de difficulté
             if valide:
                 nouveaux_mots.append(mot)
-        mots_possibles = nouveaux_mots  # Réduire la liste des mots possibles
+        mots_possibles = nouveaux_mots if nouveaux_mots else mots_possibles
     return random.choice(mots_possibles) if mots_possibles else None
+
+
 
 
 def bot_proposition_moyen(mots_possibles, historiques):
@@ -96,50 +96,74 @@ def bot_proposition_moyen(mots_possibles, historiques):
         nouveaux_mots = []
         for mot in mots_possibles:
             valide = True
-            mot_temp = list(mot)
+            mot_temp = list(mot)  # Copie modifiable pour traquer les lettres oranges
             for i, lettre in enumerate(proposition):
-                if resultat[i] == "vert" and mot[i] != lettre:
-                    valide = False
-                    break
+                if resultat[i] == "vert":
+                    if mot[i] != lettre:
+                        valide = False
+                        break
                 elif resultat[i] == "orange":
-                    # Vérifier si la lettre est présente mais à une position différente
+                    # Vérifie la présence ailleurs mais pas à la même position
                     if lettre not in mot_temp or mot[i] == lettre:
                         valide = False
                         break
-                    mot_temp[mot_temp.index(lettre)] = None  # Marquer la lettre comme utilisée
+                    mot_temp[mot_temp.index(lettre)] = None  # Consomme la lettre
+                elif resultat[i] == "rouge":
+                    # Vérifie que la lettre n'est pas du tout présente
+                    if lettre in mot_temp:
+                        valide = False
+                        break
             if valide:
                 nouveaux_mots.append(mot)
-        mots_possibles = nouveaux_mots  # Réduire la liste des mots possibles
+        mots_possibles = nouveaux_mots if nouveaux_mots else mots_possibles
+
     return random.choice(mots_possibles) if mots_possibles else None
 
 
 
 def bot_proposition_difficile(mots_possibles, historiques):
-    """Le bot utilise toutes les couleurs pour filtrer les mots possibles."""
+    """Le bot utilise toutes les couleurs pour filtrer les mots possibles, sans gestion de lettres consommées."""
+    mots_filtrés = mots_possibles.copy()  # Travail sur une copie pour préserver l'original
+
     for proposition, resultat in historiques:
         nouveaux_mots = []
-        for mot in mots_possibles:
+        for mot in mots_filtrés:
             valide = True
-            mot_temp = list(mot)
 
             for i, lettre in enumerate(proposition):
-                if resultat[i] == "vert" and mot[i] != lettre:
-                    valide = False
-                    break
-                elif resultat[i] == "orange":
-                    # Vérifier si la lettre est présente mais à une position différente
-                    if lettre not in mot_temp or mot[i] == lettre:
+                if resultat[i] == "vert":
+                    # Lettre doit être exactement à cette position
+                    if mot[i] != lettre:
                         valide = False
                         break
-                    mot_temp[mot_temp.index(lettre)] = None  # Marquer la lettre comme utilisée
-                elif resultat[i] == "rouge" and lettre in mot_temp:
-                    valide = False
-                    break
+                elif resultat[i] == "orange":
+                    # Lettre doit être présente ailleurs, mais pas à cette position
+                    if lettre not in mot or mot[i] == lettre:
+                        valide = False
+                        break
+                elif resultat[i] == "rouge":
+                    # Lettre ne doit pas être à cette position
+                    if mot[i] == lettre:
+                        valide = False
+                        break
+                    # Vérifie si la lettre rouge est présente ailleurs
+                    indices_orange_vert = [
+                        j for j, res in enumerate(resultat) if res in ["vert", "orange"] and proposition[j] == lettre
+                    ]
+                    if lettre in mot and not indices_orange_vert:
+                        valide = False
+                        break
 
             if valide:
                 nouveaux_mots.append(mot)
-        mots_possibles = nouveaux_mots  # Réduire la liste des mots possibles
-    return random.choice(mots_possibles) if mots_possibles else None
+
+        # Met à jour la liste des mots possibles après ce tour
+        mots_filtrés = nouveaux_mots if nouveaux_mots else mots_filtrés
+
+    # Débogage : Affiche les mots possibles après filtrage
+    print(f"Mots possibles après filtrage (difficile) : {mots_filtrés}")
+
+    return random.choice(mots_filtrés) if mots_filtrés else None
 
 
 
@@ -174,6 +198,7 @@ def jouer():
     historiques = []
 
     print(f"Le mot à trouver contient {longueur} lettres : {'_' * longueur}")
+    print(mot_a_trouver)
 
     tour = 0
     while True:
@@ -225,3 +250,4 @@ def jouer():
 # Lancer le jeu
 if __name__ == "__main__":
     jouer()
+
