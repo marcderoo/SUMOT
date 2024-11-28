@@ -213,6 +213,9 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
                       else if (res[i] == 1 && !alphabetLetter.classList.contains("valid")){
                         alphabetLetter.classList.add("good");
                       }
+                      if (res[i] == 0 && !alphabetLetter.classList.contains("valid")  && !alphabetLetter.classList.contains("good")){
+                        alphabetLetter.classList.add("unvalid");
+                      }
                   }
 
                   confirmed = true;

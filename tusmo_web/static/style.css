@@ -35,25 +35,6 @@ body {
   font-weight: bold;
 }
 
-.valid {
-  background-color: #4caf50;
-}
-
-.good {
-  background-color: #ffc107;
-}
-
-.unvalid {
-  background-color: lightgray;
-}
-
-.uncorrect {
-  background-color: #f44336;
-}
-
-
-
-
 .game-info {
   font-size: 1.5em;
   color: white;
@@ -99,31 +80,6 @@ body {
   height: 100%;
   font-weight: bold;
 }
-
-.alphabet-cell.valid {
-  background-color: #4caf50;
-  color: black;
-}
-
-.alphabet-cell.good {
-  background-color: #ffc107;
-  color: black;
-}
-
-.alphabet-cell.unvalid {
-  background-color: #f44336;
-  color: black;
-}
-
-
-
-
-
-
-
-
-
-
 
 /* Style de fond pour le menu */
 .menu-background {
@@ -393,4 +349,24 @@ dialog::backdrop {
 
 .ia-cell-blinking {
   animation: blinking 2s infinite; /* Animation qui boucle infiniment */
+}
+
+.valid {
+  background-color: #4caf50;
+}
+
+.good {
+  background-color: #ffc107;
+}
+
+.unvalid {
+  background-color: lightgray;
+}
+
+.uncorrect {
+  background-color: #f44336;
+}
+
+.alphabet-cell.unvalid {
+  color: gray;
 }
