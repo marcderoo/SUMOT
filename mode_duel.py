@@ -35,7 +35,7 @@ def charger_dictionnaire(fichier):
 
 def choisir_mot(mots):
     """Choisit un mot aléatoire depuis la liste des mots."""
-    return random.choice(mots)
+    return "lapin"
 
 
 
@@ -161,9 +161,93 @@ def bot_proposition_difficile(mots_possibles, historiques):
         mots_filtrés = nouveaux_mots if nouveaux_mots else mots_filtrés
 
     # Débogage : Affiche les mots possibles après filtrage
-    print(f"Mots possibles après filtrage (difficile) : {mots_filtrés}")
+    #print(f"Mots possibles après filtrage (difficile) : {mots_filtrés}")
 
     return random.choice(mots_filtrés) if mots_filtrés else None
+
+
+
+
+
+
+def bot_proposition_ultime_1(mots_possibles, historiques):
+    """Le bot utilise toutes les couleurs pour filtrer les mots possibles, sans gestion de lettres consommées."""
+    mots_filtrés = mots_possibles.copy()  # Travail sur une copie pour préserver l'original
+
+    for proposition, resultat in historiques:
+        nouveaux_mots = []
+        for mot in mots_filtrés:
+            valide = True
+
+            for i, lettre in enumerate(proposition):
+                if resultat[i] == "vert":
+                    # Lettre doit être exactement à cette position
+                    if mot[i] != lettre:
+                        valide = False
+                        break
+                elif resultat[i] == "orange":
+                    # Lettre doit être présente ailleurs, mais pas à cette position
+                    if lettre not in mot or mot[i] == lettre:
+                        valide = False
+                        break
+                elif resultat[i] == "rouge":
+                    # Lettre ne doit pas être à cette position
+                    if mot[i] == lettre:
+                        valide = False
+                        break
+                    # Vérifie si la lettre rouge est présente ailleurs
+                    indices_orange_vert = [
+                        j for j, res in enumerate(resultat) if res in ["vert", "orange"] and proposition[j] == lettre
+                    ]
+                    if lettre in mot and not indices_orange_vert:
+                        valide = False
+                        break
+
+            if valide:
+                nouveaux_mots.append(mot)
+
+        # Met à jour la liste des mots possibles après ce tour
+        mots_filtrés = nouveaux_mots if nouveaux_mots else mots_filtrés
+
+    # Charger les fréquences des lettres depuis le fichier texte
+    frequences_lettres = {}
+    with open("frequences_lettres.txt", "r") as fichier:
+        for ligne in fichier:
+            ligne = ligne.strip()
+            if " : " in ligne:  # Vérifie que la ligne contient " : "
+                lettre, freq = ligne.split(" : ")
+                frequences_lettres[lettre.strip()] = float(freq.strip())  # Nettoie aussi les espaces autour
+
+    # Calculer la somme des fréquences pour chaque mot
+    def somme_frequences(mot):
+        return sum(frequences_lettres.get(lettre, 0) for lettre in mot)
+
+    # Filtrer les mots avec des lettres toutes différentes
+    mots_uniques = [mot for mot in mots_filtrés if len(set(mot)) == len(mot)]
+
+    # Afficher la somme des fréquences pour chaque mot unique
+    print("Somme des fréquences pour chaque mot filtré (lettres uniques uniquement) :")
+    for mot in mots_uniques:
+        print(f"{mot} : {somme_frequences(mot)}")
+
+    # Trouver le mot avec la somme maximale des fréquences parmi les mots uniques
+    mot_max = max(mots_uniques, key=somme_frequences, default=None)
+
+    # Débogage : Affiche les mots possibles après filtrage
+    print(f"Mots possibles après filtrage (ultime, lettres uniques) : {mots_uniques}")
+    print(f"Mot proposé avec la somme maximale des fréquences (lettres uniques) : {mot_max}")
+
+    # Retourner le mot avec la somme maximale des fréquences
+    return mot_max if mot_max else (mots_filtrés[0] if mots_filtrés else None)
+
+
+
+
+
+
+
+
+
 
 
 
@@ -179,8 +263,10 @@ def jouer():
         print("1. Facile")
         print("2. Moyen")
         print("3. Difficile")
-        choix = input("Entrez 1, 2 ou 3 : ").strip()
-        if choix in ["1", "2", "3"]:
+        print("4. Ultime")
+
+        choix = input("Entrez 1, 2 ou 3 ou 4 si tu l'oses : ").strip()
+        if choix in ["1", "2", "3","4"]:
             break
         print("Choix invalide. Réessayez.")
 
@@ -188,6 +274,8 @@ def jouer():
         "1": bot_proposition_facile,
         "2": bot_proposition_moyen,
         "3": bot_proposition_difficile,
+        "4": bot_proposition_ultime_1,
+
     }
     bot_propose = niveaux_bot[choix]
 
@@ -250,4 +338,10 @@ def jouer():
 # Lancer le jeu
 if __name__ == "__main__":
     jouer()
+
+
+
+
+
+
 
