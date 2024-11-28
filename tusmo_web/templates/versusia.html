@@ -7,6 +7,15 @@
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 <script>
     const PLAYERTURN = 0;
+
+    async function processKeys(data) {
+        for (let i = 0; i < data.length; i++) {
+            enterKey(data.charAt(i), 1);
+            await new Promise(resolve => setTimeout(resolve, 100)); // Pause de 100 ms entre les appels
+        }
+        enterKey("Enter", 1);
+    }
+
     document.addEventListener('keydown', (event) => {
         let cells = Array.from(document.querySelectorAll("div.cell"));
         let cellBeforeFirstEmptyCellIdx = cells.length - 1;
@@ -20,16 +29,53 @@
         if(Math.floor(cellBeforeFirstEmptyCellIdx / NBLETTERS) % 2 === PLAYERTURN){
             enterKey(event.key, 0);
 
-            cells = Array.from(document.querySelectorAll("div.cell"));
-            let cellBeforeFirstEmptyCellValid = false;
             for (let i = 0; i < cells.length; i++) {
                 if (cells[i].innerHTML == "" || cells[i].classList.contains("placeholder")) {
-                    cellBeforeFirstEmptyCellValid = cells[i - 1].classList.contains("valid");
+                    cellBeforeFirstEmptyCellIdx = i - 1;
                     break;
                 }
             }
-            if(cellBeforeFirstEmptyCellValid){
-                console.log("IA turn");
+
+            if(event.key == "Enter" && Math.floor(cellBeforeFirstEmptyCellIdx / NBLETTERS) % 2 !== PLAYERTURN){
+                fetch(`ia`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        len : NBLETTERS,
+                        firstLetter : FIRSTLETTER,
+                        validLetters : validLetters,
+                        stateLetters : Object.entries(stateLetters).reduce((acc, [key, value]) => {
+                            acc[key] = {
+                                ...value,
+                                posValid: Array.from(value.posValid),
+                                posGood: Array.from(value.posGood),
+                            };
+                            return acc;
+                            }, {}
+                        )
+                    })
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(processKeys)
+                .catch(error => {
+                    console.error('Erreur lors de la requête:', error);
+                });
+                console.log(Object.entries(stateLetters).reduce((acc, [key, value]) => {
+                            acc[key] = {
+                                ...value,
+                                posValid: Array.from(value.posValid),
+                                posGood: Array.from(value.posGood),
+                            };
+                            return acc;
+                            }, {}
+                        ));
             }
         }
     });

@@ -82,36 +82,54 @@ def bot_proposition_difficile():
         Le bot utilise toutes les couleurs pour filtrer les mots possibles, sans gestion de lettres consommées.
         data["len"] : longueur du mot
         data["firstLetter"] : première lettre du mot (en majuscule)
-        data["validLetters"] : liste qui contient la position des lettres bien placés au bon endroit de la forme, par exemple pour un mot de 4 lettre avec un L bien placé à la première position et un n a la troisième, ça donnerait : ["L", False, "N", "G"]
-        goodLetter : liste de tuple qui contient les lettres mal placées et leur mauvaise position passée de la forme par exemple : 
-            [("A", [1, 3]), ("B", [1, 5])]
-            Cet exemple signifie que A placé en 1 est une bonne lettre mais mal placé, A placé en 3 est une bonne lettre mais mal placé, etc ... 
-        unvalidLetter : list des lettres non valides 
+        data["stateLetters"] : contient un résumé des informations obtenues sur chaque lettre, par exemple:
+            stateLetters = {
+                "A" : {
+                    count : 2,
+                    posValid : [0, 2],
+                    posGood : [3, 4],
+                    nbGood: 0,
+                    notMore : true
+                }
+            }
+        data["validLetters"] : contient les lettres valides et leur position
     """
     data = request.get_json()
+    print(data)
     words = []
     with open("small_dico.txt", 'r') as file:
         words = [line.strip().upper() for line in file if len(line.strip()) == data["len"] and line[0].upper() == data["firstLetter"]]
 
     filtred = []
     for word in words:
-        data["goodLetters"] = data["goodLetters"].copy()
+        countLetters = {}
+        goToNext = False
+        for letter in word:
+            if letter in countLetters:
+                countLetters[letter] += 1
+            else:
+                countLetters[letter] = 1
+            if letter in data["stateLetters"] and countLetters[letter] > data["stateLetters"][letter]["count"] and data["stateLetters"][letter]["notMore"]:
+                goToNext = True
+                break
+        if goToNext:
+            continue
+
+        for letter in data["stateLetters"].keys():
+            if (letter not in countLetters and data["stateLetters"][letter]["count"] > 0) or (letter in countLetters and data["stateLetters"][letter]["count"] > countLetters[letter]):
+                goToNext = True
+        if goToNext:
+            continue
+
         for i in range(data["len"]):
-            if data["validLetters"][i]:
-                if word[i] == data["validLetters"][i]:
-                    continue
-                else:
-                    break
-
-            if word[i] in list(map(lambda x : x[1], data["goodLetters"])):
-                for j in range(len(data["goodLetters"])):
-                    if data["goodLetters"][j] == word[i]:
-                        del data["goodLetters"][j]
-
-            if word[i] == data["unvalidLetters"]:
+            if word[i] in data["stateLetters"] and i in data["stateLetters"][word[i]]["posGood"]:
                 break
 
-            if i == data["len"] - 1 and len(data["goodLetters"]) == 0:
+            if data["validLetters"][i]:
+                if word[i] != data["validLetters"][i]:
+                    break
+
+            if i == data["len"] - 1:
                 filtred.append(word)
 
     return random.choice(filtred)

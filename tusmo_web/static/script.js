@@ -12,6 +12,7 @@ let dico = [];
 let confirmed = false;
 let end = false;
 let validLetters = [];
+let stateLetters = {};
 
 const anecdotes = [
     '"Motus" a été créé par Thierry Beccaro, le célèbre animateur français. L’émission a été lancée en 1990 et a rencontré un grand succès grâce à son concept à la fois simple et stimulant. L’émission a duré plusieurs années, avec des saisons ponctuées de rebondissements et de surprises.',
@@ -48,6 +49,31 @@ fetch(`dico/${FIRSTLETTER}_${NBLETTERS}.txt`)
   .catch(error => {
     console.error('There was a problem with the fetch operation:', error);
   });
+
+function addLetter(letter, state, pos, countRes){//2 valid, 1 good, 0 unvalid
+    if(!Object.keys(stateLetters).includes(letter)){
+        stateLetters[letter] = {
+            count : 0,
+            posValid : new Set(),
+            posGood : new Set(),
+            notMore : false
+        }
+    }
+
+    stateLetters[letter].count = Math.max(stateLetters[letter].count, isNaN(countRes) ? 0 : countRes);
+    
+    switch(state) {
+        case 2:
+            stateLetters[letter].posValid.add(pos);
+            break;
+        case 1:
+            stateLetters[letter].posGood.add(pos);
+            break;
+        case 0:
+            stateLetters[letter].notMore = true;
+            break;
+    }
+}
 
 function verify(written_word){
     let res = []
@@ -96,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         cell.innerHTML = FIRSTLETTER;
         if(PLAYERTURN !== -1) cell.classList.add(PLAYERTURN === 0 ? "player-cell" : "ia-cell");
         validLetters.push(FIRSTLETTER);
+        addLetter(FIRSTLETTER, 2, 0, 1);
       } else if (i < NBLETTERS) {
         validLetters.push(false);
       }
@@ -202,19 +229,29 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
                 const word = cells.slice(cellBeforeFirstEmptyCell.index + 1 - NBLETTERS, cellBeforeFirstEmptyCell.index + 1).map(cell => cell.innerHTML).join("");
                 if(dico.includes(word.toLowerCase())){
                   const res = verify(word);
+                  let resLettersCount = {};
                   for(let i = 0; i < res.length; i++){
-                      cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.add(res[i] === 2 ? "valid" : (res[i] === 1 ? "good" : "unvalid"));
+                    if(res[i] == 2 || res[i] == 1){
+                        resLettersCount[word[i]] = Object.keys(resLettersCount).includes(word[i]) ? resLettersCount[word[i]] + 1 : 1;
+                    }
+                  }
+                  for(let i = 0; i < res.length; i++){
+                      addLetter(cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].innerHTML, res[i], i, resLettersCount[cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].innerHTML]);
+
                       const alphabetLetter = document.querySelector(`div.alphabet-cell[data-letter="${cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].innerHTML}"`);
                       if(res[i] == 2){
                         validLetters[i] = cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].innerHTML;
                         alphabetLetter.classList.remove("good");
                         alphabetLetter.classList.add("valid");
+                        cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.add("valid");
                       }
-                      else if (res[i] == 1 && !alphabetLetter.classList.contains("valid")){
-                        alphabetLetter.classList.add("good");
+                      else if (res[i] == 1){
+                        if(!alphabetLetter.classList.contains("valid")) alphabetLetter.classList.add("good");
+                        cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.add("good");
                       }
-                      if (res[i] == 0 && !alphabetLetter.classList.contains("valid")  && !alphabetLetter.classList.contains("good")){
-                        alphabetLetter.classList.add("unvalid");
+                      if (res[i] == 0){
+                        if(!alphabetLetter.classList.contains("valid")  && !alphabetLetter.classList.contains("good")) alphabetLetter.classList.add("unvalid");
+                        cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.add("unvalid");
                       }
                   }
 
