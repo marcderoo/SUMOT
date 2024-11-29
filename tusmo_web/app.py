@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 dico = []
 with open("small_dico.txt", 'r') as file:
-    dico = [line.strip() for line in file if line.strip()]
+    dico = [line.strip() for line in file]
 
 # Route d'accueil
 @app.route('/')
@@ -74,7 +74,6 @@ def get_def(mot):
         return "err"  # Cas où aucune définition n'est trouvée
     except Exception as e:
         return f"err"  # erreurs générales
-    
 
 @app.route('/ia', methods=['POST'])
 def bot_proposition_difficile():
@@ -88,17 +87,13 @@ def bot_proposition_difficile():
                     count : 2,
                     posValid : [0, 2],
                     posGood : [3, 4],
-                    nbGood: 0,
                     notMore : true
                 }
             }
         data["validLetters"] : contient les lettres valides et leur position
     """
     data = request.get_json()
-    print(data)
-    words = []
-    with open("small_dico.txt", 'r') as file:
-        words = [line.strip().upper() for line in file if len(line.strip()) == data["len"] and line[0].upper() == data["firstLetter"]]
+    words = dico.copy()
 
     filtred = []
     for word in words:
