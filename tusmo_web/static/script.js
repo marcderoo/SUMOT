@@ -268,7 +268,8 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
                       confetti.launch();
                       
                       count += 1;
-                      score += 100 - Math.floor(cellBeforeFirstEmptyCell.index / NBLETTERS) * 10;
+                      const attemps = Math.floor(cellBeforeFirstEmptyCell.index / NBLETTERS);
+                      score += (PLAYERTURN === -1 || attemps % 2 === PLAYERTURN) ? 100 - attemps * 10 : 0;
 
                       const dialog = document.createElement("dialog");
                       dialog.innerHTML = `<h2 style="margin-top: 0px;">Le saviez-vous ?</h2>

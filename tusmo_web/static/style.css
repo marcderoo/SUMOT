@@ -6,7 +6,6 @@ html {
 body {
   font-family: sans-serif;
   text-align: center;
-  background-color: rgba(0, 0, 30, 0.95);
   display: grid;
   justify-content: center;
   align-items: center;
@@ -14,6 +13,10 @@ body {
   gap: 20px;
   padding: 10px;
   height: calc(100% - 38px);
+  background-image: url("/static/wallpaper.jpg"); /* Remplacez par le chemin de votre image */
+  background-repeat: no-repeat; /* Pas de répétition de l'image */
+  background-position: center; /* Centre l'image */
+  background-size: auto; /* Pas de redimensionnement */
 }
 
 .grid-container {

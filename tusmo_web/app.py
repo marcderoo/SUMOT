@@ -93,7 +93,7 @@ def bot_proposition_difficile():
         data["validLetters"] : contient les lettres valides et leur position
     """
     data = request.get_json()
-    words = dico.copy()
+    words = [word.upper() for word in dico if len(word) == data["len"] and word[0].upper() == data["firstLetter"]]
 
     filtred = []
     for word in words:
