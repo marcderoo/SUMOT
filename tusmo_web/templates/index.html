@@ -8,7 +8,9 @@
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 <script>
     const PLAYERTURN = -1;
-    document.addEventListener('keydown', (event) => enterKey(event.key));
+    document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('keydown', (event) => enterKey(event.key));
+    });
 </script>
 <div class="home-button-container" onclick='window.location.href="/"'>
     <a class="home-button">
