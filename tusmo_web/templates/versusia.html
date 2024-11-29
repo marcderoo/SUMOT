@@ -30,13 +30,14 @@
             enterKey(event.key, 0);
 
             for (let i = 0; i < cells.length; i++) {
-                if (cells[i].innerHTML == "" || cells[i].classList.contains("placeholder")) {
+                if (cells[i].innerHTML == "") {
                     cellBeforeFirstEmptyCellIdx = i - 1;
                     break;
                 }
             }
 
             if(event.key == "Enter" && Math.floor(cellBeforeFirstEmptyCellIdx / NBLETTERS) % 2 !== PLAYERTURN){
+                console.log("Send IA");
                 fetch(`ia`, {
                     method: 'POST',
                     headers: {

@@ -185,9 +185,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
     const cells = Array.from(document.querySelectorAll("div.cell"));
+    let cellBeforeFirstEmptyCellOrPlaceHolder = { cell : cells[cells.length - 1], index : cells.length - 1 };
     let cellBeforeFirstEmptyCell = { cell : cells[cells.length - 1], index : cells.length - 1 };
+    let found = false;
     for (let i = 0; i < cells.length; i++) {
-        if (cells[i].innerHTML == "" || cells[i].classList.contains("placeholder")) {
+        if ((cells[i].innerHTML == "" || cells[i].classList.contains("placeholder")) && !found) {
+            cellBeforeFirstEmptyCellOrPlaceHolder = { cell: cells[i - 1], index: i - 1 };
+            found = true;
+        }
+        
+        if (cells[i].innerHTML == ""){
             cellBeforeFirstEmptyCell = { cell: cells[i - 1], index: i - 1 };
             break;
         }
@@ -195,34 +202,34 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
 
     if(!end){
         if (key.length === 1 && /[a-zA-Z]/.test(key)) {
-            if((cellBeforeFirstEmptyCell.index + 1) % NBLETTERS !== 0 || confirmed){
-                if(cellBeforeFirstEmptyCell.index % NBLETTERS !== 0 || cells[cellBeforeFirstEmptyCell.index].innerHTML !== key.toUpperCase()){
-                    if(cells[cellBeforeFirstEmptyCell.index + 1].innerHTML != key.toUpperCase()){
-                        cells[cellBeforeFirstEmptyCell.index + 1].classList.remove("valid");
+            if((cellBeforeFirstEmptyCellOrPlaceHolder.index + 1) % NBLETTERS !== 0 || confirmed){
+                if(cellBeforeFirstEmptyCellOrPlaceHolder.index % NBLETTERS !== 0 || cells[cellBeforeFirstEmptyCellOrPlaceHolder.index].innerHTML !== key.toUpperCase()){
+                    if(cells[cellBeforeFirstEmptyCellOrPlaceHolder.index + 1].innerHTML != key.toUpperCase()){
+                        cells[cellBeforeFirstEmptyCellOrPlaceHolder.index + 1].classList.remove("valid");
                     }
 
-                    cells[cellBeforeFirstEmptyCell.index + 1].classList.remove("placeholder");
-                    cells[cellBeforeFirstEmptyCell.index + 1].innerHTML = key.toUpperCase();
+                    cells[cellBeforeFirstEmptyCellOrPlaceHolder.index + 1].classList.remove("placeholder");
+                    cells[cellBeforeFirstEmptyCellOrPlaceHolder.index + 1].innerHTML = key.toUpperCase();
                     if(player == 0){
-                        cells[cellBeforeFirstEmptyCell.index + 1].classList.add("player-cell");
+                        cells[cellBeforeFirstEmptyCellOrPlaceHolder.index + 1].classList.add("player-cell");
                     } else if (player == 1){
-                        cells[cellBeforeFirstEmptyCell.index + 1].classList.add("ia-cell");
-                        cells[cellBeforeFirstEmptyCell.index + 1 - ((cellBeforeFirstEmptyCell.index + 1) % NBLETTERS)].classList.remove("ia-cell-blinking");
+                        cells[cellBeforeFirstEmptyCellOrPlaceHolder.index + 1].classList.add("ia-cell");
+                        cells[cellBeforeFirstEmptyCellOrPlaceHolder.index + 1 - ((cellBeforeFirstEmptyCellOrPlaceHolder.index + 1) % NBLETTERS)].classList.remove("ia-cell-blinking");
                     }
                     confirmed = false;
                 }
             }
         } else if (key == "Backspace"){
-            if (cellBeforeFirstEmptyCell && cellBeforeFirstEmptyCell.index % NBLETTERS !== 0) {
-                if(validLetters[cellBeforeFirstEmptyCell.index % NBLETTERS]){
-                    cells[cellBeforeFirstEmptyCell.index].innerHTML = validLetters[cellBeforeFirstEmptyCell.index % NBLETTERS];
-                    cells[cellBeforeFirstEmptyCell.index].classList.add("valid");
-                    cells[cellBeforeFirstEmptyCell.index].classList.add("placeholder");
+            if (cellBeforeFirstEmptyCellOrPlaceHolder && cellBeforeFirstEmptyCellOrPlaceHolder.index % NBLETTERS !== 0) {
+                if(validLetters[cellBeforeFirstEmptyCellOrPlaceHolder.index % NBLETTERS]){
+                    cells[cellBeforeFirstEmptyCellOrPlaceHolder.index].innerHTML = validLetters[cellBeforeFirstEmptyCellOrPlaceHolder.index % NBLETTERS];
+                    cells[cellBeforeFirstEmptyCellOrPlaceHolder.index].classList.add("valid");
+                    cells[cellBeforeFirstEmptyCellOrPlaceHolder.index].classList.add("placeholder");
                 } else {
-                    cells[cellBeforeFirstEmptyCell.index].innerHTML = "";
+                    cells[cellBeforeFirstEmptyCellOrPlaceHolder.index].innerHTML = "";
                 }
-                cells[cellBeforeFirstEmptyCell.index].classList.remove("player-cell");
-                cells[cellBeforeFirstEmptyCell.index].classList.remove("ia-cell");
+                cells[cellBeforeFirstEmptyCellOrPlaceHolder.index].classList.remove("player-cell");
+                cells[cellBeforeFirstEmptyCellOrPlaceHolder.index].classList.remove("ia-cell");
             }
         } else if (key == "Enter"){
             if ((cellBeforeFirstEmptyCell.index + 1) % NBLETTERS === 0) {
