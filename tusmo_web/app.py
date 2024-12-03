@@ -2,12 +2,18 @@ from flask import Flask, render_template, send_file, request
 import random
 import requests
 from bs4 import BeautifulSoup
+from functools import lru_cache
 
 app = Flask(__name__)
 
-dico = []
 with open("small_dico.txt", 'r') as file:
     dico = [line.strip() for line in file]
+
+with open("frequences_lettres.txt", "r") as file:
+    frequences_lettres = {
+        ligne.split(" : ")[0].strip(): float(ligne.split(" : ")[1].strip())
+        for ligne in file if " : " in ligne
+    }
 
 # Route d'accueil
 @app.route('/')
@@ -74,6 +80,10 @@ def get_def(mot):
         return "err"  # Cas où aucune définition n'est trouvée
     except Exception as e:
         return f"err"  # erreurs générales
+    
+@lru_cache(maxsize=None)
+def somme_frequences(mot):
+    return sum(frequences_lettres.get(lettre, 0) for lettre in mot)
 
 @app.route('/ia', methods=['POST'])
 def bot_proposition_difficile():
@@ -127,7 +137,11 @@ def bot_proposition_difficile():
             if i == data["len"] - 1:
                 filtred.append(word)
 
-    return random.choice(filtred)
+    #if difficulte == 4:
+    mots_uniques = [mot for mot in filtred if len(set(mot)) == len(mot)]
+    filtred = max(mots_uniques or filtred , key=somme_frequences)
+
+    return filtred
 
 if __name__ == '__main__':
     app.run(debug=True)

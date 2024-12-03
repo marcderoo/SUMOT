@@ -84,6 +84,11 @@ body {
   font-weight: bold;
 }
 
+.alphabet-cell:hover {
+  opacity: 0.8; /* Opacité maximale lorsqu'on survole */
+  cursor: pointer;
+}
+
 /* Style de fond pour le menu */
 .menu-background {
   background-color: rgba(0, 0, 30, 0.95);

@@ -1,3 +1,17 @@
+//Managing events
+const eventManager = new EventManager();
+
+document.addEventListener('DOMContentLoaded', () => {
+    eventManager.emit("DOMContentLoaded");
+});
+
+eventManager.subscribe("DOMContentLoaded", () => {
+    document.addEventListener('keydown', (event) => {
+        eventManager.emit("keydown", event.key);
+    });
+});
+
+
 const confetti = new Confetti();
 
 const style = document.createElement('style');
@@ -100,7 +114,7 @@ function verify(written_word){
     return res;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+eventManager.subscribe('DOMContentLoaded', () => {
     // Ajouter des règles CSS à l'élément <style>
     style.sheet.insertRule(`
         .grid-container {

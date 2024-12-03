@@ -3,6 +3,7 @@
     let score = parseInt("{{ data.score }}");
     let count = parseInt("{{ data.count }}");
 </script>
+<script src="{{ url_for('static', filename='eventManager.js') }}"></script>
 <script src="{{ url_for('static', filename='confetti.js') }}"></script>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 <script>
@@ -16,7 +17,7 @@
         enterKey("Enter", 1);
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
+    eventManager.subscribe('DOMContentLoaded', () => {
         if(PLAYERTURN === 1){
             fetch(`ia`, {
                     method: 'POST',
@@ -49,8 +50,9 @@
                     console.error('Erreur lors de la requête:', error);
                 });
         }
+    });
 
-        document.addEventListener('keydown', (event) => {
+    eventManager.subscribe("keydown", (key) => {
         let cells = Array.from(document.querySelectorAll("div.cell"));
         let cellBeforeFirstEmptyCellIdx = cells.length - 1;
         for (let i = 0; i < cells.length; i++) {
@@ -61,7 +63,7 @@
         }
         
         if(Math.floor(cellBeforeFirstEmptyCellIdx / NBLETTERS) % 2 === PLAYERTURN){
-            enterKey(event.key, 0);
+            enterKey(key, 0);
 
             for (let i = 0; i < cells.length; i++) {
                 if (cells[i].innerHTML == "") {
@@ -70,7 +72,7 @@
                 }
             }
 
-            if(event.key == "Enter" && Math.floor(cellBeforeFirstEmptyCellIdx / NBLETTERS) % 2 !== PLAYERTURN){
+            if(key == "Enter" && Math.floor(cellBeforeFirstEmptyCellIdx / NBLETTERS) % 2 !== PLAYERTURN){
                 fetch(`ia`, {
                     method: 'POST',
                     headers: {
@@ -103,7 +105,6 @@
                 });
             }
         }
-    });
     });
 </script>
 <div class="home-button-container" onclick='window.location.href="/"'>
