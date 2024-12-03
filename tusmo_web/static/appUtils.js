@@ -13,7 +13,7 @@ class AppUtils {
     }
 
     // Charge des fichiers en utilisant le cache
-    async loadObj(url) {
+    async loadObj(url, base64 = false) {
         // Vérifie si l'objet est dans le localStorage
         const obj = localStorage.getItem(url);
         if (obj) {
@@ -24,19 +24,26 @@ class AppUtils {
             if (!response.ok) {
                 throw new Error(`Erreur lors du téléchargement : ${response.statusText}`);
             }
-            const blob = await response.blob();
+
+            if(base64){
+                const blob = await response.blob();
     
-            // Convertit le blob en Base64
-            return await new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = function () {
-                    const base64Data = reader.result;
-                    localStorage.setItem(url, base64Data); // Stocke en localStorage
-                    resolve(base64Data); // Retourne les données encodées
-                };
-                reader.onerror = reject; // Gère les erreurs
-                reader.readAsDataURL(blob); // Lecture du blob
-            });
+                // Convertit le blob en Base64
+                return await new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = function () {
+                        const base64Data = reader.result;
+                        localStorage.setItem(url, base64Data); // Stocke en localStorage
+                        resolve(base64Data); // Retourne les données encodées
+                    };
+                    reader.onerror = reject; // Gère les erreurs
+                    reader.readAsDataURL(blob); // Lecture du blob
+                });
+            } else {
+                const res =  response.text();
+                localStorage.setItem(url, res);
+                return res;
+            }
         }
     }
 

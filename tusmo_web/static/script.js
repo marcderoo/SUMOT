@@ -35,13 +35,7 @@ fetch(`def/${real_word.toLowerCase()}`)
     }
   })
 
-fetch(`dico/${FIRSTLETTER}_${NBLETTERS}.txt`)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.text();
-  })
+  appUtils.loadObj(`dico/${FIRSTLETTER}_${NBLETTERS}.txt`)
   .then(data => {
     dico = data.replaceAll("\r", "").split("\n");
     console.log(dico);

@@ -16,7 +16,7 @@
         appUtils.subscribe("DOMContentLoaded", () => domLoad = true);
 
         /** Charger le fond d'écran depuis le cache **/
-        appUtils.loadObj("/static/wallpaper.jpg").then((res) => {
+        appUtils.loadObj("/static/wallpaper.jpg", true).then((res) => {
             if(domLoad){
                 document.body.style.backgroundImage = `url(${res})`;
             }
