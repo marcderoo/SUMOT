@@ -73,6 +73,7 @@ class AppUtils {
 //Managing events
 const appUtils = new AppUtils();
 
+//classical events
 document.addEventListener('DOMContentLoaded', () => {
     appUtils.emit("DOMContentLoaded");
 });
