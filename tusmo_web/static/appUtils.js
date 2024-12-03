@@ -40,7 +40,7 @@ class AppUtils {
                     reader.readAsDataURL(blob); // Lecture du blob
                 });
             } else {
-                const res =  response.text();
+                const res =  await response.text();
                 localStorage.setItem(url, res);
                 return res;
             }
