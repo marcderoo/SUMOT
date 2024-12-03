@@ -255,6 +255,8 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
                     }
                   }
                   for(let i = 0; i < res.length; i++){
+                      cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.remove("placeholder");
+
                       addLetter(cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].innerHTML, res[i], i, resLettersCount[cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].innerHTML]);
 
                       const alphabetLetter = document.querySelector(`div.alphabet-cell[data-letter="${cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].innerHTML}"`);
