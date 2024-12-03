@@ -6,7 +6,9 @@ On trouvera ci-dessous la liste des tâches à effectuer avant la prochaine réu
 - Conteneurisation : docker (MARC) ✅
   docker build -t tusmo_web .
   docker run -d -p 5000:5000 tusmo_web
-  
+
+- Déploiment (Vercel : https://vercel.com/marcderoos-projects/sumot) ✅
+
 - Tests unitaires js (MAX)
 - Tests unitaires python (MERYEM)
 - Typing (MERYEM)
