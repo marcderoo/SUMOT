@@ -128,6 +128,7 @@ appUtils.subscribe('DOMContentLoaded', () => {
     const updateFontSize = (first = false, cell = lastCell, grid = true) => {
         const cellWidth = cell.offsetWidth; // Largeur du conteneur
         const fontSize = cellWidth * 3 / 8; // 50% de la largeur du conteneur
+        const borderWidth = cellWidth * 1 / 20;
         const idx = grid ? 1 : 2;
         const class_ = grid ? "cell" : "alphabet-cell";
 
@@ -137,7 +138,8 @@ appUtils.subscribe('DOMContentLoaded', () => {
 
         style.sheet.insertRule(
             `.${class_} {
-                font-size : ${fontSize}px
+                font-size : ${fontSize}px;
+                ${idx == 1 ? "border" : "outline"}-width: ${borderWidth}px;
             }`
         , idx);
 

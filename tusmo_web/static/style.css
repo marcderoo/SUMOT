@@ -90,7 +90,9 @@ body {
 }
 
 .alphabet-cell.clicked {
-  outline : 3px solid black;
+  filter: brightness(75%); /* Réduit la luminosité à 75% */
+  outline-color : black;
+  outline-style: solid;
 }
 
 .alphabet-cell.special {
