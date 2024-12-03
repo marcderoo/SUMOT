@@ -61,7 +61,7 @@ fetch(`dico/${FIRSTLETTER}_${NBLETTERS}.txt`)
     return response.text();
   })
   .then(data => {
-    dico = data.split("\r\n");
+    dico = data.replace("\r", "").split("\n");
     console.log(dico);
   })
   .catch(error => {
