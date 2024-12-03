@@ -4,6 +4,9 @@
 On trouvera ci-dessous la liste des tâches à effectuer avant la prochaine réunion : (Ajouter ✅ lorsque c'est fait, et ajouter ❌ lorsqu'il y a un problème)
 
 - Conteneurisation : docker (MARC) ✅
+  docker build -t tusmo_web .
+  docker run -d -p 5000:5000 tusmo_web
+  
 - Tests unitaires js (MAX)
 - Tests unitaires python (MERYEM)
 - Typing (MERYEM)
