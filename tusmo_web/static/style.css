@@ -10,7 +10,7 @@ body {
   justify-content: center;
   align-items: center;
   grid-template-rows: 28px 3fr 1fr;
-  gap: 20px;
+  gap: 3%;
   padding: 10px;
   height: calc(100% - 38px);
   /*background-image: url("/static/wallpaper.jpg");*/ /* Remplacez par le chemin de votre image */
