@@ -9,10 +9,10 @@ body {
   display: grid;
   justify-content: center;
   align-items: center;
-  grid-template-rows: 28px 3fr 1fr;
+  grid-template-rows: 1.5rem 3fr 1fr;
   gap: 3%;
-  padding: 10px;
-  height: calc(100% - 38px);
+  padding: 1vh;
+  height: calc(100% - 1vh - 1.5rem);
   /*background-image: url("/static/wallpaper.jpg");*/ /* Remplacez par le chemin de votre image */
   background-repeat: no-repeat; /* Pas de répétition de l'image */
   background-position: center; /* Centre l'image */
@@ -181,24 +181,12 @@ body {
   transform: scale(1.05);
 }
 
-
-/* Conteneur pour le bouton Home */
-.home-button-container {
-  position: absolute;
-  top: 15px;
-  left: 15px;
-  height: 1em;
-  width: 2em;
-}
-
-
-
 /* Bouton Home */
 .home-button {
   background: #f0f0f0;
   color: rgba(0, 0, 30, 0.95);
   border: none;
-  font-size: 1em;
+  /* font-size: 1em; */
   font-weight: bold;
   padding: 0.5em 1em;
   border-radius: 1em;
@@ -208,6 +196,9 @@ body {
   display: inline-block;
   height: 1em;
   width: 2em;
+  left: calc(1vw + 10px);
+  position: absolute;
+  top: calc(1vh + 10px - 0.25em);
 }
 
 .home-button:hover {

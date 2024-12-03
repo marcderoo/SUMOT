@@ -98,11 +98,24 @@ function verify(written_word){
 appUtils.subscribe('DOMContentLoaded', () => {
     // Ajouter des règles CSS à l'élément <style>
     style.sheet.insertRule(`
+        html {
+            font-size : ${0.02 *  window.innerHeight}px;
+        }`, 0);
+
+    window.addEventListener('resize', () => {
+        style.sheet.deleteRule(0);
+        style.sheet.insertRule(`
+            html {
+                font-size : ${0.02 *  window.innerHeight}px;
+            }`, 0);
+    });
+
+    style.sheet.insertRule(`
         .grid-container {
             grid-template-columns: repeat(${NBLETTERS}, 1fr); /* 7 colonnes égales */
             grid-template-rows: repeat(${NBTRY}, 1fr);   /* 6 lignes égales */
             height: min(100%, calc(${NBTRY / NBLETTERS} * (100vw - 20px))); /* Occupe la hauteur définie par la grille (ou moins si la largeur dépasse)*/
-        }`, 0);
+        }`, 1);
 
     // Sélection du conteneur de la grille
     const container = document.querySelector('.grid-container');
@@ -129,7 +142,7 @@ appUtils.subscribe('DOMContentLoaded', () => {
         const cellWidth = cell.offsetWidth; // Largeur du conteneur
         const fontSize = cellWidth * 3 / 8; // 50% de la largeur du conteneur
         const borderWidth = cellWidth * 1 / 20;
-        const idx = grid ? 1 : 2;
+        const idx = grid ? 2 : 3;
         const class_ = grid ? "cell" : "alphabet-cell";
 
         if(!first){
@@ -139,20 +152,20 @@ appUtils.subscribe('DOMContentLoaded', () => {
         style.sheet.insertRule(
             `.${class_} {
                 font-size : ${fontSize}px;
-                ${idx == 1 ? "border" : "outline"}-width: ${borderWidth}px;
+                ${idx == 2 ? "border" : "outline"}-width: ${borderWidth}px;
             }`
         , idx);
 
-        if(idx == 2){
+        if(idx == 3){
             if(!first){
-                style.sheet.deleteRule(3);
+                style.sheet.deleteRule(4);
             }
 
             style.sheet.insertRule(class_ == "alphabet-cell" ? (
                 `.alphabet-cell.special {
                     font-size : ${fontSize * 5 / 3}px
                 }`
-            ) : "", 3)
+            ) : "", 4)
         }
     };
     const resizeObserver = new ResizeObserver(() => {
