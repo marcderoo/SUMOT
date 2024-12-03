@@ -88,7 +88,7 @@ class AppUtils {
 
         if(this.events[eventName]) this.events[eventName].forEach((callback) => callback(data));
         if(this.doIfOrWhenEvents[eventName]){
-            this.doIfOrWhenEvents[eventName].forEach((callback) => callback(data));
+            this.doIfOrWhenEvents[eventName].forEach((callback) => callback());
             delete this.doIfOrWhenEvents[eventName];
         } 
     }

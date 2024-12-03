@@ -39,7 +39,7 @@ fetch(`def/${real_word.toLowerCase()}`)
   .then(data => {
     dico = data.replaceAll("\r", "").split("\n");
     console.log(dico);
-    appUtils.emit('dicoOK');
+    appUtils.emit('dicoLoad');
   })
   .catch(error => {
     console.error('There was a problem with the fetch operation:', error);

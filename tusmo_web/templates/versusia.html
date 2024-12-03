@@ -61,7 +61,7 @@
                         return response.text();
                     })
                     .then(word => {
-                        appUtils.doIfOrWhen("dicoOK", () => processKeys(word));
+                        appUtils.doIfOrWhen("dicoLoad", () => processKeys(word));
                     })
                     .catch(error => {
                         console.error('Erreur lors de la requête:', error);
