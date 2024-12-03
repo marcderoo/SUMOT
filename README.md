@@ -3,14 +3,14 @@
 ## ** A FAIRE **
 On trouvera ci-dessous la liste des tâches à effectuer avant la prochaine réunion : (Ajouter ✅ lorsque c'est fait, et ajouter ❌ lorsqu'il y a un problème)
 
-- Conteneurisation : docker (MARC)
-- Tests unitaires js (ARNAUD)
+- Conteneurisation : docker (MARC) ✅
+- Tests unitaires js (MAX)
 - Tests unitaires python (MERYEM)
 - Typing (MERYEM)
 - Documentation (python-doc / js-doc : directement dans le code : ca compile en markdown) (a la fin)
 - ReadMe (a la fin)
 - Aide de l'IA en mode solo (ARNAUD)
-- Algo génétique pour optimiser l'IA (MAX)
+- IA ultime (MAX) ✅
   
 - Revoir les defs 
 - Idées d'amélioration (IA en moins de mots possibles / mots par thèmes / récompenses avec le score)
