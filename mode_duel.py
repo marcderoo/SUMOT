@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup
 import requests
 
 
-
 def obtenir_definition(mot):
     """Récupère uniquement la définition principale pour le mot depuis le Wiktionnaire."""
     url = f"https://fr.wiktionary.org/wiki/{mot}"
@@ -36,7 +35,8 @@ def charger_dictionnaire(fichier):
 
 def choisir_mot(mots):
     """Choisit un mot aléatoire depuis la liste des mots."""
-    return "tabouret"
+    return "lapin"
+
 
 
 def colorier_mot_graphique(mot_propose, mot_a_trouver):
@@ -69,43 +69,186 @@ def colorier_mot_graphique(mot_propose, mot_a_trouver):
     return "".join(resultat)
 
 
-def bot_proposition(mots_possibles, longueur, historiques):
-    """
-    Propose un mot intelligent en filtrant les mots possibles en fonction des historiques.
-    """
+
+
+def bot_proposition_facile(mots_possibles, historiques):
+    """Le bot se base uniquement sur les lettres bien placées (vertes) pour faire ses propositions."""
     for proposition, resultat in historiques:
         nouveaux_mots = []
         for mot in mots_possibles:
             valide = True
-            mot_temp = list(mot)  # Copie modifiable pour vérifier les lettres
-
-            # Vérifier chaque lettre dans la proposition précédente
             for i, lettre in enumerate(proposition):
-                if resultat[i] == "vert":  # Lettre correcte et bien placée
+                # Vérifie uniquement les lettres "vertes"
+                if resultat[i] == "vert" and mot[i] != lettre:
+                    valide = False
+                    break
+            if valide:
+                nouveaux_mots.append(mot)
+        mots_possibles = nouveaux_mots if nouveaux_mots else mots_possibles
+    return random.choice(mots_possibles) if mots_possibles else None
+
+
+
+
+def bot_proposition_moyen(mots_possibles, historiques):
+    """Le bot se base sur les lettres bien placées (vertes) et les lettres correctes mais mal placées (oranges)."""
+    for proposition, resultat in historiques:
+        nouveaux_mots = []
+        for mot in mots_possibles:
+            valide = True
+            mot_temp = list(mot)  # Copie modifiable pour traquer les lettres oranges
+            for i, lettre in enumerate(proposition):
+                if resultat[i] == "vert":
                     if mot[i] != lettre:
                         valide = False
                         break
-                elif resultat[i] == "orange":  # Lettre présente mais mal placée
+                elif resultat[i] == "orange":
+                    # Vérifie la présence ailleurs mais pas à la même position
                     if lettre not in mot_temp or mot[i] == lettre:
                         valide = False
                         break
-                    mot_temp[mot_temp.index(lettre)] = None  # Consommer la lettre
-                elif resultat[i] == "rouge":  # Lettre absente du mot
+                    mot_temp[mot_temp.index(lettre)] = None  # Consomme la lettre
+                elif resultat[i] == "rouge":
+                    # Vérifie que la lettre n'est pas du tout présente
                     if lettre in mot_temp:
+                        valide = False
+                        break
+            if valide:
+                nouveaux_mots.append(mot)
+        mots_possibles = nouveaux_mots if nouveaux_mots else mots_possibles
+
+    return random.choice(mots_possibles) if mots_possibles else None
+
+
+
+def bot_proposition_difficile(mots_possibles, historiques):
+    """Le bot utilise toutes les couleurs pour filtrer les mots possibles, sans gestion de lettres consommées."""
+    mots_filtrés = mots_possibles.copy()  # Travail sur une copie pour préserver l'original
+
+    for proposition, resultat in historiques:
+        nouveaux_mots = []
+        for mot in mots_filtrés:
+            valide = True
+
+            for i, lettre in enumerate(proposition):
+                if resultat[i] == "vert":
+                    # Lettre doit être exactement à cette position
+                    if mot[i] != lettre:
+                        valide = False
+                        break
+                elif resultat[i] == "orange":
+                    # Lettre doit être présente ailleurs, mais pas à cette position
+                    if lettre not in mot or mot[i] == lettre:
+                        valide = False
+                        break
+                elif resultat[i] == "rouge":
+                    # Lettre ne doit pas être à cette position
+                    if mot[i] == lettre:
+                        valide = False
+                        break
+                    # Vérifie si la lettre rouge est présente ailleurs
+                    indices_orange_vert = [
+                        j for j, res in enumerate(resultat) if res in ["vert", "orange"] and proposition[j] == lettre
+                    ]
+                    if lettre in mot and not indices_orange_vert:
                         valide = False
                         break
 
             if valide:
                 nouveaux_mots.append(mot)
 
-        # Réduire les mots possibles
-        mots_possibles = nouveaux_mots
+        # Met à jour la liste des mots possibles après ce tour
+        mots_filtrés = nouveaux_mots if nouveaux_mots else mots_filtrés
 
-    # Si aucun mot valide n'est trouvé
-    if not mots_possibles:
-        print("Aucune correspondance trouvée. Le bot réinitialise sa liste.")
-        return random.choice(historiques[0][0])  # Réutiliser un mot connu pour ne pas bloquer
-    return random.choice(mots_possibles)
+    # Débogage : Affiche les mots possibles après filtrage
+    #print(f"Mots possibles après filtrage (difficile) : {mots_filtrés}")
+
+    return random.choice(mots_filtrés) if mots_filtrés else None
+
+
+
+
+
+
+def bot_proposition_ultime_1(mots_possibles, historiques):
+    """Le bot utilise toutes les couleurs pour filtrer les mots possibles, sans gestion de lettres consommées."""
+    mots_filtrés = mots_possibles.copy()  # Travail sur une copie pour préserver l'original
+
+    for proposition, resultat in historiques:
+        nouveaux_mots = []
+        for mot in mots_filtrés:
+            valide = True
+
+            for i, lettre in enumerate(proposition):
+                if resultat[i] == "vert":
+                    # Lettre doit être exactement à cette position
+                    if mot[i] != lettre:
+                        valide = False
+                        break
+                elif resultat[i] == "orange":
+                    # Lettre doit être présente ailleurs, mais pas à cette position
+                    if lettre not in mot or mot[i] == lettre:
+                        valide = False
+                        break
+                elif resultat[i] == "rouge":
+                    # Lettre ne doit pas être à cette position
+                    if mot[i] == lettre:
+                        valide = False
+                        break
+                    # Vérifie si la lettre rouge est présente ailleurs
+                    indices_orange_vert = [
+                        j for j, res in enumerate(resultat) if res in ["vert", "orange"] and proposition[j] == lettre
+                    ]
+                    if lettre in mot and not indices_orange_vert:
+                        valide = False
+                        break
+
+            if valide:
+                nouveaux_mots.append(mot)
+
+        # Met à jour la liste des mots possibles après ce tour
+        mots_filtrés = nouveaux_mots if nouveaux_mots else mots_filtrés
+
+    # Charger les fréquences des lettres depuis le fichier texte
+    frequences_lettres = {}
+    with open("frequences_lettres.txt", "r") as fichier:
+        for ligne in fichier:
+            ligne = ligne.strip()
+            if " : " in ligne:  # Vérifie que la ligne contient " : "
+                lettre, freq = ligne.split(" : ")
+                frequences_lettres[lettre.strip()] = float(freq.strip())  # Nettoie aussi les espaces autour
+
+    # Calculer la somme des fréquences pour chaque mot
+    def somme_frequences(mot):
+        return sum(frequences_lettres.get(lettre, 0) for lettre in mot)
+
+    # Filtrer les mots avec des lettres toutes différentes
+    mots_uniques = [mot for mot in mots_filtrés if len(set(mot)) == len(mot)]
+
+    # Afficher la somme des fréquences pour chaque mot unique
+    print("Somme des fréquences pour chaque mot filtré (lettres uniques uniquement) :")
+    for mot in mots_uniques:
+        print(f"{mot} : {somme_frequences(mot)}")
+
+    # Trouver le mot avec la somme maximale des fréquences parmi les mots uniques
+    mot_max = max(mots_uniques, key=somme_frequences, default=None)
+
+    # Débogage : Affiche les mots possibles après filtrage
+    print(f"Mots possibles après filtrage (ultime, lettres uniques) : {mots_uniques}")
+    print(f"Mot proposé avec la somme maximale des fréquences (lettres uniques) : {mot_max}")
+
+    # Retourner le mot avec la somme maximale des fréquences
+    return mot_max if mot_max else (mots_filtrés[0] if mots_filtrés else None)
+
+
+
+
+
+
+
+
+
+
 
 
 def jouer():
@@ -114,17 +257,39 @@ def jouer():
         print("Le fichier dictionnaire_clean.txt est introuvable.")
         return
 
+    # Choisir la difficulté
+    while True:
+        print("Choisissez une difficulté :")
+        print("1. Facile")
+        print("2. Moyen")
+        print("3. Difficile")
+        print("4. Ultime")
+
+        choix = input("Entrez 1, 2 ou 3 ou 4 si tu l'oses : ").strip()
+        if choix in ["1", "2", "3","4"]:
+            break
+        print("Choix invalide. Réessayez.")
+
+    niveaux_bot = {
+        "1": bot_proposition_facile,
+        "2": bot_proposition_moyen,
+        "3": bot_proposition_difficile,
+        "4": bot_proposition_ultime_1,
+
+    }
+    bot_propose = niveaux_bot[choix]
+
     mots = charger_dictionnaire(fichier)
     mot_a_trouver = choisir_mot(mots)
     longueur = len(mot_a_trouver)
-    mots_possibles = [mot for mot in mots if len(mot) == longueur]  # Mots de la bonne longueur
-    historiques = []  # Historique des propositions et résultats
+    mots_possibles = [mot for mot in mots if len(mot) == longueur]
+    historiques = []
 
     print(f"Le mot à trouver contient {longueur} lettres : {'_' * longueur}")
+    print(mot_a_trouver)
 
     tour = 0
     while True:
-        # Tour de l'utilisateur
         tour += 1
         print(f"\nTour {tour} :")
         mot_propose = input(f"Entrez un mot de {longueur} lettres : ").strip().lower()
@@ -135,51 +300,48 @@ def jouer():
             print("Le mot proposé n'existe pas dans le dictionnaire.")
             continue
 
-        # Afficher le résultat pour l'utilisateur
-        resultat_utilisateur = colorier_mot_graphique(mot_propose, mot_a_trouver)
-        print("Votre proposition :", resultat_utilisateur)
-
-        # Ajouter au historique
-        historique_utilisateur = [
-            ("vert" if mot_a_trouver[i] == mot_propose[i] else
-             "orange" if mot_propose[i] in mot_a_trouver and mot_a_trouver[i] != mot_propose[i] else
-             "rouge")
+        resultat_utilisateur = [
+            "vert" if mot_a_trouver[i] == mot_propose[i]
+            else "orange" if mot_propose[i] in mot_a_trouver and mot_a_trouver[i] != mot_propose[i]
+            else "rouge"
             for i in range(longueur)
         ]
-        historiques.append((mot_propose, historique_utilisateur))
+        historiques.append((mot_propose, resultat_utilisateur))
+        print("Votre proposition :", colorier_mot_graphique(mot_propose, mot_a_trouver))
 
         if mot_propose == mot_a_trouver:
             print("🎉 Félicitations, vous avez trouvé le mot !")
-            definition = obtenir_definition(mot_a_trouver)
-            print(f"Définition de '{mot_a_trouver}' : {definition}")
+            print(f"Définition de '{mot_a_trouver}' :", obtenir_definition(mot_a_trouver))
             break
 
-        # Tour du bot
-        mot_bot = bot_proposition(mots_possibles, longueur, historiques)
+        mot_bot = bot_propose(mots_possibles, historiques)
         if not mot_bot:
             print("Le bot n'a pas trouvé de mot valide.")
             break
 
         print(f"Le bot propose : {mot_bot}")
-        resultat_bot = colorier_mot_graphique(mot_bot, mot_a_trouver)
-        print("Réponse du bot :", resultat_bot)
-
-        # Ajouter au historique pour le bot
-        historique_bot = [
-            ("vert" if mot_a_trouver[i] == mot_bot[i] else
-             "orange" if mot_bot[i] in mot_a_trouver and mot_a_trouver[i] != mot_bot[i] else
-             "rouge")
+        resultat_bot = [
+            "vert" if mot_a_trouver[i] == mot_bot[i]
+            else "orange" if mot_bot[i] in mot_a_trouver and mot_a_trouver[i] != mot_bot[i]
+            else "rouge"
             for i in range(longueur)
         ]
-        historiques.append((mot_bot, historique_bot))
+        historiques.append((mot_bot, resultat_bot))
+        print("Réponse du bot :", colorier_mot_graphique(mot_bot, mot_a_trouver))
 
         if mot_bot == mot_a_trouver:
             print("🤖 Le bot a trouvé le mot !")
-            definition = obtenir_definition(mot_a_trouver)
-            print(f"Définition de '{mot_a_trouver}' : {definition}")
+            print(f"Définition de '{mot_a_trouver}' :", obtenir_definition(mot_a_trouver))
             break
 
 
 # Lancer le jeu
 if __name__ == "__main__":
     jouer()
+
+
+
+
+
+
+
