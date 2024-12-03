@@ -6,12 +6,20 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
     <script src="{{ url_for('static', filename='appUtils.js') }}"></script>
-    <script> 
+    <script>
+        let domLoad = false;
+        appUtils.subscribe("DOMContentLoaded", () => domLoad = true);
+        
         /** Charger le fond d'écran depuis le cache **/
         appUtils.loadObj("/static/wallpaper.jpg").then((res) => {
-            appUtils.subscribe("DOMContentLoaded", () => {
+            if(domLoad){
                 document.body.style.backgroundImage = `url(${res})`;
-            });
+            }
+            else {
+                appUtils.subscribe("DOMContentLoaded", () => {
+                    document.body.style.backgroundImage = `url(${res})`;
+                });
+            }
         })
     </script>
     <title>SUMOT</title>

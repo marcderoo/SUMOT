@@ -27,7 +27,7 @@ class AppUtils {
             const blob = await response.blob();
     
             // Convertit le blob en Base64
-            return new Promise((resolve, reject) => {
+            return await new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = function () {
                     const base64Data = reader.result;
@@ -39,7 +39,6 @@ class AppUtils {
             });
         }
     }
-    
 
     // Méthode pour s'abonner à un événement
     subscribe(eventName, callback) {
