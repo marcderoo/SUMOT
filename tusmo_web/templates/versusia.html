@@ -40,6 +40,9 @@
             enterKey("ENTER", 1);
         }
 
+        let dicoOK = false;
+        appUtils.subscribe("dicoOK", () => dicoOK = true);
+
         appUtils.subscribe('DOMContentLoaded', () => {
             if(PLAYERTURN === 1){
                 fetch(`ia`, {
@@ -68,7 +71,13 @@
                         }
                         return response.text();
                     })
-                    .then(processKeys)
+                    .then(word => {
+                        if(dicoOK){
+                            processKeys(word);
+                        } else {
+                            appUtils.subscribe("dicoOK", () => processKeys(word));
+                        }
+                    })
                     .catch(error => {
                         console.error('Erreur lors de la requête:', error);
                     });
