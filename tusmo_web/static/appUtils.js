@@ -1,15 +1,15 @@
-class EventManager {
+class AppUtils {
     // Instance unique pour le Singleton
     static instance;
 
     // Constructeur privé pour éviter une instanciation multiple
     constructor() {
-        if (EventManager.instance) {
-            return EventManager.instance;
+        if (AppUtils.instance) {
+            return AppUtils.instance;
         }
 
         this.events = {}; // Stockage des événements et de leurs abonnés
-        EventManager.instance = this;
+        AppUtils.instance = this;
     }
 
     // Méthode pour s'abonner à un événement

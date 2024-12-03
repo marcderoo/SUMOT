@@ -1,17 +1,17 @@
 //Managing events
-const eventManager = new EventManager();
+const appUtils = new AppUtils();
 
 document.addEventListener('DOMContentLoaded', () => {
-    eventManager.emit("DOMContentLoaded");
+    appUtils.emit("DOMContentLoaded");
 });
 
-eventManager.subscribe("DOMContentLoaded", () => {
+appUtils.subscribe("DOMContentLoaded", () => {
     document.addEventListener('keydown', (event) => {
-        eventManager.emit("keydown", event.key.toUpperCase());
+        appUtils.emit("keydown", event.key.toUpperCase());
     });
 
     document.addEventListener('keyup', (event) => {
-        eventManager.emit("keyup", event.key.toUpperCase());
+        appUtils.emit("keyup", event.key.toUpperCase());
     });
 });
 
@@ -61,7 +61,7 @@ fetch(`dico/${FIRSTLETTER}_${NBLETTERS}.txt`)
     return response.text();
   })
   .then(data => {
-    dico = data.replace("\r", "").split("\n");
+    dico = data.replaceAll("\r", "").split("\n");
     console.log(dico);
   })
   .catch(error => {
@@ -118,7 +118,7 @@ function verify(written_word){
     return res;
 }
 
-eventManager.subscribe('DOMContentLoaded', () => {
+appUtils.subscribe('DOMContentLoaded', () => {
     // Ajouter des règles CSS à l'élément <style>
     style.sheet.insertRule(`
         .grid-container {
@@ -138,7 +138,7 @@ eventManager.subscribe('DOMContentLoaded', () => {
       cell.className = 'cell';
       if (i === 0){
         cell.innerHTML = FIRSTLETTER;
-        if(PLAYERTURN !== -1) cell.classList.add(PLAYERTURN === 0 ? "player-cell" : "ia-cell");
+        cell.classList.add((PLAYERTURN === 0 || PLAYERTURN == -1) ? "player-cell" : "ia-cell");
         validLetters.push(FIRSTLETTER);
         addLetter(FIRSTLETTER, 2, 0, 1);
       } else if (i < NBLETTERS) {
@@ -188,18 +188,18 @@ eventManager.subscribe('DOMContentLoaded', () => {
             letterCell.textContent = letter;
             const rawLetter = letter == "✔" ? 'ENTER' : (letter == "⌫" ? 'BACKSPACE' : letter);
             letterCell.setAttribute('data-letter', rawLetter);
-            letterCell.addEventListener("mousedown", () => eventManager.emit('keydown', rawLetter));
-            letterCell.addEventListener("mouseleave", () => eventManager.emit('keyup', rawLetter));
-            letterCell.addEventListener("mouseup", () => eventManager.emit('keyup', rawLetter));
+            letterCell.addEventListener("mousedown", () => appUtils.emit('keydown', rawLetter));
+            letterCell.addEventListener("mouseleave", () => appUtils.emit('keyup', rawLetter));
+            letterCell.addEventListener("mouseup", () => appUtils.emit('keyup', rawLetter));
 
-            eventManager.subscribe('keydown', (key) => {
+            appUtils.subscribe('keydown', (key) => {
                 if(key == rawLetter){
                     letterCell.classList.add('clicked');
-                    setTimeout(() => eventManager.emit('keyup', key), 500);
+                    setTimeout(() => appUtils.emit('keyup', key), 500);
                 }
             })
 
-            eventManager.subscribe('keyup', (key) => {
+            appUtils.subscribe('keyup', (key) => {
                 if(key == rawLetter){
                     letterCell.classList.remove('clicked');
                 }
@@ -246,7 +246,7 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
 
                     cells[cellBeforeFirstEmptyCellOrPlaceHolder.index + 1].classList.remove("placeholder");
                     cells[cellBeforeFirstEmptyCellOrPlaceHolder.index + 1].innerHTML = key.toUpperCase();
-                    if(player == 0){
+                    if(player == 0 || player == -1){
                         cells[cellBeforeFirstEmptyCellOrPlaceHolder.index + 1].classList.add("player-cell");
                     } else if (player == 1){
                         cells[cellBeforeFirstEmptyCellOrPlaceHolder.index + 1].classList.add("ia-cell");
@@ -353,7 +353,7 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
 
                         document.body.appendChild(form);
 
-                        eventManager.subscribe('keydown', function(key) {
+                        appUtils.subscribe('keydown', function(key) {
                             if(key == "ENTER"){
                                 form.submit();
                             }
@@ -369,7 +369,7 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
                             }                                          
                         }
                         cells[cellBeforeFirstEmptyCell.index + 1].classList.remove("placeholder");
-                        if(player == 1){
+                        if(player == 1 || player == -1){
                             cells[cellBeforeFirstEmptyCell.index + 1].classList.add("player-cell");
                         } else if (player == 0) {
                             cells[cellBeforeFirstEmptyCell.index + 1].classList.add("ia-cell");
@@ -426,7 +426,7 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
   
                           document.body.appendChild(form);
   
-                          eventManager.subscribe('keydown', function(key) {
+                          appUtils.subscribe('keydown', function(key) {
                               if(key == "ENTER"){
                                   form.submit();
                               }

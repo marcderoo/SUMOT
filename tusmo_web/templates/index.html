@@ -5,12 +5,12 @@
     let score = parseInt("{{ data.score }}");
     let count = parseInt("{{ data.count }}");
 </script>
-<script src="{{ url_for('static', filename='eventManager.js') }}"></script>
+<script src="{{ url_for('static', filename='appUtils.js') }}"></script>
 <script src="{{ url_for('static', filename='confetti.js') }}"></script>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 <script>
     const PLAYERTURN = -1;
-    eventManager.subscribe("keydown", (key) => enterKey(key));
+    appUtils.subscribe("keydown", (key) => enterKey(key));
 </script>
 <div class="home-button-container" onclick='window.location.href="/"'>
     <a class="home-button">

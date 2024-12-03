@@ -5,7 +5,7 @@
     let score = parseInt("{{ data.score }}");
     let count = parseInt("{{ data.count }}");
 </script>
-<script src="{{ url_for('static', filename='eventManager.js') }}"></script>
+<script src="{{ url_for('static', filename='appUtils.js') }}"></script>
 <script src="{{ url_for('static', filename='confetti.js') }}"></script>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 <script>
@@ -19,7 +19,7 @@
         enterKey("ENTER", 1);
     }
 
-    eventManager.subscribe('DOMContentLoaded', () => {
+    appUtils.subscribe('DOMContentLoaded', () => {
         if(PLAYERTURN === 1){
             fetch(`ia`, {
                     method: 'POST',
@@ -54,7 +54,7 @@
         }
     });
 
-    eventManager.subscribe("keydown", (key) => {
+    appUtils.subscribe("keydown", (key) => {
         let cells = Array.from(document.querySelectorAll("div.cell"));
         let cellBeforeFirstEmptyCellIdx = cells.length - 1;
         for (let i = 0; i < cells.length; i++) {
