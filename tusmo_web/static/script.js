@@ -135,10 +135,23 @@ appUtils.subscribe('DOMContentLoaded', () => {
             style.sheet.deleteRule(idx);
         }
 
-        style.sheet.insertRule(`
-        .${class_} {
-            font-size : ${fontSize}px
-        }`, idx);
+        style.sheet.insertRule(
+            `.${class_} {
+                font-size : ${fontSize}px
+            }`
+        , idx);
+
+        if(idx == 2){
+            if(!first){
+                style.sheet.deleteRule(3);
+            }
+
+            style.sheet.insertRule(class_ == "alphabet-cell" ? (
+                `.alphabet-cell.special {
+                    font-size : ${fontSize * 5 / 3}px
+                }`
+            ) : "", 3)
+        }
     };
     const resizeObserver = new ResizeObserver(() => {
         updateFontSize(); // Appelle la mise à jour à chaque changement de taille
@@ -168,6 +181,9 @@ appUtils.subscribe('DOMContentLoaded', () => {
             letterCell.addEventListener("mousedown", () => appUtils.emit('keydown', rawLetter));
             letterCell.addEventListener("mouseleave", () => appUtils.emit('keyup', rawLetter));
             letterCell.addEventListener("mouseup", () => appUtils.emit('keyup', rawLetter));
+            if(rawLetter != letter){
+                letterCell.classList.add('special');
+            }
 
             appUtils.subscribe('keydown', (key) => {
                 if(key == rawLetter){

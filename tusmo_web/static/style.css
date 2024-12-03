@@ -85,12 +85,16 @@ body {
 }
 
 .alphabet-cell:hover {
-  opacity: 0.8; /* Opacité maximale lorsqu'on survole */
   cursor: pointer;
+  filter: brightness(75%); /* Réduit la luminosité à 75% */
 }
 
 .alphabet-cell.clicked {
-  filter: brightness(50%); /* Réduit la luminosité à 50% */
+  outline : 3px solid black;
+}
+
+.alphabet-cell.special {
+  background-color: unset;
 }
 
 /* Style de fond pour le menu */
