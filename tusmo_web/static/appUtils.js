@@ -8,7 +8,9 @@ class AppUtils {
             return AppUtils.instance;
         }
 
+        this.doIfOrWhenEvents = {};
         this.events = {}; // Stockage des événements et de leurs abonnés
+        this.pastEvents = new Set();
         AppUtils.instance = this;
     }
 
@@ -47,6 +49,17 @@ class AppUtils {
         }
     }
 
+    doIfOrWhen(eventName, callback) {
+        if(this.pastEvents.has(eventName)){
+            callback();
+        } else {
+            if (!this.doIfOrWhenEvents[eventName]) {
+                this.doIfOrWhenEvents[eventName] = [];
+            }
+            this.doIfOrWhenEvents[eventName].push(callback);
+        }
+    }
+
     // Méthode pour s'abonner à un événement
     subscribe(eventName, callback) {
         if (!this.events[eventName]) {
@@ -71,9 +84,13 @@ class AppUtils {
 
     // Méthode pour émettre un événement
     emit(eventName, data) {
-        if (!this.events[eventName]) return;
+        this.pastEvents.add(eventName);
 
-        this.events[eventName].forEach((callback) => callback(data));
+        if(this.events[eventName]) this.events[eventName].forEach((callback) => callback(data));
+        if(this.doIfOrWhenEvents[eventName]){
+            this.doIfOrWhenEvents[eventName].forEach((callback) => callback(data));
+            delete this.doIfOrWhenEvents[eventName];
+        } 
     }
 }
 

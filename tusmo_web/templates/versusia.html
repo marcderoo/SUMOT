@@ -12,19 +12,11 @@
     </script>
     <script src="{{ url_for('static', filename='appUtils.js') }}"></script>
     <script>
-        let domLoad = false;
-        appUtils.subscribe("DOMContentLoaded", () => domLoad = true);
-        
         /** Charger le fond d'écran depuis le cache **/
         appUtils.loadObj("/static/wallpaper.jpg", true).then((res) => {
-            if(domLoad){
+            appUtils.doIfOrWhen("DOMContentLoaded", () => {
                 document.body.style.backgroundImage = `url(${res})`;
-            }
-            else {
-                appUtils.subscribe("DOMContentLoaded", () => {
-                    document.body.style.backgroundImage = `url(${res})`;
-                });
-            }
+            });
         })
     </script>
     <script src="{{ url_for('static', filename='confetti.js') }}"></script>
@@ -39,9 +31,6 @@
             }
             enterKey("ENTER", 1);
         }
-
-        let dicoOK = false;
-        appUtils.subscribe("dicoOK", () => dicoOK = true);
 
         appUtils.subscribe('DOMContentLoaded', () => {
             if(PLAYERTURN === 1){
@@ -72,11 +61,7 @@
                         return response.text();
                     })
                     .then(word => {
-                        if(dicoOK){
-                            processKeys(word);
-                        } else {
-                            appUtils.subscribe("dicoOK", () => processKeys(word));
-                        }
+                        appUtils.doIfOrWhen("dicoOK", () => processKeys(word));
                     })
                     .catch(error => {
                         console.error('Erreur lors de la requête:', error);

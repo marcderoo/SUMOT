@@ -12,19 +12,11 @@
     </script>
     <script src="{{ url_for('static', filename='appUtils.js') }}"></script>
     <script>
-        let domLoad = false;
-        appUtils.subscribe("DOMContentLoaded", () => domLoad = true);
-
         /** Charger le fond d'écran depuis le cache **/
         appUtils.loadObj("/static/wallpaper.jpg", true).then((res) => {
-            if(domLoad){
+            appUtils.doIfOrWhen("DOMContentLoaded", () => {
                 document.body.style.backgroundImage = `url(${res})`;
-            }
-            else {
-                appUtils.subscribe("DOMContentLoaded", () => {
-                    document.body.style.backgroundImage = `url(${res})`;
-                });
-            }
+            });
         })
     </script>
     <script src="{{ url_for('static', filename='confetti.js') }}"></script>
