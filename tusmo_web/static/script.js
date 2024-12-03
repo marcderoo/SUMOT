@@ -1,21 +1,3 @@
-//Managing events
-const appUtils = new AppUtils();
-
-document.addEventListener('DOMContentLoaded', () => {
-    appUtils.emit("DOMContentLoaded");
-});
-
-appUtils.subscribe("DOMContentLoaded", () => {
-    document.addEventListener('keydown', (event) => {
-        appUtils.emit("keydown", event.key.toUpperCase());
-    });
-
-    document.addEventListener('keyup', (event) => {
-        appUtils.emit("keyup", event.key.toUpperCase());
-    });
-});
-
-
 const confetti = new Confetti();
 
 const style = document.createElement('style');

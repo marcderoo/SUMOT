@@ -6,6 +6,14 @@
     let count = parseInt("{{ data.count }}");
 </script>
 <script src="{{ url_for('static', filename='appUtils.js') }}"></script>
+<script> 
+    /** Charger le fond d'écran depuis le cache **/
+    appUtils.loadObj("/static/wallpaper.jpg").then((res) => {
+        appUtils.subscribe("DOMContentLoaded", () => {
+            document.body.style.backgroundImage = `url(${res})`;
+        });
+    })
+</script>
 <script src="{{ url_for('static', filename='confetti.js') }}"></script>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 <script>
