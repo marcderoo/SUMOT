@@ -1,3 +1,5 @@
+<link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+<title>SUMOT</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <script>let real_word = "{{ data.word }}";
     let score = parseInt("{{ data.score }}");
@@ -14,7 +16,7 @@
             enterKey(data.charAt(i), 1);
             await new Promise(resolve => setTimeout(resolve, 100)); // Pause de 100 ms entre les appels
         }
-        enterKey("Enter", 1);
+        enterKey("ENTER", 1);
     }
 
     eventManager.subscribe('DOMContentLoaded', () => {
@@ -72,7 +74,7 @@
                 }
             }
 
-            if(key == "Enter" && Math.floor(cellBeforeFirstEmptyCellIdx / NBLETTERS) % 2 !== PLAYERTURN){
+            if(key == "ENTER" && Math.floor(cellBeforeFirstEmptyCellIdx / NBLETTERS) % 2 !== PLAYERTURN){
                 fetch(`ia`, {
                     method: 'POST',
                     headers: {

@@ -89,6 +89,10 @@ body {
   cursor: pointer;
 }
 
+.alphabet-cell.clicked {
+  filter: brightness(50%); /* Réduit la luminosité à 50% */
+}
+
 /* Style de fond pour le menu */
 .menu-background {
   background-color: rgba(0, 0, 30, 0.95);

@@ -7,7 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 eventManager.subscribe("DOMContentLoaded", () => {
     document.addEventListener('keydown', (event) => {
-        eventManager.emit("keydown", event.key);
+        eventManager.emit("keydown", event.key.toUpperCase());
+    });
+
+    document.addEventListener('keyup', (event) => {
+        eventManager.emit("keyup", event.key.toUpperCase());
     });
 });
 
@@ -170,7 +174,7 @@ eventManager.subscribe('DOMContentLoaded', () => {
     const azerty = [
         'AZERTYUIOP',
         'QSDFGHJKLM',
-        'WXCVBN'
+        '⌫WXCVBN✔'
     ];
     let lastCellAlphabet = null;
 
@@ -182,7 +186,25 @@ eventManager.subscribe('DOMContentLoaded', () => {
             const letterCell = document.createElement('div');
             letterCell.classList.add('alphabet-cell');
             letterCell.textContent = letter;
-            letterCell.setAttribute('data-letter', letter);
+            const rawLetter = letter == "✔" ? 'ENTER' : (letter == "⌫" ? 'BACKSPACE' : letter);
+            letterCell.setAttribute('data-letter', rawLetter);
+            letterCell.addEventListener("mousedown", () => eventManager.emit('keydown', rawLetter));
+            letterCell.addEventListener("mouseleave", () => eventManager.emit('keyup', rawLetter));
+            letterCell.addEventListener("mouseup", () => eventManager.emit('keyup', rawLetter));
+
+            eventManager.subscribe('keydown', (key) => {
+                if(key == rawLetter){
+                    letterCell.classList.add('clicked');
+                    setTimeout(() => eventManager.emit('keyup', key), 500);
+                }
+            })
+
+            eventManager.subscribe('keyup', (key) => {
+                if(key == rawLetter){
+                    letterCell.classList.remove('clicked');
+                }
+            })
+
             rowContainer.appendChild(letterCell);
             lastCellAlphabet = letterCell;
         });
@@ -233,7 +255,7 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
                     confirmed = false;
                 }
             }
-        } else if (key == "Backspace"){
+        } else if (key == "BACKSPACE"){
             if (cellBeforeFirstEmptyCellOrPlaceHolder && cellBeforeFirstEmptyCellOrPlaceHolder.index % NBLETTERS !== 0) {
                 if(validLetters[cellBeforeFirstEmptyCellOrPlaceHolder.index % NBLETTERS]){
                     cells[cellBeforeFirstEmptyCellOrPlaceHolder.index].innerHTML = validLetters[cellBeforeFirstEmptyCellOrPlaceHolder.index % NBLETTERS];
@@ -245,7 +267,7 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
                 cells[cellBeforeFirstEmptyCellOrPlaceHolder.index].classList.remove("player-cell");
                 cells[cellBeforeFirstEmptyCellOrPlaceHolder.index].classList.remove("ia-cell");
             }
-        } else if (key == "Enter"){
+        } else if (key == "ENTER"){
             if ((cellBeforeFirstEmptyCell.index + 1) % NBLETTERS === 0) {
                 const word = cells.slice(cellBeforeFirstEmptyCell.index + 1 - NBLETTERS, cellBeforeFirstEmptyCell.index + 1).map(cell => cell.innerHTML).join("");
                 if(dico.includes(word.toLowerCase())){
@@ -331,8 +353,8 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
 
                         document.body.appendChild(form);
 
-                        dialog.addEventListener('keydown', function(event) {
-                            if(event.key == "Enter"){
+                        eventManager.subscribe('keydown', function(key) {
+                            if(key == "ENTER"){
                                 form.submit();
                             }
                         })
@@ -404,8 +426,8 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
   
                           document.body.appendChild(form);
   
-                          dialog.addEventListener('keydown', function(event) {
-                              if(event.key == "Enter"){
+                          eventManager.subscribe('keydown', function(key) {
+                              if(key == "ENTER"){
                                   form.submit();
                               }
                           })                        
