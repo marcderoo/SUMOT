@@ -220,18 +220,15 @@ body {
 
 
 dialog {
-  display: -webkit-flex; /* Préfixe pour Safari mobile */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 9999;
-  background: white;
-  padding: 1rem;
+  padding: 30px;
+  background: linear-gradient(to bottom, #FFF, #F4F4F4) #FFF;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  transform-origin: 50% 50%;
+  animation: dialog 300ms cubic-bezier(.3,0,.1,1.4) forwards 1;
+  will-change: transform, opacity;
+  border: none !important;
   border-radius: 10px;
 }
 
