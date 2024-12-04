@@ -30,11 +30,13 @@ body {
 /* Style des cellules */
 .cell {
   background-color: #f0f0f0; /* Couleur des cellules */
+  display: -webkit-flex; /* Préfixe pour Safari mobile */
   display: flex; /* Centrer le contenu */
   justify-content: center;
   align-items: center;
   border-radius: 10%;
   aspect-ratio: 1;
+  -webkit-aspect-ratio: 1;
   font-weight: bold;
 }
 
@@ -49,6 +51,7 @@ body {
 
 /* Conteneur pour l'alphabet */
 .alphabet-container {
+  display: -webkit-flex; /* Préfixe pour Safari mobile */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -67,19 +70,22 @@ body {
 }
 
 .alphabet-row {
-  display: flex;
+  display: -webkit-flex; /* Préfixe pour Safari mobile */
+  display: flex; /* Standard pour les navigateurs modernes */
   justify-content: center;
   gap: 0.5rem;
   height: 100%;
 }
 
 .alphabet-cell {
+  display: -webkit-flex; /* Préfixe pour Safari mobile */
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: #f0f0f0;
   border-radius: 10%;
   aspect-ratio: 1;
+  -webkit-aspect-ratio: 1;
   height: 100%;
   font-weight: bold;
 }
@@ -103,6 +109,7 @@ body {
 .menu-background {
   background-color: rgba(0, 0, 30, 0.95);
   color: #f0f0f0;
+  display: -webkit-flex; /* Préfixe pour Safari mobile */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -154,6 +161,7 @@ body {
 
 /* Conteneur des boutons */
 .button-container {
+  display: -webkit-flex; /* Préfixe pour Safari mobile */
   display: flex;
   flex-direction: column;
   gap: 1.5em;
@@ -212,17 +220,23 @@ body {
 
 
 dialog {
+  display: -webkit-flex; /* Préfixe pour Safari mobile */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   position: fixed;
-  padding: 30px;
-  background: linear-gradient(to bottom, #FFF, #F4F4F4) #FFF;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-  text-align: center;
-  transform-origin: 50% 50%;
-  animation: dialog 300ms cubic-bezier(.3,0,.1,1.4) forwards 1;
-  will-change: transform, opacity;
-  border: none !important;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  background: white;
+  padding: 1rem;
   border-radius: 10px;
-  max-width: 60%;
+}
+
+dialog:not([open]) {
+  display: none; /* Assure la compatibilité si Safari ne supporte pas <dialog> */
 }
 
 dialog:focus-visible {
@@ -345,19 +359,18 @@ dialog::backdrop {
 }
 
 @keyframes blinking {
-  0% {
-    border-color: deepskyblue; /* Couleur initiale */
-  }
-  50% {
-    border-color: transparent; /* Rendre la bordure invisible */
-  }
-  100% {
-    border-color: deepskyblue; /* Retour à la couleur initiale */
-  }
+  0%, 100% { border-color: deepskyblue; }
+  50% { border-color: transparent; }
+}
+
+@-webkit-keyframes blinking {
+  0%, 100% { border-color: deepskyblue; }
+  50% { border-color: transparent; }
 }
 
 .ia-cell-blinking {
-  animation: blinking 2s infinite; /* Animation qui boucle infiniment */
+  animation: blinking 2s infinite;
+  -webkit-animation: blinking 2s infinite;
 }
 
 .valid {
