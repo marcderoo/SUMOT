@@ -9,6 +9,14 @@ class AppUtils {
         }
         AppUtils.instance = this;
 
+        this.isMobileDevice = navigator.userAgent.match(/iPhone/i)
+        || navigator.userAgent.match(/webOS/i)
+        || navigator.userAgent.match(/Android/i)
+        || navigator.userAgent.match(/iPad/i)
+        || navigator.userAgent.match(/iPod/i)
+        || navigator.userAgent.match(/BlackBerry/i)
+        || navigator.userAgent.match(/Windows Phone/i);
+
         this.style = document.createElement('style');
         document.head.appendChild(this.style);
         this.idsRules = [];
@@ -158,6 +166,6 @@ window.addEventListener('resize', (event) => {
 /**Set Font Size*/
 appUtils.linkRuleTo("HTMLFontSize", 'windowResize', () => 
     `html {
-        font-size : ${0.02 *  window.innerHeight}px;
+        font-size : ${(appUtils.isMobileDevice ? 0.03 : 0.02) *  Math.min(window.innerHeight, window.innerWidth)}px;
     }`
 );
