@@ -7,11 +7,16 @@ class AppUtils {
         if (AppUtils.instance) {
             return AppUtils.instance;
         }
+        AppUtils.instance = this;
+
+        this.style = document.createElement('style');
+        document.head.appendChild(this.style);
+        this.idsRules = [];
+        this.idsRulesFunc = {};
 
         this.doIfOrWhenEvents = {};
         this.events = {}; // Stockage des événements et de leurs abonnés
         this.pastEvents = new Set();
-        AppUtils.instance = this;
     }
 
     // Charge des fichiers en utilisant le cache
@@ -47,6 +52,40 @@ class AppUtils {
                 return res;
             }
         }
+    }
+
+    addRule(id, rule) {
+        let idx = this.idsRules.indexOf(id);
+        if(idx >= 0){
+            this.style.sheet.deleteRule(idx);
+        } else {
+            idx = this.idsRules.length;
+            this.idsRules.push(id);
+        }
+        this.style.sheet.insertRule(rule, idx);
+    }
+
+    removeRule(id) {
+        let idx = this.idsRules.indexOf(id);
+        if(idx >= 0){
+            this.style.sheet.deleteRule(idx);
+            this.idsRules.splice(idx, 1);
+        }
+
+        if(this.idsRulesFunc[id]){
+            this.unsubscribe(this.idsRulesFunc[id]["eventName"], this.idsRulesFunc[id]["callback"]);
+            delete this.idsRulesFunc[id];
+        }
+    }
+
+    linkRuleTo(id, eventName, func){
+        this.addRule(id, func());
+        
+        const callback = () => {
+            this.addRule(id, func());
+        }
+        this.subscribe(eventName, callback);
+        this.idsRulesFunc[id] = {"eventName" : eventName, "callback" : callback};
     }
 
     doIfOrWhen(eventName, callback) {
@@ -111,3 +150,14 @@ appUtils.subscribe("DOMContentLoaded", () => {
         appUtils.emit("keyup", event.key.toUpperCase());
     });
 });
+
+window.addEventListener('resize', (event) => {
+    appUtils.emit("windowResize", event);
+});
+
+/**Set Font Size*/
+appUtils.linkRuleTo("HTMLFontSize", 'windowResize', () => 
+    `html {
+        font-size : ${0.02 *  window.innerHeight}px;
+    }`
+);

@@ -1,8 +1,5 @@
 const confetti = new Confetti();
 
-const style = document.createElement('style');
-document.head.appendChild(style);
-
 let NBLETTERS = real_word.length;
 const NBTRY = 6;
 let FIRSTLETTER = real_word[0];
@@ -96,26 +93,13 @@ function verify(written_word){
 }
 
 appUtils.subscribe('DOMContentLoaded', () => {
-    // Ajouter des règles CSS à l'élément <style>
-    style.sheet.insertRule(`
-        html {
-            font-size : ${0.02 *  window.innerHeight}px;
-        }`, 0);
-
-    window.addEventListener('resize', () => {
-        style.sheet.deleteRule(0);
-        style.sheet.insertRule(`
-            html {
-                font-size : ${0.02 *  window.innerHeight}px;
-            }`, 0);
-    });
-
-    style.sheet.insertRule(`
-        .grid-container {
+    appUtils.addRule("setGridSize", 
+        `.grid-container {
             grid-template-columns: repeat(${NBLETTERS}, 1fr); /* 7 colonnes égales */
             grid-template-rows: repeat(${NBTRY}, 1fr);   /* 6 lignes égales */
             height: min(100%, calc(${NBTRY / NBLETTERS} * (100vw - 20px))); /* Occupe la hauteur définie par la grille (ou moins si la largeur dépasse)*/
-        }`, 1);
+        }`
+    );
 
     // Sélection du conteneur de la grille
     const container = document.querySelector('.grid-container');
@@ -138,41 +122,21 @@ appUtils.subscribe('DOMContentLoaded', () => {
       lastCell = cell;
     }
 
-    const updateFontSize = (first = false, cell = lastCell, grid = true) => {
-        const cellWidth = cell.offsetWidth; // Largeur du conteneur
-        const fontSize = cellWidth * 3 / 8; // 50% de la largeur du conteneur
+    appUtils.linkRuleTo("UpdateCellsFontBorder", "cellResize", () => {
+        const cellWidth = lastCell.offsetWidth; // Largeur du conteneur
+        const fontSize = cellWidth * 3 / 8;
         const borderWidth = cellWidth * 1 / 20;
-        const idx = grid ? 2 : 3;
-        const class_ = grid ? "cell" : "alphabet-cell";
 
-        if(!first){
-            style.sheet.deleteRule(idx);
-        }
-
-        style.sheet.insertRule(
-            `.${class_} {
-                font-size : ${fontSize}px;
-                ${idx == 2 ? "border" : "outline"}-width: ${borderWidth}px;
-            }`
-        , idx);
-
-        if(idx == 3){
-            if(!first){
-                style.sheet.deleteRule(4);
-            }
-
-            style.sheet.insertRule(class_ == "alphabet-cell" ? (
-                `.alphabet-cell.special {
-                    font-size : ${fontSize * 5 / 3}px
-                }`
-            ) : "", 4)
-        }
-    };
-    const resizeObserver = new ResizeObserver(() => {
-        updateFontSize(); // Appelle la mise à jour à chaque changement de taille
+        return `.cell {
+            font-size : ${fontSize}px;
+            border-width: ${borderWidth}px;
+        }`
     });
-    resizeObserver.observe(lastCell);
-    updateFontSize(true);
+
+    const resizeObserverCell = new ResizeObserver(() => {
+        appUtils.emit("cellResize");
+    });
+    resizeObserverCell.observe(lastCell);
 
     // Génération des lettres de l'alphabet
     const alphabetContainer = document.querySelector('.alphabet-grid');
@@ -220,11 +184,30 @@ appUtils.subscribe('DOMContentLoaded', () => {
         alphabetContainer.appendChild(rowContainer);
     });
 
-    const resizeObserverAlphabet = new ResizeObserver(() => {
-        updateFontSize(false, lastCellAlphabet, false); // Appelle la mise à jour à chaque changement de taille
+    appUtils.linkRuleTo("UpdateAlphabetCellsFontOutline", "alphabetCellResize", () => {
+        const cellWidth = lastCellAlphabet.offsetWidth; // Largeur du conteneur
+        const fontSize = cellWidth * 3 / 8; 
+        const outlineWidth = cellWidth * 1 / 20;
+
+        return `.alphabet-cell {
+            font-size : ${fontSize}px;
+            outline-width: ${outlineWidth}px;
+        }`
     });
-    resizeObserverAlphabet.observe(lastCellAlphabet);
-    updateFontSize(true, lastCellAlphabet, false);
+
+    appUtils.linkRuleTo("UpdateAlphabetCellsSpecialFont", "alphabetCellResize", () => {
+        const cellWidth = lastCellAlphabet.offsetWidth; // Largeur du conteneur
+        const fontSize = cellWidth * 5 / 8;
+
+        return `.alphabet-cell.special {
+            font-size : ${fontSize}px
+        }`
+    });
+
+    const resizeObserverAlphabetCell = new ResizeObserver(() => {
+        appUtils.emit("alphabetCellResize");
+    });
+    resizeObserverAlphabetCell.observe(lastCellAlphabet);
 });
 
 const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
