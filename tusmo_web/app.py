@@ -102,32 +102,34 @@ def bot_proposition_difficile(difficulte):
             }
         data["validLetters"] : contient les lettres valides et leur position
     """
+    difficulte = int(difficulte)
     data = request.get_json()
     words = [word.upper() for word in dico if len(word) == data["len"] and word[0].upper() == data["firstLetter"]]
 
     filtred = []
     for word in words:
-        countLetters = {}
-        goToNext = False
-        for letter in word:
-            if letter in countLetters:
-                countLetters[letter] += 1
-            else:
-                countLetters[letter] = 1
-            if letter in data["stateLetters"] and countLetters[letter] > data["stateLetters"][letter]["count"] and data["stateLetters"][letter]["notMore"]:
-                goToNext = True
-                break
-        if goToNext:
-            continue
+        if difficulte > 0:
+            countLetters = {}
+            goToNext = False
+            for letter in word:
+                if letter in countLetters:
+                    countLetters[letter] += 1
+                else:
+                    countLetters[letter] = 1
+                if letter in data["stateLetters"] and countLetters[letter] > data["stateLetters"][letter]["count"] and data["stateLetters"][letter]["notMore"]:
+                    goToNext = True
+                    break
+            if goToNext:
+                continue
 
-        for letter in data["stateLetters"].keys():
-            if (letter not in countLetters and data["stateLetters"][letter]["count"] > 0) or (letter in countLetters and data["stateLetters"][letter]["count"] > countLetters[letter]):
-                goToNext = True
-        if goToNext:
-            continue
+            for letter in data["stateLetters"].keys():
+                if (letter not in countLetters and data["stateLetters"][letter]["count"] > 0) or (letter in countLetters and data["stateLetters"][letter]["count"] > countLetters[letter]):
+                    goToNext = True
+            if goToNext:
+                continue
 
         for i in range(data["len"]):
-            if word[i] in data["stateLetters"] and i in data["stateLetters"][word[i]]["posGood"]:
+            if difficulte > 0 and word[i] in data["stateLetters"] and i in data["stateLetters"][word[i]]["posGood"]:
                 break
 
             if data["validLetters"][i]:
