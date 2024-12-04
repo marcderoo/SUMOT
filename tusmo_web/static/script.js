@@ -1,3 +1,14 @@
+/**Empecher le zoom par double tap sur iphone */
+let lastTouchEnd = 0;
+
+document.addEventListener('touchend', (event) => {
+    const now = new Date().getTime();
+    if (now - lastTouchEnd <= 300) {
+        event.preventDefault(); // Empêche le zoom par double tap
+    }
+    lastTouchEnd = now;
+});
+
 const confetti = new Confetti();
 
 let NBLETTERS = real_word.length;
