@@ -62,6 +62,20 @@ class AppUtils {
         }
     }
 
+    loadKey(key, default_ = null) {
+        let val = localStorage.getItem(key);
+        if(val){
+            return val;
+        } else {
+            localStorage.setItem(key, default_);
+            return default_;
+        }
+    }
+
+    updateKey(key, val) {
+        localStorage.setItem(key, val);
+    } 
+
     addRule(id, rule) {
         let idx = this.idsRules.indexOf(id);
         if(idx >= 0){

@@ -23,6 +23,7 @@
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script>
         const PLAYERTURN = Math.floor(Math.random() * 2);
+        let difficultyVal = parseInt(appUtils.loadKey("difficulty", 3));
 
         async function processKeys(data) {
             for (let i = 0; i < data.length; i++) {
@@ -33,8 +34,43 @@
         }
 
         appUtils.subscribe('DOMContentLoaded', () => {
+            /** Manage difficulty */
+            const difficultyBtn = document.querySelector("button.btn-difficulty");
+            appUtils.subscribe("changeDifficulty", (difficulty) => {
+                switch (difficulty) {
+                    case 0:
+                        difficultyBtn.classList.remove("middle", "hard", "expert");
+                        difficultyBtn.classList.add("easy");
+                        difficultyBtn.innerHTML = "Facile 😊";
+                        break;
+                    case 1:
+                        difficultyBtn.classList.remove("easy", "hard", "expert");
+                        difficultyBtn.classList.add("middle");
+                        difficultyBtn.innerHTML = "Moyen 😐";
+                        break;
+                    case 2:
+                        difficultyBtn.classList.remove("easy", "middle", "expert");
+                        difficultyBtn.classList.add("hard");
+                        difficultyBtn.innerHTML = "Difficile 😥";
+                        break;
+                    case 3:
+                        difficultyBtn.classList.remove("easy", "middle", "hard");
+                        difficultyBtn.classList.add("expert");
+                        difficultyBtn.innerHTML = "Expert 😈";
+                        break;
+                }
+            });
+
+            difficultyBtn.addEventListener("click", () => {
+                difficultyVal = (difficultyVal + 1) % 4;
+                appUtils.updateKey("difficulty", difficultyVal);
+                appUtils.emit("changeDifficulty", difficultyVal);
+            });
+            appUtils.emit("changeDifficulty", difficultyVal);
+
+            /** Play game */
             if(PLAYERTURN === 1){
-                fetch(`ia`, {
+                fetch(`ia/${difficultyVal}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -90,7 +126,7 @@
                 }
 
                 if(key == "ENTER" && Math.floor(cellBeforeFirstEmptyCellIdx / NBLETTERS) % 2 !== PLAYERTURN){
-                    fetch(`ia`, {
+                    fetch(`ia/${difficultyVal}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
@@ -141,6 +177,7 @@
             left: 0.14em;
         "></span>
     </a>
+    <button class="btn-difficulty"></button>
     <div class="game-info">
         <span id="word-number">Mot {{ data.count }}</span> - <span id="score">Score : {{ data.score }}</span>
     </div>

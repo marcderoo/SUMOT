@@ -85,8 +85,8 @@ def get_def(mot):
 def somme_frequences(mot):
     return sum(frequences_lettres.get(lettre, 0) for lettre in mot)
 
-@app.route('/ia', methods=['POST'])
-def bot_proposition_difficile():
+@app.route('/ia/<difficulte>', methods=['POST'])
+def bot_proposition_difficile(difficulte):
     """
         Le bot utilise toutes les couleurs pour filtrer les mots possibles, sans gestion de lettres consommées.
         data["len"] : longueur du mot
@@ -137,9 +137,11 @@ def bot_proposition_difficile():
             if i == data["len"] - 1:
                 filtred.append(word)
 
-    #if difficulte == 4:
-    mots_uniques = [mot for mot in filtred if len(set(mot)) == len(mot)]
-    filtred = max(mots_uniques or filtred , key=somme_frequences)
+    if difficulte == 3:
+        mots_uniques = [mot for mot in filtred if len(set(mot)) == len(mot)]
+        filtred = max(mots_uniques or filtred , key=somme_frequences)
+    else:
+        filtred = random.choice(filtred)
 
     return filtred
 

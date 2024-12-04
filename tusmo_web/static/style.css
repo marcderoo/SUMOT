@@ -389,3 +389,45 @@ dialog::backdrop {
 .alphabet-cell.unvalid {
   color: gray;
 }
+
+.btn-difficulty {
+  font-size: 1rem;
+  padding: 0.5em 1em;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  border-radius: 1em;
+  right: calc(1vw + 10px);
+  position: absolute;
+  top: calc(1vh + 10px - 0.25em);
+  color: white;
+}
+
+.btn-difficulty:hover {
+  animation: infinite 1s infinite;
+}
+
+.btn-difficulty.easy {
+  background-color: #4caf50;
+}
+
+.btn-difficulty.middle {
+  background-color: #ffc107;
+}
+
+.btn-difficulty.hard {
+  background-color: #ff8c42;
+}
+
+.btn-difficulty.expert {
+  background-color: #f44336;
+}
+
+@keyframes infinite {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
