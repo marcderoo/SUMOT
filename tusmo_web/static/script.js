@@ -171,10 +171,6 @@ appUtils.subscribe('DOMContentLoaded', () => {
             letterCell.addEventListener("mousedown", () => appUtils.emit('keydown', rawLetter));
             letterCell.addEventListener("mouseleave", () => appUtils.emit('keyup', rawLetter));
             letterCell.addEventListener("mouseup", () => appUtils.emit('keyup', rawLetter));
-            letterCell.addEventListener("touchstart", () => appUtils.emit('keydown', rawLetter));
-            letterCell.addEventListener("touchend", () => appUtils.emit('keyup', rawLetter));
-            letterCell.addEventListener("touchmove", () => appUtils.emit('keyup', rawLetter));
-            letterCell.addEventListener("touchcancel", () => appUtils.emit('keyup', rawLetter)); 
             if(rawLetter != letter){
                 letterCell.classList.add('special');
             }
