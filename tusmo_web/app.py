@@ -117,7 +117,7 @@ def bot_proposition_difficile(difficulte):
                     countLetters[letter] += 1
                 else:
                     countLetters[letter] = 1
-                if letter in data["stateLetters"] and countLetters[letter] > data["stateLetters"][letter]["count"] and data["stateLetters"][letter]["notMore"]:
+                if difficulte > 1 and letter in data["stateLetters"] and countLetters[letter] > data["stateLetters"][letter]["count"] and data["stateLetters"][letter]["notMore"]:
                     goToNext = True
                     break
             if goToNext:
