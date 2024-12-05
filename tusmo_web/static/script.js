@@ -1,3 +1,10 @@
+/** Importer le logo des nouilles */
+appUtils.loadObj("/static/noodles.png", true).then((res) => {
+    appUtils.doIfOrWhen("DOMContentLoaded", () => {
+        document.querySelector('img.noodles').src = res;
+    });
+})
+
 /**Empecher le zoom par double tap sur iphone */
 let lastTouchEnd = 0;
 

@@ -46,8 +46,9 @@ body {
   text-align: center;
 }
 
-
-
+img.noodles {
+  height: 1.5em;
+}
 
 /* Conteneur pour l'alphabet */
 .alphabet-container {

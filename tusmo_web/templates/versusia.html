@@ -35,7 +35,7 @@
 
             for (let i = 0; i < data.length; i++) {
                 enterKey(data.charAt(i), 1);
-                await new Promise(resolve => setTimeout(resolve, norm(i))); // Pause de norm(i) ms entre les appels
+                if(i !== data.length - 1) await new Promise(resolve => setTimeout(resolve, norm(i))); // Pause de norm(i) ms entre les appels
             }
             enterKey("ENTER", 1);
         }
@@ -189,6 +189,7 @@
     <div class="btn-difficulty"></div>
     <div class="game-info">
         <span id="word-number">Mot {{ data.count }}</span> - <span id="score">Score : {{ data.score }}</span>
+        <img class="noodles">
     </div>
     <div class="grid-container"></div>
     <div class="alphabet-container">
