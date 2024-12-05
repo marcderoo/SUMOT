@@ -21,6 +21,7 @@ let confirmed = false;
 let end = false;
 let validLetters = [];
 let stateLetters = {};
+let history = [];
 
 const anecdotes = [
     '"Motus" a été créé par Thierry Beccaro, le célèbre animateur français. L’émission a été lancée en 1990 et a rencontré un grand succès grâce à son concept à la fois simple et stimulant. L’émission a duré plusieurs années, avec des saisons ponctuées de rebondissements et de surprises.',
@@ -273,6 +274,7 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
             if ((cellBeforeFirstEmptyCell.index + 1) % NBLETTERS === 0) {
                 const word = cells.slice(cellBeforeFirstEmptyCell.index + 1 - NBLETTERS, cellBeforeFirstEmptyCell.index + 1).map(cell => cell.innerHTML).join("");
                 if(dico.includes(word.toLowerCase())){
+                  history.push(word.toLowerCase());
                   const res = verify(word);
                   let resLettersCount = {};
                   for(let i = 0; i < res.length; i++){

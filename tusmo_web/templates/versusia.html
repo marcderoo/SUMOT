@@ -26,16 +26,23 @@
         let difficultyVal = parseInt(appUtils.loadKey("difficulty", 3));
 
         async function processKeys(data) {
+            const range = 300;
+            const min = 50;
+
+            const func = (x) => (x + 1) * (x - data.length);
+
+            const norm = (i) => min + range / (func(0) - func(Math.floor(data.length / 2))) * (func(i) - func(Math.floor(data.length / 2)));
+
             for (let i = 0; i < data.length; i++) {
                 enterKey(data.charAt(i), 1);
-                await new Promise(resolve => setTimeout(resolve, 100)); // Pause de 100 ms entre les appels
+                await new Promise(resolve => setTimeout(resolve, norm(i))); // Pause de norm(i) ms entre les appels
             }
             enterKey("ENTER", 1);
         }
 
         appUtils.subscribe('DOMContentLoaded', () => {
             /** Manage difficulty */
-            const difficultyBtn = document.querySelector("button.btn-difficulty");
+            const difficultyBtn = document.querySelector("div.btn-difficulty");
             appUtils.subscribe("changeDifficulty", (difficulty) => {
                 switch (difficulty) {
                     case 0:
@@ -87,7 +94,8 @@
                                 };
                                 return acc;
                                 }, {}
-                            )
+                            ),
+                            history : history
                         })
                     })
                     .then(response => {
@@ -143,7 +151,8 @@
                                 };
                                 return acc;
                                 }, {}
-                            )
+                            ),
+                            history : history
                         })
                     })
                     .then(response => {
@@ -177,7 +186,7 @@
             left: 0.14em;
         "></span>
     </a>
-    <button class="btn-difficulty"></button>
+    <div class="btn-difficulty"></div>
     <div class="game-info">
         <span id="word-number">Mot {{ data.count }}</span> - <span id="score">Score : {{ data.score }}</span>
     </div>

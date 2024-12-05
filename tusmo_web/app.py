@@ -101,10 +101,11 @@ def bot_proposition_difficile(difficulte):
                 }
             }
         data["validLetters"] : contient les lettres valides et leur position
+        data["history"] : contient les derniers mots testés
     """
     difficulte = int(difficulte)
     data = request.get_json()
-    words = [word.upper() for word in dico if len(word) == data["len"] and word[0].upper() == data["firstLetter"]]
+    words = [word.upper() for word in dico if len(word) == data["len"] and word[0].upper() == data["firstLetter"] and word not in data["history"]]
 
     filtred = []
     for word in words:
