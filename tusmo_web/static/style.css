@@ -396,9 +396,7 @@ dialog::backdrop {
   padding: 0.5em 1em;
   border: none;
   cursor: pointer;
-  border-radius: 5px;
   transition: all 0.3s ease;
-  position: relative;
   overflow: hidden;
   border-radius: 1em;
   right: calc(1vw + 10px);
@@ -431,4 +429,18 @@ dialog::backdrop {
   0% { transform: scale(1); }
   50% { transform: scale(1.1); }
   100% { transform: scale(1); }
+}
+
+.help-container {
+  background-color: #f44336;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  border-radius: 1em;
+  right: calc(1vw + 10px);
+  position: absolute;
+  color: white;
+  width: 5em;
 }

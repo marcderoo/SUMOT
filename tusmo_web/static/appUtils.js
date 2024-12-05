@@ -163,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
     appUtils.emit("DOMContentLoaded");
 });
 
-appUtils.subscribe("DOMContentLoaded", () => {
+appUtils.doIfOrWhen("DOMContentLoaded", () => {
     document.addEventListener('keydown', (event) => {
         appUtils.emit("keydown", event.key.toUpperCase());
     });
@@ -183,3 +183,15 @@ appUtils.linkRuleTo("HTMLFontSize", 'windowResize', () =>
         font-size : ${(appUtils.isMobileDevice ? 0.03 : 0.02) *  Math.min(window.innerHeight, window.innerWidth)}px;
     }`
 );
+
+/** Manage Body Height */
+appUtils.doIfOrWhen("DOMContentLoaded", () => {
+    // Récupération des styles calculés
+    const computedStyle = getComputedStyle(document.body);
+
+    appUtils.addRule("ManageBodyHeight", `
+        body {
+            height : calc(100% - 1.5rem -${computedStyle.marginTop + computedStyle.marginBottom}px);
+        }
+    `)
+})

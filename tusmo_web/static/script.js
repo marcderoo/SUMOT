@@ -20,6 +20,8 @@ const confetti = new Confetti();
 
 let NBLETTERS = real_word.length;
 const NBTRY = 6;
+const GRIDGAP = 0.5;
+const MAXLETTERS = 9;
 let FIRSTLETTER = real_word[0];
 
 let dico = [];
@@ -141,6 +143,7 @@ appUtils.subscribe('DOMContentLoaded', () => {
       lastCell = cell;
     }
 
+    /** Manage font and border size for cell */
     appUtils.linkRuleTo("UpdateCellsFontBorder", "cellResize", () => {
         const cellWidth = lastCell.offsetWidth; // Largeur du conteneur
         const fontSize = cellWidth * 3 / 8;
@@ -151,6 +154,36 @@ appUtils.subscribe('DOMContentLoaded', () => {
             border-width: ${borderWidth}px;
         }`
     });
+
+    /** Manage help container height */
+    appUtils.linkRuleTo("UpdateHelpContainerHeight", "cellResize", () => {
+        // Récupère la position de l'élément
+        const rect = container.getBoundingClientRect();
+
+        return `.help-container {
+            top : ${rect.top}px;
+            height : ${rect.bottom - rect.top}px;
+        }`
+    });
+
+    appUtils.linkRuleTo("MediaQueriesHelpContainer", "cellResize", () => {
+        // Récupère la position de l'élément
+        console.log(document.body.offsetWidth);
+
+        return `@media (max-width: calc(${lastCell.offsetWidth * MAXLETTERS}px + ${GRIDGAP * MAXLETTERS}rem - 2vw + 20px + 6vw + 10em)) {
+            body {
+              grid-template-rows: 1.5rem 3fr 1fr 5rem;
+            }
+
+            .help-container {
+                position : relative !important;
+                height : 5rem !important;
+                top : 0 !important;
+                right : 0 !important;
+                width : 100% !important;
+            }
+        }`
+    })
 
     const resizeObserverCell = new ResizeObserver(() => {
         appUtils.emit("cellResize");
