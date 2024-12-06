@@ -268,7 +268,7 @@ dialog::backdrop {
 .next-button {
   position: absolute;
   border: 1px solid black;
-  width: 120px;
+  width: 7rem;
   left: 50%;
   transform: translateX(-50%);
   background: #f0f0f0;
