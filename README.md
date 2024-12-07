@@ -17,7 +17,7 @@ On trouvera ci-dessous la liste des tâches à effectuer avant la prochaine réu
 - IA ultime (MAX) ✅
 \ 
 - Tests unitaires python (MERYEM)
-- Typing (MERYEM)
+- Typing (MERYEM)✅
 \
 - Aide de l'IA en mode solo (ARNAUD)
 - Shop 
