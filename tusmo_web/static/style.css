@@ -1,6 +1,7 @@
 /* Style de la grille du jeu */
 html {
   height: 100%;
+  overflow: hidden;
 }
 
 body {
