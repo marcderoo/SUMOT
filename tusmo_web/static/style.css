@@ -460,6 +460,7 @@ dialog::backdrop {
   overflow: visible;
 }
 
+/* Tooltip text */
 .help-button {
   align-content: center;
   width: 5rem;
@@ -472,9 +473,7 @@ dialog::backdrop {
   position: relative;
 }
 
-/* Tooltip text */
-.help-button::after {
-  content: attr(data-tooltip);
+.tooltip {
   visibility: hidden;
   opacity: 0;
   width: max-content;
@@ -493,10 +492,14 @@ dialog::backdrop {
   max-width : 100%;
 }
 
-/* Show the tooltip text on hover */
-.help-button:hover::after {
+.help-button:hover .tooltip {
   visibility: visible;
-  opacity:1;
+  opacity: 1;
+}
+
+.tooltip-score {
+  display: inline-block;
+  font-weight: bolder;
 }
 
 .unclickable {
@@ -537,7 +540,8 @@ dialog::backdrop {
       grid-template-columns: 1fr 1fr 1fr;
   }
 
-  .help-button::after  {
+  .tooltip  {
       max-width : unset;
+      padding-top: 0;
   }
 }

@@ -51,9 +51,21 @@
         <div class="alphabet-grid"></div>
     </div>
     <div class="help-container">
-        <div onclick="appUtils.emit('helpIA')" style="font-size: 3rem;" class="help-button" data-tooltip="Aide de l'IA" id="helpIA">🧠</div>
-        <div onclick="appUtils.emit('helpLetterBP')" style="background-color: #4caf50;" class="help-button" data-tooltip="Lettre bien placé" id="helpLetterBP">S</div>
-        <div onclick="appUtils.emit('helpLetterM')" style="background-color: lightgray; color: grey;" class="help-button" data-tooltip="Lettre mal placé" id="helpLetterM">S</div>
-    </div>              
+        <div onclick="appUtils.emit('helpIA')" style="font-size: 3rem;" class="help-button" id="helpIA">🧠
+            <div class="tooltip">
+                Aide de l'IA <span class="tooltip-score">100 <img class="noodles"></span>
+            </div>
+        </div>
+        <div onclick="appUtils.emit('helpLetterBP')" style="background-color: #4caf50;" class="help-button" id="helpLetterBP">S
+            <div class="tooltip">
+                Lettre bien placée <span class="tooltip-score">60 <img class="noodles"></span>
+            </div>
+        </div>
+        <div onclick="appUtils.emit('helpLetterM')" style="background-color: lightgray; color: grey;" class="help-button" id="helpLetterM">S
+            <div class="tooltip">
+                Lettre non valide <span class="tooltip-score">30 <img class="noodles"></span>
+            </div>
+        </div>
+    </div>            
 </body>
 </html>

@@ -1,9 +1,19 @@
+/** Use saved score */
+score = Math.max(score, appUtils.loadKey("score", 0));
+appUtils.updateKey("score", score);
+
 /** Importer le logo des nouilles */
 appUtils.loadObj("/static/noodles.png", true).then((res) => {
+    appUtils.subscribe("updateNoodlesImages",  () => {
+        document.querySelectorAll('img.noodles').forEach(elmt =>  {
+            elmt.src = res;
+        })
+    })
+
     appUtils.doIfOrWhen("DOMContentLoaded", () => {
-        document.querySelector('img.noodles').src = res;
+        appUtils.emit("updateNoodlesImages");
     });
-})
+});
 
 /**Empecher le zoom par double tap sur iphone */
 let lastTouchEnd = 0;
@@ -31,6 +41,7 @@ let end = false;
 let validLetters = [];
 let stateLetters = {};
 let history = [];
+let actScore = 200;
 
 const anecdotes = [
     '"Motus" a été créé par Thierry Beccaro, le célèbre animateur français. L’émission a été lancée en 1990 et a rencontré un grand succès grâce à son concept à la fois simple et stimulant. L’émission a duré plusieurs années, avec des saisons ponctuées de rebondissements et de surprises.',
@@ -251,7 +262,7 @@ appUtils.subscribe('DOMContentLoaded', () => {
     resizeObserverAlphabetCell.observe(lastCellAlphabet);
 });
 
-async function processKeys(data, player = 1) {
+async function processKeys(data, player = 1, aiDifficulty  = -1) {
     const range = 300;
     const min = 50;
 
@@ -263,7 +274,7 @@ async function processKeys(data, player = 1) {
     appUtils.subscribe("cancelProcessKey", () => cancel = true);
     
     for (let i = 0; i < data.length; i++) {
-        enterKey("BACKSPACE", player);
+        enterKey("BACKSPACE", player, aiDifficulty);
     }
 
     for (let i = 0; i < data.length; i++) {
@@ -274,7 +285,7 @@ async function processKeys(data, player = 1) {
     if(player === 1) enterKey("ENTER", 1);
 }
 
-const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
+const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 : humain, player 1 : ia
     const cells = Array.from(document.querySelectorAll("div.cell"));
     let cellBeforeFirstEmptyCellOrPlaceHolder = { cell : cells[cells.length - 1], index : cells.length - 1 };
     let cellBeforeFirstEmptyCell = { cell : cells[cells.length - 1], index : cells.length - 1 };
@@ -378,7 +389,8 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
                       
                       count += 1;
                       const attemps = Math.floor(cellBeforeFirstEmptyCell.index / NBLETTERS);
-                      score += (PLAYERTURN === -1 || attemps % 2 === PLAYERTURN) ? 100 - attemps * 10 : 0;
+                      score += (PLAYERTURN === -1 || attemps % 2 === PLAYERTURN) ? actScore : 0;
+                      appUtils.updateKey("score", score);
 
                       const dialog = document.createElement("dialog");
                       dialog.innerHTML = `<h2 style="margin-top: 0px;">Le saviez-vous ?</h2>
@@ -433,6 +445,7 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
                         })
 
                   } else {
+                    actScore -= player == 1 ? (3 - aiDifficulty)   * 10 : 15;
                     if(cellBeforeFirstEmptyCell.index !== cells.length - 1){
                         for(let i = 0; i < res.length; i++){
                             if(validLetters[i]){
@@ -545,6 +558,32 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
 }
 
 /** Help buttons*/
+appUtils.subscribe("updateHelpersScore", () => {
+    if(score  < 100){
+        const elmt = document.getElementById("helpIA");
+        elmt.classList.add("unclickable");
+        elmt.removeAttribute("onclick");
+    }
+    if(score < 60){
+        const elmt = document.getElementById("helpLetterBP");
+        elmt.classList.add("unclickable");
+        elmt.removeAttribute("onclick");
+    }
+    if(score < 30){
+        const elmt = document.getElementById("helpLetterM");
+        elmt.classList.add("unclickable");
+        elmt.removeAttribute("onclick");
+    }
+
+    appUtils.updateKey("score", score);
+    document.getElementById("score").innerHTML = `Score : ${score} <img class="noodles">`;
+    appUtils.emit("updateNoodlesImages");
+});
+
+appUtils.doIfOrWhen("DOMContentLoaded", () => {
+    appUtils.emit("updateHelpersScore");
+})
+
 appUtils.subscribe("helpIA", () => {
     let cells = Array.from(document.querySelectorAll("div.cell"));
     let cellBeforeFirstEmptyCellIdx = cells.length - 1;
@@ -586,6 +625,8 @@ appUtils.subscribe("helpIA", () => {
             return response.text();
         })
         .then(word => {
+            score -= 100;
+            appUtils.emit("updateHelpersScore");
             processKeys(word, 0);
         })
         .catch(error => {
@@ -637,6 +678,9 @@ appUtils.subscribe("helpLetterBP", () => { //Lettre bonne et bien placé
         const alphabetLetter = document.querySelector(`div.alphabet-cell[data-letter="${real_word[idx]}"`);
         alphabetLetter.classList.remove("good");
         alphabetLetter.classList.add("valid");
+
+        score -= 60;
+        appUtils.emit("updateHelpersScore");
     }
 })
 
@@ -659,4 +703,7 @@ appUtils.subscribe("helpLetterM", () => { // Lettre mauvaise
     
     const alphabetLetter = document.querySelector(`div.alphabet-cell[data-letter="${choosenLetter}"`);
     alphabetLetter.classList.add("unvalid");
+
+    score -= 30;
+    appUtils.emit("updateHelpersScore");
 })
