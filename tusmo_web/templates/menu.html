@@ -1,13 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SUMOT</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
     <script src="{{ url_for('static', filename='appUtils.js') }}"></script>
-    <script>        
+    <script>
         /** Charger le fond d'écran depuis le cache **/
         appUtils.loadObj("/static/wallpaper.jpg", true).then((res) => {
             appUtils.doIfOrWhen("DOMContentLoaded", () => {
@@ -15,6 +11,10 @@
             });
         })
     </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUMOT</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
 </head>
 <body class="menu-background">
     <div class="menu-container">
@@ -23,9 +23,9 @@
           </h1>
           
         <div class="button-container">
-            <button class="menu-button" onclick="window.location.href='/solo'">Solo</button>
-            <button class="menu-button" onclick="window.location.href='/versus_ia'">Versus IA</button>
-            <button class="menu-button" onclick="window.location.href='/regles'">Règles</button>
+            <button class="menu-button" onclick="appUtils.goToLocation('/solo')">Solo</button>
+            <button class="menu-button" onclick="appUtils.goToLocation('/versus_ia')">Versus IA</button>
+            <button class="menu-button" onclick="appUtils.goToLocation('/regles')">Règles</button>
         </div>
     </div>
 </body>

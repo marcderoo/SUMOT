@@ -19,6 +19,8 @@ body {
   background-repeat: no-repeat; /* Pas de répétition de l'image */
   background-position: center; /* Centre l'image */
   background-size: auto; /* Pas de redimensionnement */
+  animation-name: opacityAnimation;
+  animation-duration: 0.5s;
 }
 
 .grid-container {
@@ -558,4 +560,22 @@ dialog::backdrop {
   border-radius: 10px;
   font-size: 2rem;
   text-align: center;
+}
+
+@keyframes  opacityAnimation {
+  0%  {
+    opacity: 0;
+  }
+  100% {
+    opacity: 100%;
+  }
+}
+
+@keyframes  revverseOpacityAnimation {
+  0%  {
+    opacity: 100%;
+  }
+  100% {
+    opacity: 0;
+  }
 }

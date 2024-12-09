@@ -153,6 +153,17 @@ class AppUtils {
             delete this.doIfOrWhenEvents[eventName];
         } 
     }
+
+    goToLocation(url){
+      this.addRule("goToLocationAnimation", `
+        body {
+            animation-name: revverseOpacityAnimation;
+            animation-duration: 0.5s;
+            opacity  : 0%;
+        }
+        `);
+      setTimeout(()  => window.location = url, 500);
+    }
 }
 
 //Managing events

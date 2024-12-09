@@ -1,15 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SUMOT</title>
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script>let real_word = "{{ data.word }}";
-        let score = parseInt("{{ data.score }}");
-        let count = parseInt("{{ data.count }}");
-    </script>
     <script src="{{ url_for('static', filename='appUtils.js') }}"></script>
     <script>
         /** Charger le fond d'écran depuis le cache **/
@@ -19,6 +11,14 @@
             });
         })
     </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SUMOT</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
+    <script>let real_word = "{{ data.word }}";
+        let score = parseInt("{{ data.score }}");
+        let count = parseInt("{{ data.count }}");
+    </script>
     <script src="{{ url_for('static', filename='confetti.js') }}"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script>
@@ -27,7 +27,7 @@
     </script>
 </head>
 <body>
-    <a class="home-button" onclick='window.location.href="/"'>
+    <a class="home-button" onclick='appUtils.goToLocation("/")'>
         <span style="
             border-style: solid;
             border-width: 0.25em 0.25em 0 0;
@@ -66,6 +66,6 @@
                 Lettre non valide <span class="tooltip-score">30 <img class="noodles"></span>
             </div>
         </div>
-    </div>            
+    </div>    
 </body>
 </html>
