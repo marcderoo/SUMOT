@@ -47,7 +47,7 @@ const anecdotes = [
     '"Motus" a été créé par Thierry Beccaro, le célèbre animateur français. L’émission a été lancée en 1990 et a rencontré un grand succès grâce à son concept à la fois simple et stimulant. L’émission a duré plusieurs années, avec des saisons ponctuées de rebondissements et de surprises.',
     "Le concept de \"Motus\" est inspiré de celui du jeu de société Mastermind, où il faut deviner un code de couleurs. Dans \"Motus\", le défi est de deviner un mot de 5 ou 6 lettres en un nombre limité d'essais",
     'Au-delà de l’aspect télévisé, "Motus" est un jeu populaire dans les foyers français, avec des versions adaptées pour les jeux de société. Les familles adorent se défier en devinant des mots, et cela a renforcé la popularité du programme en dehors du petit écran.',
-    "La plus grosse cagnotte de l'histoire de \"Motus\" est de 17 600 €7 (soit 22 émissions sans une Super partie gagnée)."
+    "La plus grosse cagnotte de l'histoire de \"Motus\" est de 17 600 € (soit 22 émissions sans une Super partie gagnée)."
 ]
 let def =  anecdotes[Math.floor(Math.random() * anecdotes.length)];
 
