@@ -155,6 +155,9 @@ class AppUtils {
     }
 
     goToLocation(url){
+      this.addRule("reAddBackGround", `        html {
+            background-color: #FBA999;
+        }`)
       this.addRule("goToLocationAnimation", `
         body {
             animation-name: revverseOpacityAnimation;

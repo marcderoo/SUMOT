@@ -397,7 +397,7 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                         ${def}<br><br>
                         <div class="
                             next-button
-                        " onclick=document.getElementById("form-end").submit()>Mot Suivant <span style="
+                        ">Mot Suivant <span style="
                             border-style: solid;
                             border-width: 0.25em 0.25em 0 0;
                             content: '';
@@ -438,9 +438,35 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
 
                         document.body.appendChild(form);
 
+                        document.querySelector(".next-button").addEventListener("click", () => {
+                            dialog.close();
+                            appUtils.addRule("reAddBackGround", `        html {
+                                background-color: #FBA999;
+                            }`)
+                            appUtils.addRule("goToLocationAnimation", `
+                            body {
+                                animation-name: revverseOpacityAnimation;
+                                animation-duration: 0.5s;
+                                opacity  : 0%;
+                            }
+                            `);
+                          setTimeout(()  => form.submit(), 500);
+                        })
+
                         appUtils.subscribe('keydown', function(key) {
                             if(key == "ENTER"){
-                                form.submit();
+                                dialog.close();
+                                appUtils.addRule("reAddBackGround", `        html {
+                                    background-color: #FBA999;
+                                }`)
+                                appUtils.addRule("goToLocationAnimation", `
+                                body {
+                                    animation-name: revverseOpacityAnimation;
+                                    animation-duration: 0.5s;
+                                    opacity  : 0%;
+                                }
+                                `);
+                              setTimeout(()  => form.submit(), 500);
                             }
                         })
 
@@ -471,7 +497,7 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                           ${def}<br><br>
                           <div class="
                               next-button
-                          " onclick=document.getElementById("form-end").submit()>Mot Suivant <span style="
+                          ">Mot Suivant <span style="
                               border-style: solid;
                               border-width: 0.25em 0.25em 0 0;
                               content: '';
@@ -511,10 +537,36 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                           form.appendChild(scoreInput);
   
                           document.body.appendChild(form);
+
+                          document.querySelector(".next-button").addEventListener("click", () => {
+                            dialog.close();
+                            appUtils.addRule("reAddBackGround", `        html {
+                                background-color: #FBA999;
+                            }`)
+                            appUtils.addRule("goToLocationAnimation", `
+                            body {
+                                animation-name: revverseOpacityAnimation;
+                                animation-duration: 0.5s;
+                                opacity  : 0%;
+                            }
+                            `);
+                          setTimeout(()  => form.submit(), 500);
+                        })
   
                           appUtils.subscribe('keydown', function(key) {
                               if(key == "ENTER"){
-                                  form.submit();
+                                dialog.close();
+                                appUtils.addRule("reAddBackGround", `        html {
+                                    background-color: #FBA999;
+                                }`)
+                                appUtils.addRule("goToLocationAnimation", `
+                                body {
+                                    animation-name: revverseOpacityAnimation;
+                                    animation-duration: 0.5s;
+                                    opacity  : 0%;
+                                }
+                                `);
+                              setTimeout(()  => form.submit(), 500);
                               }
                           })                        
                     }

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr" style="background-color: #FBA999;">
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="{{ url_for('static', filename='appUtils.js') }}"></script>
@@ -7,7 +7,10 @@
         /** Charger le fond d'écran depuis le cache **/
         appUtils.loadObj("/static/wallpaper.jpg", true).then((res) => {
             appUtils.doIfOrWhen("DOMContentLoaded", () => {
-                document.body.style.backgroundImage = `url(${res})`;
+                setTimeout(() => {
+                    document.body.style.backgroundImage = `url(${res})`;
+                    document.documentElement.removeAttribute('style')
+                }, 500);
             });
         })
     </script>
