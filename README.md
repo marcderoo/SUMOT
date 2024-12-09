@@ -19,10 +19,10 @@ On trouvera ci-dessous la liste des tâches à effectuer avant la prochaine réu
 - Tests unitaires python (MERYEM)
 - Typing (MERYEM)✅
 \
-- Aide de l'IA en mode solo (ARNAUD)
+- Aide de l'IA en mode solo (ARNAUD)✅
 - Shop 
 - Revoir les defs 
-- Idées d'amélioration (IA en moins de mots possibles / mots par thèmes)
+- Idées d'amélioration (IA en moins de mots possibles✅ / mots par thèmes)
 
 
 
