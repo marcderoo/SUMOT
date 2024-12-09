@@ -576,7 +576,7 @@ appUtils.subscribe("updateHelpersScore", () => {
     }
 
     appUtils.updateKey("score", score);
-    document.getElementById("score").innerHTML = `Score : ${score} <img class="noodles">`;
+    document.getElementById("score").innerHTML = `${score} <img class="noodles">`;
     appUtils.emit("updateNoodlesImages");
 });
 

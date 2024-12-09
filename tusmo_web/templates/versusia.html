@@ -26,6 +26,13 @@
         let difficultyVal = parseInt(appUtils.loadKey("difficulty", 3));
 
         appUtils.subscribe('DOMContentLoaded', () => {
+            /** Show Message */
+            const msg = document.getElementById("message");
+            msg.innerHTML  = PLAYERTURN  ==  0 ? "Le joueur commence" : "L'IA commence";
+            setTimeout(() => {
+                msg.remove()
+            },  700);
+
             /** Manage difficulty */
             const difficultyBtn = document.querySelector("div.btn-difficulty");
             appUtils.subscribe("changeDifficulty", (difficulty) => {
@@ -174,7 +181,7 @@
     <div class="btn-difficulty"></div>
     <div class="game-info">
         <span id="word-number">Mot {{ data.count }}</span>
-        <span id="score">Score : {{ data.score }} <img class="noodles"></span>
+        <span id="score">{{ data.score }} <img class="noodles"></span>
     </div>
     <div class="grid-container"></div>
     <div class="alphabet-container">
@@ -196,6 +203,7 @@
                 Lettre non valide <span class="tooltip-score">30 <img class="noodles"></span>
             </div>
         </div>
-    </div> 
+    </div>
+    <div id="message"></div>
 </body>
 </html>
