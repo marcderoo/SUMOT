@@ -3,6 +3,10 @@ html {
   height: 100%;
 }
 
+:root {
+  
+}
+
 body {
   font-family: sans-serif;
   text-align: center;
@@ -44,6 +48,19 @@ body {
   font-size: 1.5em;
   color: white;
   text-align: center;
+  display: grid;
+  gap : 5vw;
+  grid-template-columns: 1fr 1fr;
+}
+
+#word-number {
+  align-content: flex-end;
+  justify-self: flex-end;
+}
+
+#score {
+  align-content: flex-end;
+  justify-self: flex-start;
 }
 
 img.noodles {
@@ -231,6 +248,7 @@ dialog {
   will-change: transform, opacity;
   border: none !important;
   border-radius: 10px;
+  max-width: 60vw;
 }
 
 dialog:not([open]) {
@@ -432,8 +450,6 @@ dialog::backdrop {
 }
 
 .help-container {
-  background-color: #f44336;
-  font-size: 1rem;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -441,6 +457,22 @@ dialog::backdrop {
   border-radius: 1em;
   right: calc(1vw + 10px);
   position: absolute;
-  color: white;
   width: 5em;
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+}
+
+.help-button {
+  align-content: center;
+  width: 5rem;
+  height: 5rem;
+  border-radius: 10%;
+  place-self: center;
+  font-size: 1.875rem;
+  font-weight: bold;
+}
+
+.unclickable {
+  filter: brightness(50%);
+  cursor: not-allowed;
 }

@@ -168,8 +168,6 @@ appUtils.subscribe('DOMContentLoaded', () => {
 
     appUtils.linkRuleTo("MediaQueriesHelpContainer", "cellResize", () => {
         // Récupère la position de l'élément
-        console.log(document.body.offsetWidth);
-
         return `@media (max-width: calc(${lastCell.offsetWidth * MAXLETTERS}px + ${GRIDGAP * MAXLETTERS}rem - 2vw + 20px + 6vw + 10em)) {
             body {
               grid-template-rows: 1.5rem 3fr 1fr 5rem;
@@ -181,6 +179,8 @@ appUtils.subscribe('DOMContentLoaded', () => {
                 top : 0 !important;
                 right : 0 !important;
                 width : 100% !important;
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
             }
         }`
     })
@@ -262,6 +262,29 @@ appUtils.subscribe('DOMContentLoaded', () => {
     resizeObserverAlphabetCell.observe(lastCellAlphabet);
 });
 
+async function processKeys(data, player = 1) {
+    const range = 300;
+    const min = 50;
+
+    const func = (x) => (x + 1) * (x - data.length);
+
+    const norm = (i) => min + range / (func(0) - func(Math.floor(data.length / 2))) * (func(i) - func(Math.floor(data.length / 2)));
+
+    let cancel = false; //Add canclation flag for avoid multiple process Key;
+    appUtils.subscribe("cancelProcessKey", () => cancel = true);
+    
+    for (let i = 0; i < data.length; i++) {
+        enterKey("BACKSPACE", player);
+    }
+
+    for (let i = 0; i < data.length; i++) {
+        if(cancel) return;
+        enterKey(data.charAt(i), player);
+        if(i !== data.length - 1) await new Promise(resolve => setTimeout(resolve, norm(i))); // Pause de norm(i) ms entre les appels
+    }
+    if(player === 1) enterKey("ENTER", 1);
+}
+
 const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
     const cells = Array.from(document.querySelectorAll("div.cell"));
     let cellBeforeFirstEmptyCellOrPlaceHolder = { cell : cells[cells.length - 1], index : cells.length - 1 };
@@ -323,6 +346,8 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
                     }
                   }
                   for(let i = 0; i < res.length; i++){
+                      cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.add(player == 1 ? "ia-cell" : "player-cell");//Add border to all cells
+
                       cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.remove("placeholder");
 
                       addLetter(cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].innerHTML, res[i], i, resLettersCount[cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].innerHTML]);
@@ -342,6 +367,19 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
                         if(!alphabetLetter.classList.contains("valid")  && !alphabetLetter.classList.contains("good")) alphabetLetter.classList.add("unvalid");
                         cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.add("unvalid");
                       }
+                  }
+
+                  const unvalidLeft = ["A",  "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",  "N",  "O", "P",  "Q",  "R", "S", "T", "U",  "V", "W", "X", "Y",  "Z"]
+                  .filter((letter)  => {
+                      let res = Object.keys(stateLetters).includes(letter) && stateLetters[letter].count == 0 && stateLetters[letter].notMore; // Lettre déjà affiché comme mauvaise
+                      res ||= real_word.includes(letter); // Lettre bonne
+                      return !res;
+                  });
+              
+                  if(unvalidLeft.length == 0){
+                      const elmt = document.getElementById("helpLetterM");
+                      elmt.classList.add("unclickable");
+                      elmt.removeAttribute("onclick");
                   }
 
                   confirmed = true;
@@ -516,3 +554,120 @@ const enterKey = function(key, player = -1) {// Player 0 : humain, player 1 : ia
         }
     }
 }
+
+/** Help buttons*/
+appUtils.subscribe("helpIA", () => {
+    let cells = Array.from(document.querySelectorAll("div.cell"));
+    let cellBeforeFirstEmptyCellIdx = cells.length - 1;
+    for (let i = 0; i < cells.length; i++) {
+        if (cells[i].innerHTML == "") {
+            cellBeforeFirstEmptyCellIdx = i - 1;
+            break;
+        }
+    }
+
+    if(PLAYERTURN === -1 || Math.floor(cellBeforeFirstEmptyCellIdx / NBLETTERS) % 2 === PLAYERTURN) {
+        appUtils.emit("cancelProcessKey");
+
+        fetch(`ia/3`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                len : NBLETTERS,
+                firstLetter : FIRSTLETTER,
+                validLetters : validLetters,
+                stateLetters : Object.entries(stateLetters).reduce((acc, [key, value]) => {
+                    acc[key] = {
+                        ...value,
+                        posValid: Array.from(value.posValid),
+                        posGood: Array.from(value.posGood),
+                    };
+                    return acc;
+                    }, {}
+                ),
+                history : history
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(word => {
+            processKeys(word, 0);
+        })
+        .catch(error => {
+            console.error('Erreur lors de la requête:', error);
+        })
+    }
+})
+
+appUtils.subscribe("helpLetterBP", () => { //Lettre bonne et bien placé
+    let cells = Array.from(document.querySelectorAll("div.cell"));
+    let cellBeforeFirstEmptyCellIdx = cells.length - 1;
+    for (let i = 0; i < cells.length; i++) {
+        if (cells[i].innerHTML == "") {
+            cellBeforeFirstEmptyCellIdx = i - 1;
+            break;
+        }
+    }
+
+    if(PLAYERTURN === -1 || Math.floor(cellBeforeFirstEmptyCellIdx / NBLETTERS) % 2 === PLAYERTURN) {
+        const idxFalse = validLetters.map((e, i) => e === false ? i : '').filter(String);
+
+        if(idxFalse.length == 1){
+            const elmt = document.getElementById("helpLetterBP");
+            elmt.classList.add("unclickable");
+            elmt.removeAttribute("onclick");
+        }
+
+        const idx = idxFalse[Math.floor(Math.random() * idxFalse.length)];
+        const cellIdx = Math.floor(cellBeforeFirstEmptyCellIdx / NBLETTERS) * NBLETTERS + idx;
+
+        validLetters[idx] = real_word[idx];
+
+        if(!Object.keys(stateLetters).includes(real_word[idx])){
+            stateLetters[real_word[idx]] = {
+                count : 0,
+                posValid : new Set(),
+                posGood : new Set(),
+                notMore : false
+            }
+        }
+        const count = stateLetters[real_word[idx]].count > stateLetters[real_word[idx]].posValid.size ? stateLetters[real_word[idx]].count : stateLetters[real_word[idx]].count + 1;
+        addLetter(real_word[idx], 2, idx, count);
+
+        const cell = cells[cellIdx];
+        cell.innerHTML = real_word[idx];
+        cell.classList.add("valid");
+        if(cellBeforeFirstEmptyCellIdx < cellIdx) cell.classList.add("placeholder");
+
+        const alphabetLetter = document.querySelector(`div.alphabet-cell[data-letter="${real_word[idx]}"`);
+        alphabetLetter.classList.remove("good");
+        alphabetLetter.classList.add("valid");
+    }
+})
+
+appUtils.subscribe("helpLetterM", () => { // Lettre mauvaise
+    const possiblesLetters = ["A",  "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",  "N",  "O", "P",  "Q",  "R", "S", "T", "U",  "V", "W", "X", "Y",  "Z"]
+    .filter((letter)  => {
+        let res = Object.keys(stateLetters).includes(letter) && stateLetters[letter].count == 0 && stateLetters[letter].notMore; // Lettre déjà affiché comme mauvaise
+        res ||= real_word.includes(letter); // Lettre bonne
+        return !res;
+    });
+
+    if(possiblesLetters.length == 1){
+        const elmt = document.getElementById("helpLetterM");
+        elmt.classList.add("unclickable");
+        elmt.removeAttribute("onclick");
+    }
+
+    const choosenLetter = possiblesLetters[Math.floor(Math.random() * possiblesLetters.length)];
+    addLetter(choosenLetter, 0, 0, 0);
+    
+    const alphabetLetter = document.querySelector(`div.alphabet-cell[data-letter="${choosenLetter}"`);
+    alphabetLetter.classList.add("unvalid");
+})
