@@ -10,7 +10,7 @@ body {
   justify-content: center;
   align-items: center;
   grid-template-rows: 1.5rem 3fr 1fr;
-  gap: 3%;
+  gap: 3vh;
   padding: 1vh;
   height: calc(100% - 1vh - 1.5rem);
   /*background-image: url("/static/wallpaper.jpg");*/ /* Remplacez par le chemin de votre image */
@@ -501,4 +501,42 @@ dialog::backdrop {
 .unclickable {
   filter: brightness(50%);
   cursor: not-allowed;
+}
+
+/** 
+  margin : 8px
+  padding : 1vh
+  score : 1.5rem
+  gap  : 3vh
+  grid : 3fr
+  gap  : 3vh
+  alphabet : 1fr
+  padding : 1vh
+  margin : 8px
+
+  =>  100vh = 8px + 1vh  + 1.5rem +  3vh + 3fr  + 3vh + 1fr +  1vh + 8px
+  =>  1fr  = calc(23vh - 4px  -  0.375rem)
+
+  => gridMaxWidth (if nbLetters == 9) = calc(9 / 6 *  3 * (23vh - 4px  -  0.375rem))
+*/
+
+@media (max-width: calc(9 / 6 *  3 * (23vh - 4px  -  0.375rem) - 2vh + 20px + 6vw + 10em)) {
+  body {
+    grid-template-rows: 1.5rem 3fr 1fr 5rem;
+    overflow: hidden;
+  }
+
+  .help-container {
+      justify-self: center;
+      position : relative !important;
+      height : 5rem !important;
+      top : 0 !important;
+      right : 0 !important;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .help-button::after  {
+      max-width : unset;
+  }
 }

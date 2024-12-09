@@ -166,29 +166,6 @@ appUtils.subscribe('DOMContentLoaded', () => {
         }`
     });
 
-    appUtils.linkRuleTo("MediaQueriesHelpContainer", "windowResize", () => {
-        // Récupère la position de l'élément
-        return `@media (max-width: calc(${lastCell.offsetWidth * MAXLETTERS}px + ${GRIDGAP * MAXLETTERS}rem - 2vw + 20px + 6vw + 10em)) {
-            body {
-              grid-template-rows: 1.5rem 3fr 1fr 5rem;
-            }
-
-            .help-container {
-                position : relative !important;
-                height : 5rem !important;
-                top : 0 !important;
-                right : 0 !important;
-                width : 100% !important;
-                display: grid;
-                grid-template-columns: 1fr 1fr 1fr;
-            }
-
-            .help-button::after  {
-                max-width : unset;
-            }
-        }`
-    })
-
     const resizeObserverCell = new ResizeObserver(() => {
         appUtils.emit("cellResize");
     });
@@ -257,6 +234,14 @@ appUtils.subscribe('DOMContentLoaded', () => {
 
         return `.alphabet-cell.special {
             font-size : ${fontSize}px
+        }`
+    });
+
+    appUtils.linkRuleTo("UpdateHelpersWidth", "alphabetCellResize", () => {
+        return `@media (max-width: calc(9 / 6 *  3 * (23vh - 4px  -  0.375rem) - 2vh + 20px + 6vw + 10em)) {
+            .help-container {
+                width : ${alphabetContainer.offsetWidth}px !important;
+            }
         }`
     });
 
