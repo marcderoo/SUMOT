@@ -166,7 +166,7 @@ appUtils.subscribe('DOMContentLoaded', () => {
         }`
     });
 
-    appUtils.linkRuleTo("MediaQueriesHelpContainer", "cellResize", () => {
+    appUtils.linkRuleTo("MediaQueriesHelpContainer", "windowResize", () => {
         // Récupère la position de l'élément
         return `@media (max-width: calc(${lastCell.offsetWidth * MAXLETTERS}px + ${GRIDGAP * MAXLETTERS}rem - 2vw + 20px + 6vw + 10em)) {
             body {
@@ -181,6 +181,10 @@ appUtils.subscribe('DOMContentLoaded', () => {
                 width : 100% !important;
                 display: grid;
                 grid-template-columns: 1fr 1fr 1fr;
+            }
+
+            .help-button::after  {
+                max-width : unset;
             }
         }`
     })

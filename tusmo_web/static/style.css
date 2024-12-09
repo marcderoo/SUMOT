@@ -456,6 +456,7 @@ dialog::backdrop {
   width: 5em;
   display: grid;
   grid-template-rows: 1fr 1fr 1fr;
+  overflow: visible;
 }
 
 .help-button {
@@ -466,6 +467,35 @@ dialog::backdrop {
   place-self: center;
   font-size: 1.875rem;
   font-weight: bold;
+  overflow: visible;
+  position: relative;
+}
+
+/* Tooltip text */
+.help-button::after {
+  content: attr(data-tooltip);
+  visibility: hidden;
+  opacity: 0;
+  width: max-content;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 10%;
+  padding: 0.5rem;
+  position: absolute;
+  bottom: calc(100% + 0.5rem);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000000;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  font-size: 1rem;
+  max-width : 100%;
+}
+
+/* Show the tooltip text on hover */
+.help-button:hover::after {
+  visibility: visible;
+  opacity:1;
 }
 
 .unclickable {
