@@ -5,15 +5,16 @@
 # (source (Pythoud, C. (1998) Français-GUTenberg : un nouveau dictionnaire français pour ISPELL. problèmes résolus et intégration de contributions extérieures Cahiers GUTenberg, n° 28-29, p. 252-275 (pdf) )) 
 # https://github.com/chrplr/openlexicon/tree/master/datasets-info/Liste-de-mots-francais-Gutenberg
 
+from typing import List, Set, Dict
 import unidecode
 import re
 
 # Lire le fichier dictionnaire.txt (dictionnaire original)
 with open("dictionnaire.txt", "r", encoding="utf-8") as fichier:
-    mots = fichier.readlines()
+    mots: List[str] = fichier.readlines()
 
 # Transformer les mots en minuscules, enlever les accents et supprimer les espaces et les traits d'union
-mots_corriges = set()  # Utiliser un set pour éliminer les doublons
+mots_corriges: Set[str] = set()  # Utiliser un set pour éliminer les doublons
 for mot in mots:
     mot = mot.strip().lower()  # Nettoyer le mot (enlever les espaces autour et le mettre en minuscule)
     
@@ -41,22 +42,22 @@ from collections import Counter
 
 # Lire le fichier nettoyé
 with open("dictionnaire_clean.txt", "r", encoding="utf-8") as fichier:
-    mots = fichier.readlines()
-
+    mots: List[str] = fichier.readlines()
+    
 # Joindre tous les mots en une seule chaîne
-texte = "".join(mots)
+texte: str = "".join(mots)
 
 # Compter la fréquence des lettres
-compteur = Counter(texte)
+compteur: Counter = Counter(texte)
 
 # Total des lettres pour calculer les fréquences relatives
-total_lettres = sum(compteur.values())
+total_lettres: int = sum(compteur.values())
 
 # Calcul des fréquences relatives
-frequences = {lettre: compteur[lettre] / total_lettres for lettre in compteur}
+frequences: Dict[str, float] = {lettre: compteur[lettre] / total_lettres for lettre in compteur}
 
 # Trier les lettres par fréquence décroissante
-frequences_triees = dict(sorted(frequences.items(), key=lambda x: x[1], reverse=True))
+frequences_triees: Dict[str, float] = dict(sorted(frequences.items(), key=lambda x: x[1], reverse=True))
 
 # Afficher les fréquences triées
 print("Fréquence des lettres (par ordre décroissant) :")
@@ -67,3 +68,4 @@ for lettre, freq in frequences_triees.items():
 with open("frequences_lettres.txt", "w", encoding="utf-8") as fichier_freq:
     for lettre, freq in frequences_triees.items():
         fichier_freq.write(f"{lettre} : {freq:.4f}\n")
+

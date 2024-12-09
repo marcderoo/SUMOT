@@ -1,3 +1,4 @@
+from typing import List, Dict, Optional, Union
 from flask import Flask, render_template, send_file, request
 import random
 import requests
@@ -16,14 +17,14 @@ with open("frequences_lettres.txt", "r") as file:
     }
 
 # Route d'accueil
-@app.route('/')
-def menu():
+@app.route('/') 
+def menu()-> str:
     return render_template('menu.html')
 
 @app.route('/solo', methods=['POST', 'GET'])
-def solo():
-    score = 0
-    count = 1
+def solo()-> str:
+    score: int = 0
+    count: int = 1
     
     if request.method == 'POST':
         score = request.form.get('score', 0, type=int)  # Récupération de 'score' depuis le formulaire
@@ -37,9 +38,9 @@ def solo():
     })
 
 @app.route('/versus_ia', methods=['POST', 'GET'])
-def versus_ia():
-    score = 0
-    count = 1
+def versus_ia()-> str:
+    score: int = 0
+    count: int = 1
     
     if request.method == 'POST':
         score = request.form.get('score', 0, type=int)  # Récupération de 'score' depuis le formulaire
@@ -53,15 +54,15 @@ def versus_ia():
     })
 
 @app.route('/regles')
-def regles():
+def regles()-> str:
     return render_template('regles.html')
 
 @app.route('/dico/<filename>')
-def get_dico(filename):
+def get_dico(filename: str)-> Union[str, bytes]:
     return send_file('dico/' + filename)
 
 @app.route('/def/<mot>')
-def get_def(mot):
+def get_def(mot: str) -> str:
     """Récupère uniquement la définition principale pour le mot depuis le Wiktionnaire."""
     url = f"https://fr.wiktionary.org/wiki/{mot}"
     try:
@@ -82,11 +83,11 @@ def get_def(mot):
         return f"err"  # erreurs générales
     
 @lru_cache(maxsize=None)
-def somme_frequences(mot):
+def somme_frequences(mot: str) -> float:
     return sum(frequences_lettres.get(lettre, 0) for lettre in mot)
 
 @app.route('/ia/<difficulte>', methods=['POST'])
-def bot_proposition_difficile(difficulte):
+def bot_proposition_difficile(difficulte: str) -> Optional[str]:
     """
         Le bot utilise toutes les couleurs pour filtrer les mots possibles, sans gestion de lettres consommées.
         data["len"] : longueur du mot
@@ -103,14 +104,14 @@ def bot_proposition_difficile(difficulte):
         data["validLetters"] : contient les lettres valides et leur position
         data["history"] : contient les derniers mots testés
     """
-    difficulte = int(difficulte)
-    data = request.get_json()
-    words = [word.upper() for word in dico if len(word) == data["len"] and word[0].upper() == data["firstLetter"] and word not in data["history"]]
+    difficulte: int = int(difficulte)
+    data: Dict[str, Union[int, List[str], Dict[str, Dict[str, Union[int, bool, List[int]]]]]] = request.get_json()
+    words: List[str] = [word.upper() for word in dico if len(word) == data["len"] and word[0].upper() == data["firstLetter"] and word not in data["history"]]
 
-    filtred = []
+    filtred: List[str] = []
     for word in words:
         if difficulte > 0:
-            countLetters = {}
+            countLetters: Dict[str, int] = {}
             goToNext = False
             for letter in word:
                 if letter in countLetters:
@@ -141,7 +142,7 @@ def bot_proposition_difficile(difficulte):
                 filtred.append(word)
 
     if difficulte == 3:
-        mots_uniques = [mot for mot in filtred if len(set(mot)) == len(mot)]
+        mots_uniques: List[str] = [mot for mot in filtred if len(set(mot)) == len(mot)]
         filtred = max(mots_uniques or filtred , key=somme_frequences)
     else:
         filtred = random.choice(filtred)

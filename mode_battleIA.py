@@ -1,46 +1,47 @@
 import random
 import os
+from typing import List, Tuple
 
 # Import des fonctions des bots
 from mode_duel import bot_proposition_difficile, bot_proposition_ultime_1
 
 # Fonction pour charger les mots du dictionnaire
-def charger_dictionnaire(fichier):
+def charger_dictionnaire(fichier: str) -> List[str]:
     """Charge les mots du fichier dictionnaire_clean.txt dans une liste."""
     with open(fichier, "r", encoding="utf-8") as f:
         mots = [ligne.strip() for ligne in f.readlines() if ligne.strip()]
     return mots
 
 # Fonction principale pour le mode Battle IA
-def mode_battle_ia():
+def mode_battle_ia()-> None:
     fichier = "dictionnaire_clean.txt"
     if not os.path.exists(fichier):
         print("Le fichier dictionnaire_clean.txt est introuvable.")
         return
 
     # Charger le dictionnaire
-    mots = charger_dictionnaire(fichier)
+    mots: List[str] = charger_dictionnaire(fichier)
 
     # Compteurs pour les résultats des 50 parties
-    vic_ultime = 0
-    match_nul = 0
-    def_ultime = 0
+    vic_ultime: int = 0
+    match_nul: int = 0
+    def_ultime: int = 0
 
     # Lancer 50 parties
     for partie in range(1, 500):
         print(f"\n=== Partie {partie} ===")
         # Choisir un mot aléatoire
-        mot_a_trouver = random.choice(mots)
-        longueur = len(mot_a_trouver)
-        premiere_lettre = mot_a_trouver[0]
+        mot_a_trouver: str = random.choice(mots)
+        longueur: int = len(mot_a_trouver)
+        premiere_lettre: str = mot_a_trouver[0]
 
         print(f"Le mot à trouver contient {longueur} lettres : {premiere_lettre}{'_' * (longueur - 1)}")
 
         # Initialiser les historiques et les tours pour les deux IA
-        historique_difficile = []
-        historique_ultime = []
-        tours_difficile = 0
-        tours_ultime = 0
+        historique_difficile: List[Tuple[str, List[str]]] = []
+        historique_ultime: List[Tuple[str, List[str]]] = []
+        tours_difficile: int = 0
+        tours_ultime: int = 0
 
         mots_possibles = [mot for mot in mots if len(mot) == longueur and mot.startswith(premiere_lettre)]
 
@@ -49,8 +50,8 @@ def mode_battle_ia():
             tours_difficile += 1
 
             # Bot difficile joue
-            proposition_difficile = bot_proposition_difficile(mots_possibles, historique_difficile)
-            resultat_difficile = [
+            proposition_difficile: str = bot_proposition_difficile(mots_possibles, historique_difficile)
+            resultat_difficile: List[str] = [
                 "vert" if mot_a_trouver[i] == proposition_difficile[i]
                 else "orange" if proposition_difficile[i] in mot_a_trouver
                 else "rouge"
@@ -69,8 +70,8 @@ def mode_battle_ia():
             tours_ultime += 1
 
             # Bot ultime joue
-            proposition_ultime = bot_proposition_ultime_1(mots_possibles, historique_ultime)
-            resultat_ultime = [
+            proposition_ultime: str = bot_proposition_ultime_1(mots_possibles, historique_ultime)
+            resultat_ultime: List[str] = [
                 "vert" if mot_a_trouver[i] == proposition_ultime[i]
                 else "orange" if proposition_ultime[i] in mot_a_trouver
                 else "rouge"
