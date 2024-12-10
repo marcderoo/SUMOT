@@ -125,7 +125,6 @@ img.noodles {
 
 /* Style de fond pour le menu */
 .menu-background {
-  background-color: rgba(0, 0, 30, 0.95);
   color: #f0f0f0;
   display: -webkit-flex; /* Préfixe pour Safari mobile */
   display: flex;
