@@ -161,11 +161,11 @@ class AppUtils {
       this.addRule("goToLocationAnimation", `
         body {
             animation-name: revverseOpacityAnimation;
-            animation-duration: 0.5s;
+            animation-duration: 0.1s;
             opacity  : 0%;
         }
         `);
-      setTimeout(()  => window.location = url, 500);
+      setTimeout(()  => window.location = url, 100);
     }
 }
 

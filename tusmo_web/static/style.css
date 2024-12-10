@@ -20,7 +20,7 @@ body {
   background-position: center; /* Centre l'image */
   background-size: auto; /* Pas de redimensionnement */
   animation-name: opacityAnimation;
-  animation-duration: 0.5s;
+  animation-duration: 0.1s;
 }
 
 .grid-container {
