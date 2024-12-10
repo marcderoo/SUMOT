@@ -263,7 +263,7 @@ appUtils.subscribe('DOMContentLoaded', () => {
 });
 
 async function processKeys(data, player = 1, aiDifficulty  = -1) {
-    const range = 300;
+    const range = 100;
     const min = 50;
 
     const func = (x) => (x + 1) * (x - data.length);
