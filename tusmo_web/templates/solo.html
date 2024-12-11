@@ -1,35 +1,96 @@
 <!DOCTYPE html>
 <html lang="fr" style="background-color: #FBA999;">
 <head>
+    <!-- Link to the CSS file to style the page -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <!-- Including the utility JavaScript file -->
     <script src="{{ url_for('static', filename='appUtils.js') }}"></script>
     <script>
-        /** Charger le fond d'écran depuis le cache **/
+        /**
+         * Loads a background image from the cache and applies it to the document.
+         *
+         * @function loadObj - Utility function to load resources.
+         * @param {string} url - URL of the image to load.
+         * @param {boolean} [base64=false] - Whether to convert the response to Base64 format.
+         * @returns {Promise<string>} The loaded data.
+         */
         appUtils.loadObj("/static/wallpaper.jpg", true).then((res) => {
+            /**
+             * Executes a function when the DOM is loaded.
+             *
+             * @function doIfOrWhen - Utility function to wait for events.
+             * @param {string} eventName - Name of the event (here, DOMContentLoaded).
+             * @param {function} callback - Function to execute once the event is triggered.
+             */
             appUtils.doIfOrWhen("DOMContentLoaded", () => {
                 setTimeout(() => {
+                    // Applies the background image to the body style of the document
                     document.body.style.backgroundImage = `url(${res})`;
+                    
+                    // Removes the inline style from the HTML document
                     document.documentElement.removeAttribute('style')
                 }, 100);
             });
         })
     </script>
+
+    <!-- Metadata for encoding and responsiveness -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Page title -->
     <title>SUMOT</title>
+
+    <!-- Page favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
-    <script>let real_word = "{{ data.word }}";
+
+    <script>
+        /* Defines game variables from the server-side data  */
+
+        /**
+         * Word to discover
+         * @type {string}
+         */
+        const real_word = "{{ data.word }}";
+
+        /**
+         * Previous score
+         * @type {number}
+         */
         let score = parseInt("{{ data.score }}");
+
+        /**
+         * Game number
+         * @type {number}
+         */
         let count = parseInt("{{ data.count }}");
     </script>
+
+    <!-- Including the confetti JavaScript file -->
     <script src="{{ url_for('static', filename='confetti.js') }}"></script>
+
+    <!-- Including the game script JavaScript file -->
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script>
+       /**
+         *  The constant for player's turn (-1 for solo mode,  0 for player starting vs ia, 1 for ia statring vs player)
+         * @type {number}
+         */
         const PLAYERTURN = -1;
+
+        /**
+         * Subscribes to the keydown event and triggers the enterKey function.
+         *
+         * @function subscribe
+         * @param {string} event - The event to subscribe to (here, 'keydown').
+         * @param {function} callback - The callback function to execute when the event is triggered.
+         */
         appUtils.subscribe("keydown", (key) => enterKey(key));
     </script>
 </head>
 <body>
+    <!-- Return button -->
     <a class="home-button" onclick='appUtils.goToLocation("/")'>
         <span style="
             border-style: solid;
@@ -45,14 +106,22 @@
             left: 0.14em;
         "></span>
     </a>
+
+    <!-- Header of the page -->
     <div class="game-info">
         <span id="word-number">Mot {{ data.count }}</span>
         <span id="score">{{ data.score }} <img class="noodles"></span>
     </div>
+
+    <!-- Container of the game grid -->
     <div class="grid-container"></div>
+
+    <!-- Container of the game keyboard -->
     <div class="alphabet-container">
         <div class="alphabet-grid"></div>
     </div>
+
+    <!-- Container of the help buttons-->
     <div class="help-container">
         <div onclick="appUtils.emit('helpIA')" style="font-size: 3rem;" class="help-button" id="helpIA">🧠
             <div class="tooltip">

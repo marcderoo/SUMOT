@@ -1,11 +1,22 @@
+/**
+ * A class that manages confetti animations on the page.
+ * Implements the singleton pattern to ensure only one instance exists.
+ * @author Michael Beckius
+ * @linkcode  https://codepen.io/bananascript/pen/EyZeWm
+ */
 class Confetti {
+    /**
+     * Creates a new Confetti instance or returns the existing one.
+     */
     constructor() {
       if (Confetti._instance) {
         return Confetti._instance
       }
       Confetti._instance = this;
 
-        // Create the overarching this.container
+        /**
+         * @type {HTMLDivElement} The container element for the confetti.
+         */
         this.container = document.createElement('div');
         this.container.style.position = 'fixed';
         this.container.style.top      = '0';
@@ -18,9 +29,17 @@ class Confetti {
         return this;
     }
 
+    /**
+     * Launches the confetti animation.
+     */
     launch() {
+        /**
+         * Timer for adding new confetti particles.
+         * @type {number | undefined}
+         */
         this.timer = undefined;
-        // Globals
+        
+        // Utility variables
         var random = Math.random
           , cos = Math.cos
           , sin = Math.sin
@@ -29,8 +48,8 @@ class Confetti {
           , frame = undefined
           , confetti = [];
       
-        var particles = 10
-          , spread = 1000
+        // Particle configuration
+        var spread = 1000
           , sizeMin = 10
           , sizeMax = 20 - sizeMin
           , eccentricity = 10
@@ -42,6 +61,10 @@ class Confetti {
           , dThetaMin = .4
           , dThetaMax = .7 - dThetaMin;
       
+        /**
+         * List of color themes for the confetti.
+         * @type {Array<Function>}
+         */
         var colorThemes = [
           function() {
             return color(200 * random()|0, 200 * random()|0, 200 * random()|0);
@@ -65,17 +88,36 @@ class Confetti {
             return colorThemes[random() < .5 ? 2 : 4]();
           }
         ];
+
+        /**
+         * Creates an RGB color string.
+         * @param {number} r - Red component (0-255).
+         * @param {number} g - Green component (0-255).
+         * @param {number} b - Blue component (0-255).
+         * @returns {string} RGB color string.
+         */
         function color(r, g, b) {
           return 'rgb(' + r + ',' + g + ',' + b + ')';
         }
       
-        // Cosine interpolation
+        /**
+         * Performs cosine interpolation.
+         * @param {number} a - Start value.
+         * @param {number} b - End value.
+         * @param {number} t - Interpolation factor (0-1).
+         * @returns {number} Interpolated value.
+         */
         function interpolation(a, b, t) {
           return (1-cos(PI*t))/2 * (b-a) + a;
         }
       
         // Create a 1D Maximal Poisson Disc over [0, 1]
         var radius = 1/eccentricity, radius2 = radius+radius;
+
+        /**
+         * Creates a Poisson-disc distribution over [0, 1].
+         * @returns {Array<number>} Array of values in the range [0, 1].
+         */
         function createPoisson() {
           // domain is the set of points which are still available to pick from
           // D = union{ [d_i, d_i+1] | i is even }
@@ -118,10 +160,33 @@ class Confetti {
           return spline.sort();
         }
       
-        // Confetto constructor
+        /**
+         * Represents a single confetti particle.
+         * Each `Confetto` is styled, positioned, and animated independently.
+         * Confetti particles have randomized properties for a varied visual effect.
+         *
+         * @class
+         * @param {function} theme - A function that returns a color string (e.g., `'rgb(255, 0, 0)'`).
+         */
         function Confetto(theme) {
+          /**
+           * The current animation frame number for this confetto.
+           * @type {number}
+           */
           this.frame = 0;
+
+          /**
+           * The outer DOM element representing the confetto.
+           * This element is styled to determine its overall appearance and position.
+           * @type {HTMLDivElement}
+           */
           this.outer = document.createElement('div');
+
+          /**
+           * The inner DOM element nested within the outer element.
+           * This element is styled for the confetto's color and transformation effects.
+           * @type {HTMLDivElement}
+           */
           this.inner = document.createElement('div');
           this.outer.appendChild(this.inner);
       
@@ -135,27 +200,77 @@ class Confetti {
       
           outerStyle.perspective = '50px';
           outerStyle.transform = 'rotate(' + (360 * random()) + 'deg)';
+
+          /**
+           * The CSS transform axis for the confetto's 3D rotation.
+           * @type {string}
+           */
           this.axis = 'rotate3D(' +
             cos(360 * random()) + ',' +
             cos(360 * random()) + ',0,';
+
+          /**
+           * The initial angle of rotation for the confetto.
+           * @type {number}
+           */
           this.theta = 360 * random();
+
+          /**
+           * The rate of change of rotation angle per animation frame.
+           * @type {number}
+           */
           this.dTheta = dThetaMin + dThetaMax * random();
           innerStyle.transform = this.axis + this.theta + 'deg)';
-      
+          
+          /**
+           * The horizontal position of the confetto.
+           * @type {number}
+           */
           this.x = window.innerWidth * random();
+
+          /**
+           * The vertical position of the confetto.
+           * @type {number}
+           */
           this.y = -deviation;
+
+          /**
+           * The horizontal velocity of the confetto.
+           * @type {number}
+           */
           this.dx = sin(dxThetaMin + dxThetaMax * random());
+          
+          /**
+           * The vertical velocity of the confetto.
+           * @type {number}
+           */
           this.dy = dyMin + dyMax * random();
           outerStyle.left = this.x + 'px';
           outerStyle.top  = this.y + 'px';
       
-          // Create the periodic spline
+          /**
+           * A periodic spline defining the horizontal movement of the confetto.
+           * @type {number[]}
+           */
           this.splineX = createPoisson();
+
+          /**
+           * A periodic spline defining the vertical deviation of the confetto.
+           * @type {number[]}
+           */
           this.splineY = [];
           for (var i = 1, l = this.splineX.length-1; i < l; ++i)
             this.splineY[i] = deviation * random();
           this.splineY[0] = this.splineY[l] = deviation * random();
       
+          /**
+           * Updates the position and appearance of the confetto based on elapsed time.
+           * This method is called on each animation frame.
+           *
+           * @param {number} height - The height of the viewport, used to determine when the confetto goes out of view.
+           * @param {number} delta - The time elapsed since the last frame in milliseconds.
+           * @returns {boolean} - Returns `true` if the confetto is out of bounds and should be removed.
+           */
           this.update = function(height, delta) {
             this.frame += delta;
             this.x += this.dx * delta;
@@ -179,6 +294,9 @@ class Confetti {
           };
         }
       
+        /**
+         * Initiates the confetti animation.
+         */
         function poof() {
           if (!frame) {
             // Append the this.container
@@ -220,6 +338,9 @@ class Confetti {
         poof();
       };
 
+    /**
+     * Stops the confetti animation.
+     */
       stop() {
         if (this.timer) {
             clearTimeout(this.timer);

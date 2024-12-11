@@ -2,7 +2,7 @@
 score = Math.max(score, appUtils.loadKey("score", 0));
 appUtils.updateKey("score", score);
 
-/** Importer le logo des nouilles */
+/** Import the noodles logo */
 appUtils.loadObj("/static/noodles.png", true).then((res) => {
     appUtils.subscribe("updateNoodlesImages",  () => {
         document.querySelectorAll('img.noodles').forEach(elmt =>  {
@@ -15,27 +15,31 @@ appUtils.loadObj("/static/noodles.png", true).then((res) => {
     });
 });
 
-/**Empecher le zoom par double tap sur iphone */
+/** Prevent zoom by double tap on iPhone */
 let lastTouchEnd = 0;
 
 document.addEventListener('touchend', (event) => {
     const now = new Date().getTime();
     if (now - lastTouchEnd <= 300) {
-        event.preventDefault(); // Empêche le zoom par double tap
+        event.preventDefault();
     }
     lastTouchEnd = now;
 });
 
+/**
+ * Creates a Confetti object for visual effects.
+ */
 const confetti = new Confetti();
 
+/**
+ * Defines the game parameters, including the number of letters in the word to be guessed, the number of attempts, etc.
+ */
 let NBLETTERS = real_word.length;
 const NBTRY = 6;
 const GRIDGAP = 0.5;
 const MAXLETTERS = 9;
 let FIRSTLETTER = real_word[0];
-
 let dico = [];
-
 let confirmed = false;
 let end = false;
 let validLetters = [];
@@ -43,6 +47,9 @@ let stateLetters = {};
 let history = [];
 let actScore = 200;
 
+/**
+ * Definition of randomly selected anecdotes related to the “Motus” game.
+ */
 const anecdotes = [
     '"Motus" a été créé par Thierry Beccaro, le célèbre animateur français. L’émission a été lancée en 1990 et a rencontré un grand succès grâce à son concept à la fois simple et stimulant. L’émission a duré plusieurs années, avec des saisons ponctuées de rebondissements et de surprises.',
     "Le concept de \"Motus\" est inspiré de celui du jeu de société Mastermind, où il faut deviner un code de couleurs. Dans \"Motus\", le défi est de deviner un mot de 5 ou 6 lettres en un nombre limité d'essais",
@@ -51,6 +58,10 @@ const anecdotes = [
 ]
 let def =  anecdotes[Math.floor(Math.random() * anecdotes.length)];
 
+/**
+ * Loads the definition of the word to be guessed via an HTTP request.
+ * If the definition exists, it is formatted and displayed instead of the anecdote.
+ */
 fetch(`def/${real_word.toLowerCase()}`)
   .then(response => {
     if (!response.ok) {
@@ -64,7 +75,10 @@ fetch(`def/${real_word.toLowerCase()}`)
     }
   })
 
-  appUtils.loadObj(`dico/${FIRSTLETTER}_${NBLETTERS}.txt`)
+/**
+ * Loads the dictionary corresponding to the first character of the word to guess and the number of letters.
+ */
+appUtils.loadObj(`dico/${FIRSTLETTER}_${NBLETTERS}.txt`)
   .then(data => {
     dico = data.replaceAll("\r", "").split("\n");
     console.log(dico);
@@ -74,6 +88,14 @@ fetch(`def/${real_word.toLowerCase()}`)
     console.error('There was a problem with the fetch operation:', error);
   });
 
+/**
+ * Adds information on each letter (number of occurrences and correct positions).
+ * 
+ * @param {string} letter - The letter to add.
+ * @param {number} state - Letter status (2 for well placed, 1 for elsewhere present, 0 for absent).
+ * @param {number} pos - The position of the letter in the word.
+ * @param {number} countRes - The number of times the letter has been encountered.
+ */
 function addLetter(letter, state, pos, countRes){//2 valid, 1 good, 0 unvalid
     if(!Object.keys(stateLetters).includes(letter)){
         stateLetters[letter] = {
@@ -99,6 +121,13 @@ function addLetter(letter, state, pos, countRes){//2 valid, 1 good, 0 unvalid
     }
 }
 
+/**
+ * Checks the correspondence between the written word and the real word.
+ * Returns a table with results (2 = correct position, 1 = letter present but misplaced, 0 = letter absent).
+ * 
+ * @param {string} written_word - The written word to check.
+ * @returns {Array} An array of verification results.
+ */
 function verify(written_word){
     let res = []
 
@@ -124,6 +153,10 @@ function verify(written_word){
     return res;
 }
 
+/**
+ * Initialize the game after loading the DOM.
+ * This function manages the creation of the grid, letters and events.
+ */
 appUtils.subscribe('DOMContentLoaded', () => {
     appUtils.addRule("setGridSize", 
         `.grid-container {
@@ -133,12 +166,12 @@ appUtils.subscribe('DOMContentLoaded', () => {
         }`
     );
 
-    // Sélection du conteneur de la grille
+    /** Grid container selection  */
     const container = document.querySelector('.grid-container');
 
     let lastCell = null;
   
-    // Générer les NBLETTERS x NBTRY cellules
+    /** Generate grid cells */
     for (let i = 0; i < NBLETTERS * NBTRY; i++) {
       const cell = document.createElement('div');
       cell.className = 'cell';
@@ -156,7 +189,7 @@ appUtils.subscribe('DOMContentLoaded', () => {
 
     /** Manage font and border size for cell */
     appUtils.linkRuleTo("UpdateCellsFontBorder", "cellResize", () => {
-        const cellWidth = lastCell.offsetWidth; // Largeur du conteneur
+        const cellWidth = lastCell.offsetWidth; // Container width
         const fontSize = cellWidth * 3 / 8;
         const borderWidth = cellWidth * 1 / 20;
 
@@ -168,7 +201,7 @@ appUtils.subscribe('DOMContentLoaded', () => {
 
     /** Manage help container height */
     appUtils.linkRuleTo("UpdateHelpContainerHeight", "cellResize", () => {
-        // Récupère la position de l'élément
+        // Retrieves element position
         const rect = container.getBoundingClientRect();
 
         return `.help-container {
@@ -182,7 +215,7 @@ appUtils.subscribe('DOMContentLoaded', () => {
     });
     resizeObserverCell.observe(lastCell);
 
-    // Génération des lettres de l'alphabet
+    /** Alphabet letter generation  */
     const alphabetContainer = document.querySelector('.alphabet-grid');
     const azerty = [
         'AZERTYUIOP',
@@ -228,8 +261,9 @@ appUtils.subscribe('DOMContentLoaded', () => {
         alphabetContainer.appendChild(rowContainer);
     });
 
+    /** Update alphabet cell styles */
     appUtils.linkRuleTo("UpdateAlphabetCellsFontOutline", "alphabetCellResize", () => {
-        const cellWidth = lastCellAlphabet.offsetWidth; // Largeur du conteneur
+        const cellWidth = lastCellAlphabet.offsetWidth;
         const fontSize = cellWidth * 3 / 8; 
         const outlineWidth = cellWidth * 1 / 20;
 
@@ -239,8 +273,9 @@ appUtils.subscribe('DOMContentLoaded', () => {
         }`
     });
 
+    /** Special font update for special alphabet cells */
     appUtils.linkRuleTo("UpdateAlphabetCellsSpecialFont", "alphabetCellResize", () => {
-        const cellWidth = lastCellAlphabet.offsetWidth; // Largeur du conteneur
+        const cellWidth = lastCellAlphabet.offsetWidth;
         const fontSize = cellWidth * 5 / 8;
 
         return `.alphabet-cell.special {
@@ -248,6 +283,7 @@ appUtils.subscribe('DOMContentLoaded', () => {
         }`
     });
 
+    /** Updating aid widths */
     appUtils.linkRuleTo("UpdateHelpersWidth", "alphabetCellResize", () => {
         return `@media (max-width: calc(9 / 6 *  3 * (23vh - 4px  -  0.375rem) - 2vh + 20px + 6vw + 10em)) {
             .help-container {
@@ -262,34 +298,73 @@ appUtils.subscribe('DOMContentLoaded', () => {
     resizeObserverAlphabetCell.observe(lastCellAlphabet);
 });
 
+/**
+ * Processes a sequence of key presses to simulate typing and backspace actions.
+ * It will type each character in the given string `data`, and simulate the key press behavior, including pauses between key presses.
+ * If the operation is cancelled during execution, it will stop typing.
+ *
+ * @async
+ * @param {string} data - The string of data to be typed.
+ * @param {number} [player=1] - The player number (1 for AI, 0 for human, -1 for solo mode).
+ * @param {number} [aiDifficulty=-1] - The difficulty level for AI (used only if it's AI turn).
+ * @returns {Promise<void>} A promise that resolves when the function completes.
+ */
 async function processKeys(data, player = 1, aiDifficulty  = -1) {
     const range = 100;
     const min = 50;
 
+    /**
+     * A helper function for transforming the value of x based on the data length.
+     * @param {number} x - The input value.
+     * @returns {number} The transformed value of x.
+     */
     const func = (x) => (x + 1) * (x - data.length);
 
+    /**
+     * Normalizes the index for the key press delay.
+     * @param {number} i - The index of the character in the data string.
+     * @returns {number} The delay time in milliseconds.
+     */
     const norm = (i) => min + range / (func(0) - func(Math.floor(data.length / 2))) * (func(i) - func(Math.floor(data.length / 2)));
 
     let cancel = false; //Add canclation flag for avoid multiple process Key;
+
+    // Subscribe to cancel the process
     appUtils.subscribe("cancelProcessKey", () => cancel = true);
     
+    // Perform a backspace action for each character in data (=  make an empty ligne)
     for (let i = 0; i < data.length; i++) {
         enterKey("BACKSPACE", player, aiDifficulty);
     }
 
+    // Type each character in data, respecting the normalizing delay
     for (let i = 0; i < data.length; i++) {
         if(cancel) return;
         enterKey(data.charAt(i), player);
         if(i !== data.length - 1) await new Promise(resolve => setTimeout(resolve, norm(i))); // Pause de norm(i) ms entre les appels
     }
+
+    // If it's AI turn, submit the word by pressing ENTER
     if(player === 1) enterKey("ENTER", 1);
 }
 
+/**
+ * Simulates pressing a key for a player in a grid-based interface.
+ * This function handles key presses for characters (letters), BACKSPACE, and ENTER.
+ * It manages the state of the cells, including adding/removing classes and content, 
+ * and updates the UI to reflect the player's actions.
+ *
+ * @param {string} key - The key to be pressed (e.g., 'A', 'BACKSPACE', 'ENTER').
+ * @param {number} [player=-1] - The player number (1 for AI, 0 for human, -1 for solo mode).
+ * @param {number} [aiDifficulty=-1] - The difficulty level for AI (used only if it's IA turn).
+ */
 const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 : humain, player 1 : ia
     const cells = Array.from(document.querySelectorAll("div.cell"));
     let cellBeforeFirstEmptyCellOrPlaceHolder = { cell : cells[cells.length - 1], index : cells.length - 1 };
     let cellBeforeFirstEmptyCell = { cell : cells[cells.length - 1], index : cells.length - 1 };
     let found = false;
+
+    // Loop to find the first empty cell or placeholder
     for (let i = 0; i < cells.length; i++) {
         if ((cells[i].innerHTML == "" || cells[i].classList.contains("placeholder")) && !found) {
             cellBeforeFirstEmptyCellOrPlaceHolder = { cell: cells[i - 1], index: i - 1 };
@@ -302,8 +377,10 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
         }
     }
 
+    // Handling for various key presses
     if(!end){
         if (key.length === 1 && /[a-zA-Z]/.test(key)) {
+            // Handle letter input
             if((cellBeforeFirstEmptyCellOrPlaceHolder.index + 1) % NBLETTERS !== 0 || confirmed){
                 if(cellBeforeFirstEmptyCellOrPlaceHolder.index % NBLETTERS !== 0 || cells[cellBeforeFirstEmptyCellOrPlaceHolder.index].innerHTML !== key.toUpperCase()){
                     if(cells[cellBeforeFirstEmptyCellOrPlaceHolder.index + 1].innerHTML != key.toUpperCase()){
@@ -312,6 +389,8 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
 
                     cells[cellBeforeFirstEmptyCellOrPlaceHolder.index + 1].classList.remove("placeholder");
                     cells[cellBeforeFirstEmptyCellOrPlaceHolder.index + 1].innerHTML = key.toUpperCase();
+                    
+                    // Add border around the cell (red for player, blue for ia)
                     if(player == 0 || player == -1){
                         cells[cellBeforeFirstEmptyCellOrPlaceHolder.index + 1].classList.add("player-cell");
                     } else if (player == 1){
@@ -321,7 +400,7 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                     confirmed = false;
                 }
             }
-        } else if (key == "BACKSPACE"){
+        } else if (key == "BACKSPACE"){ // If the key is BACKSPACE, remove the last character.
             if (cellBeforeFirstEmptyCellOrPlaceHolder && cellBeforeFirstEmptyCellOrPlaceHolder.index % NBLETTERS !== 0) {
                 if(validLetters[cellBeforeFirstEmptyCellOrPlaceHolder.index % NBLETTERS]){
                     cells[cellBeforeFirstEmptyCellOrPlaceHolder.index].innerHTML = validLetters[cellBeforeFirstEmptyCellOrPlaceHolder.index % NBLETTERS];
@@ -333,18 +412,22 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                 cells[cellBeforeFirstEmptyCellOrPlaceHolder.index].classList.remove("player-cell");
                 cells[cellBeforeFirstEmptyCellOrPlaceHolder.index].classList.remove("ia-cell");
             }
-        } else if (key == "ENTER"){
+        } else if (key == "ENTER"){ // If the key is ENTER, validate the word formed by the current row of cells.
             if ((cellBeforeFirstEmptyCell.index + 1) % NBLETTERS === 0) {
                 const word = cells.slice(cellBeforeFirstEmptyCell.index + 1 - NBLETTERS, cellBeforeFirstEmptyCell.index + 1).map(cell => cell.innerHTML).join("");
-                if(dico.includes(word.toLowerCase())){
+                if(dico.includes(word.toLowerCase())){                   // Verify word and update game state
                   history.push(word.toLowerCase());
                   const res = verify(word);
                   let resLettersCount = {};
+                
+                  // Count occurrences of each result (correct, misplaced, incorrect letters).
                   for(let i = 0; i < res.length; i++){
                     if(res[i] == 2 || res[i] == 1){
                         resLettersCount[word[i]] = Object.keys(resLettersCount).includes(word[i]) ? resLettersCount[word[i]] + 1 : 1;
                     }
                   }
+
+                  // Update cell classes based on the result.
                   for(let i = 0; i < res.length; i++){
                       cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.add(player == 1 ? "ia-cell" : "player-cell");//Add border to all cells
 
@@ -369,6 +452,7 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                       }
                   }
 
+                  // Check if all letters were guessed correctly, triggering game end conditions.
                   const unvalidLeft = ["A",  "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",  "N",  "O", "P",  "Q",  "R", "S", "T", "U",  "V", "W", "X", "Y",  "Z"]
                   .filter((letter)  => {
                       let res = Object.keys(stateLetters).includes(letter) && stateLetters[letter].count == 0 && stateLetters[letter].notMore; // Lettre déjà affiché comme mauvaise

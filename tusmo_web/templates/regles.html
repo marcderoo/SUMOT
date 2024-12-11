@@ -1,26 +1,52 @@
 <!DOCTYPE html>
 <html lang="fr" style="background-color: #FBA999;">
 <head>
+    <!-- Link to the CSS file to style the page -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    <!-- Including the utility JavaScript file -->
     <script src="{{ url_for('static', filename='appUtils.js') }}"></script>
     <script>
-        /** Charger le fond d'écran depuis le cache **/
+        /**
+         * Loads a background image from the cache and applies it to the document.
+         *
+         * @function loadObj - Utility function to load resources.
+         * @param {string} url - URL of the image to load.
+         * @param {boolean} [base64=false] - Whether to convert the response to Base64 format.
+         * @returns {Promise<string>} The loaded data.
+         */
         appUtils.loadObj("/static/wallpaper.jpg", true).then((res) => {
+            /**
+             * Executes a function when the DOM is loaded.
+             *
+             * @function doIfOrWhen - Utility function to wait for events.
+             * @param {string} eventName - Name of the event (here, DOMContentLoaded).
+             * @param {function} callback - Function to execute once the event is triggered.
+             */
             appUtils.doIfOrWhen("DOMContentLoaded", () => {
                 setTimeout(() => {
+                    // Applies the background image to the body style of the document
                     document.body.style.backgroundImage = `url(${res})`;
+                    
+                    // Removes the inline style from the HTML document
                     document.documentElement.removeAttribute('style')
                 }, 100);
             });
         })
     </script>
+
+    <!-- Metadata for encoding and responsiveness -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Page title -->
     <title>SUMOT</title>
+
+    <!-- Page favicon -->
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}">
-    <title>SUMOT</title>
 </head>
 <body>
+    <!-- Return button -->
     <a class="home-button" onclick='appUtils.goToLocation("/")'>
         <span style="
             border-style: solid;
@@ -37,7 +63,7 @@
         "></span>
     </a>
 
-    <!-- Titre avec surlignage alterné -->
+    <!-- Title with alternating highlight -->
     <h1 class="rules-title">
         <span class="R">R</span>
         <span class="E">È</span>
@@ -47,6 +73,7 @@
         <span class="S">S</span>
     </h1>
 
+    <!--  Main container showing rules -->
     <div class="rules-container">
         <div class="rules-content">
             <p>1. Vous avez <strong>6 essais</strong> pour trouver le mot mystère.</p>
