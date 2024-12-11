@@ -263,7 +263,7 @@ appUtils.subscribe('DOMContentLoaded', () => {
 });
 
 async function processKeys(data, player = 1, aiDifficulty  = -1) {
-    const range = 300;
+    const range = 100;
     const min = 50;
 
     const func = (x) => (x + 1) * (x - data.length);
@@ -446,11 +446,11 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                             appUtils.addRule("goToLocationAnimation", `
                             body {
                                 animation-name: revverseOpacityAnimation;
-                                animation-duration: 0.5s;
+                                animation-duration: 0.1s;
                                 opacity  : 0%;
                             }
                             `);
-                          setTimeout(()  => form.submit(), 500);
+                          setTimeout(()  => form.submit(), 100);
                         })
 
                         appUtils.subscribe('keydown', function(key) {
@@ -462,11 +462,11 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                                 appUtils.addRule("goToLocationAnimation", `
                                 body {
                                     animation-name: revverseOpacityAnimation;
-                                    animation-duration: 0.5s;
+                                    animation-duration: 0.1s;
                                     opacity  : 0%;
                                 }
                                 `);
-                              setTimeout(()  => form.submit(), 500);
+                              setTimeout(()  => form.submit(), 100);
                             }
                         })
 
@@ -546,11 +546,11 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                             appUtils.addRule("goToLocationAnimation", `
                             body {
                                 animation-name: revverseOpacityAnimation;
-                                animation-duration: 0.5s;
+                                animation-duration: 0.1s;
                                 opacity  : 0%;
                             }
                             `);
-                          setTimeout(()  => form.submit(), 500);
+                          setTimeout(()  => form.submit(), 100);
                         })
   
                           appUtils.subscribe('keydown', function(key) {
@@ -562,11 +562,11 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                                 appUtils.addRule("goToLocationAnimation", `
                                 body {
                                     animation-name: revverseOpacityAnimation;
-                                    animation-duration: 0.5s;
+                                    animation-duration: 0.1s;
                                     opacity  : 0%;
                                 }
                                 `);
-                              setTimeout(()  => form.submit(), 500);
+                              setTimeout(()  => form.submit(), 100);
                               }
                           })                        
                     }
