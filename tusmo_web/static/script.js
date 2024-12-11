@@ -73,8 +73,14 @@ fetch(`def/${real_word.toLowerCase()}`)
     if(data != "err"){
         const source  = "</p><p><i>Source :  "  + (data[0] ===  "0" ? "Larousse" : "Wiktionnaire") + "</i>";
         const raw_def = data.slice(1).replace(/^1\.\s*|\(.*?\)|:.*/g, "").trim();
-        const opposites_splitted = raw_def.split("Contraires ");
-        const synonyms_splitted = opposites_splitted[0].split("Synonymes ");
+        let opposites_splitted = raw_def.split("Contraires ");
+        if(opposites_splitted.length == 1){
+            opposites_splitted = raw_def.split("Contraire ");
+        }
+        let synonyms_splitted = opposites_splitted[0].split("Synonymes ");
+        if(synonyms_splitted.length == 1){
+            synonyms_splitted =  opposites_splitted[0].split("Synonyme ");
+        }
         const before  = synonyms_splitted[0];
         const synonyms = synonyms_splitted.length > 1 ? "</p><p><strong>Synonymes  :  </strong>" + synonyms_splitted[1].split(" - ").slice(0, 2).join(", ") : "";
         const opposites = synonyms_splitted.length > 1 ? "</p><p><strong>Contraires  :  </strong>" + opposites_splitted[1].split(" - ").slice(0, 2).join(", ") : "";
