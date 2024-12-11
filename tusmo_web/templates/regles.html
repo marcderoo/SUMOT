@@ -32,7 +32,7 @@
                     document.documentElement.removeAttribute('style')
                 }, 100);
             });
-        })
+        });
     </script>
 
     <!-- Metadata for encoding and responsiveness -->
@@ -48,19 +48,7 @@
 <body>
     <!-- Return button -->
     <a class="home-button" onclick='appUtils.goToLocation("/")'>
-        <span style="
-            border-style: solid;
-            border-width: 0.25em 0.25em 0 0;
-            content: '';
-            display: inline-block;
-            height: 0.45em;
-            position: relative;
-            top: 0.20em;
-            transform: rotate(-135deg);
-            vertical-align: top;
-            width: 0.45em;
-            left: 0.14em;
-        "></span>
+        <span style="border-style: solid; border-width: 0.25em 0.25em 0 0; content: ''; display: inline-block; height: 0.45em; position: relative; top: 0.20em; transform: rotate(-135deg); vertical-align: top; width: 0.45em; left: 0.14em;"></span>
     </a>
 
     <!-- Title with alternating highlight -->
@@ -84,6 +72,8 @@
                 <li><strong>JAUNE</strong> : Une lettre existe mais est mal placée.</li>
                 <li><strong>BLEU</strong> : Une lettre n'existe pas dans le mot.</li>
             </ul>
+            <p><strong>Solo :</strong> Trouvez le plus de mots possibles d'affilé pour faire le plus grand score !</p>
+            <p><strong>Versus IA :</strong> Affrontez notre IA selon le niveau de difficulté choisi. Vous partagez la même grille, chacun son tour !</p>
         </div>
     </div>
 </body>

@@ -308,50 +308,55 @@ dialog::backdrop {
 }
 
 
-/* Conteneur des règles */
-.rules-container {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  margin: 2em auto;
-  padding: 2em;
-  background-color: #f7f7f7;
-  border-radius: 10px;
+/* Style général */
+.rules-background {
+  color: #000; /* Texte noir */
+  background-color: #fff; /* Fond blanc */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+  font-family: 'Arial', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Centrage du titre */
+header {
+  margin-top: 1em;
   text-align: center;
-  max-width: 600px;
-  width: 100%;
 }
 
-/* Titre stylisé en dehors du conteneur */
+/* Titre stylisé avec surlignage alterné */
 .rules-title {
-  font-size: 4em;
+  font-size: 3em;
   margin-bottom: 1em;
-  color: #f0f0f0; /* Couleur générale du texte */
   font-weight: bold;
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.rules-title .highlight {
-  display: inline-block; /* Permet de contrôler la taille du surlignage */
-  width: 1em; /* Taille fixe pour chaque "case" */
-  height: 1em; /* Maintient la hauteur pour que chaque lettre ait une case égale */
-  text-align: center; /* Centrer la lettre dans la case */
-  line-height: 1em; /* Centre verticalement la lettre */
-  border-radius: 5px; /* Coins arrondis */
+  letter-spacing: 0; /* Pas d'écart entre les lettres */
+  color: #f0f0f0; /* Couleur de titre */
 }
 
 .rules-title .R { background-color: #4caf50; }
 .rules-title .G { background-color: #ffc107; }
 .rules-title .S { background-color: #f44336; }
 
+/* Conteneur des règles */
+.rules-container {
+  text-align: center; /* Centrer le texte dans le conteneur */
+  padding: 2em;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 700px; /* Largeur limitée */
+  width: 90%; /* Largeur relative pour les petits écrans */
+  margin: 1em auto;
+}
+
 /* Contenu des règles */
 .rules-content {
-  font-size: 1.1em; /* Réduit légèrement la taille du texte */
-  line-height: 1.6; /* Réduit l'interligne pour une meilleure compacité */
+  font-size: 1em;
+  line-height: 1.5;
 }
 
 .rules-content ul {
@@ -364,6 +369,13 @@ dialog::backdrop {
   margin: 0.5em 0;
   font-weight: bold;
 }
+
+.rules-content p {
+  margin-bottom: 1em; /* Espacement entre paragraphes */
+  text-align: center; /* Centrer chaque paragraphe */
+}
+
+
 
 .player-cell {
   border: 4px solid indianred;
