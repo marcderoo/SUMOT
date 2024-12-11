@@ -94,11 +94,11 @@ def get_def(mot: str) -> str:
 
     definition = definition_larousse(mot)
     if definition != "err":
-        return definition
+        return "0" +  definition
     
     definition = definition_wiktionnaire(mot)
     if definition != "err":
-        return definition
+        return "1" + definition
 
     return "err"
     

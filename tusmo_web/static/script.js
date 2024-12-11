@@ -71,7 +71,14 @@ fetch(`def/${real_word.toLowerCase()}`)
   })
   .then(data => {
     if(data != "err"){
-        def = `${real_word.charAt(0).toUpperCase() + real_word.slice(1).toLowerCase()} : ${data.toLowerCase()}`;
+        const source  = "</p><p><i>Source :  "  + (data[0] ===  "0" ? "Larousse" : "Wiktionnaire") + "</i>";
+        const raw_def = data.slice(1).replace(/^1\.\s*|\(.*?\)|:.*/g, "").trim();
+        const opposites_splitted = raw_def.split("Contraires ");
+        const synonyms_splitted = opposites_splitted[0].split("Synonymes ");
+        const before  = synonyms_splitted[0];
+        const synonyms = synonyms_splitted.length > 1 ? "</p><p><strong>Synonymes  :  </strong>" + synonyms_splitted[1].split(" - ").slice(0, 2).join(", ") : "";
+        const opposites = synonyms_splitted.length > 1 ? "</p><p><strong>Contraires  :  </strong>" + opposites_splitted[1].split(" - ").slice(0, 2).join(", ") : "";
+        def = `<strong>${real_word.charAt(0).toUpperCase() + real_word.slice(1).toLowerCase()} :</strong> ${before + synonyms + opposites  + source}`;
     }
   })
 
@@ -161,13 +168,10 @@ function verify(written_word){
 function showDialog(showWord = false) {
     const dialog = document.createElement("dialog");
 
-    let definitionContent = def
-        .replace(/^1\.\s*/, "")  // Supprimer "1." au début de la définition
-
     // Ajouter un en-tête et la définition formatée au dialogue
     dialog.innerHTML = (showWord ? `Dommage 😢, la réponse était : ${real_word} ...<br><br>` : "") +
         `<h2 style="margin-top: 0px;">Le saviez-vous ?</h2>` +
-        `<p>${definitionContent}</p><br><br>` +
+        `<p>${def}</p>` +
       `<div class="
           next-button
       ">Mot Suivant <span style="
@@ -557,11 +561,14 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                    */
                   if(res.every(e => e === 2)){
                       end = true;
-                      confetti.launch();
                       
                       count += 1;
                       const attemps = Math.floor(cellBeforeFirstEmptyCell.index / NBLETTERS);
-                      score += (PLAYERTURN === -1 || attemps % 2 === PLAYERTURN) ? actScore : 0;
+
+                      if(PLAYERTURN === -1 || attemps % 2 === PLAYERTURN){
+                        score += actScore;
+                        confetti.launch();
+                      }
                       appUtils.updateKey("score", score);
 
                       showDialog(false);
