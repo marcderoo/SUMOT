@@ -63,24 +63,88 @@ def get_dico(filename: str)-> Union[str, bytes]:
 
 @app.route('/def/<mot>')
 def get_def(mot: str) -> str:
-    """Récupère uniquement la définition principale pour le mot depuis le Wiktionnaire."""
-    url = f"https://fr.wiktionary.org/wiki/{mot}"
-    try:
-        # Ajout d'un timeout pour éviter une requête qui traîne trop longtemps
-        response = requests.get(url, timeout=5)
-        response.raise_for_status()  # Lève une exception pour les codes d'erreur HTTP
+    """
+    Récupère la définition principale d'un mot, en cherchant d'abord sur le site du Larousse,
+    puis sur le Wiktionnaire si nécessaire. Retourne "err" si aucune définition n'est trouvée.
+    Reformate également le texte pour afficher une définition lisible avec un maximum de 2 synonymes et 2 contraires.
 
-        soup = BeautifulSoup(response.text, "html.parser")
-        definition = soup.find("ol")  # Recherche de la liste ordonnée des définitions
+    :param mot: Mot pour lequel chercher la définition
+    :return: Définition principale ou "err" si aucune définition n'est trouvée
+    """
+    # Fonction pour récupérer la définition depuis le Larousse
+    def definition_larousse(mot: str) -> str:
+        url = f"https://www.larousse.fr/dictionnaires/francais/{mot}"
+        try:
+            response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=5)
+            response.raise_for_status()
+            soup = BeautifulSoup(response.text, "html.parser")
 
-        if definition:
-            premier_element = definition.find("li")  # Cherche le premier élément de la liste
-            if premier_element:
-                # Extraire la première ligne avant les retours à la ligne
-                return premier_element.text.split("\n")[0].strip()
-        return "err"  # Cas où aucune définition n'est trouvée
-    except Exception as e:
-        return f"err"  # erreurs générales
+            # Trouver la définition principale
+            definition = soup.find("ul", class_="Definitions")
+            if definition:
+                premier_element = definition.find("li")
+                if premier_element:
+                    texte_principal = premier_element.text.strip().lstrip("1. ")
+
+                    # Extraction des synonymes et contraires
+                    synonymes_section = soup.find("p", class_="Synonymes")
+                    contraires_section = soup.find("p", class_="Antonymes")
+
+                    synonymes = (
+                        synonymes_section.text.replace("Synonymes :", "").strip().split(" - ")[:2]
+                        if synonymes_section else []
+                    )
+                    contraires = (
+                        contraires_section.text.replace("Contraires :", "").strip().split(" - ")[:2]
+                        if contraires_section else []
+                    )
+
+                    # Formatage de l'affichage
+                    texte_formate = texte_principal
+                    if synonymes:
+                        texte_formate += f"\nSynonymes : {' - '.join(synonymes)}"
+                    if contraires:
+                        texte_formate += f"\nContraires : {' - '.join(contraires)}"
+
+                    return texte_formate
+            return "err"
+        except Exception as e:
+            return "err"
+
+    # Fonction pour récupérer la définition depuis le Wiktionnaire
+    def definition_wiktionnaire(mot: str) -> str:
+        url = f"https://fr.wiktionary.org/wiki/{mot}"
+        try:
+            response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=5)
+            response.raise_for_status()
+            soup = BeautifulSoup(response.text, "html.parser")
+
+            # Trouver la définition principale
+            definition = soup.find("ol")
+            if definition:
+                premier_element = definition.find("li")
+                if premier_element:
+                    texte_principal = premier_element.text.split("\n")[0].strip().lstrip("1. ")
+                    return texte_principal
+            return "err"
+        except Exception:
+            return "err"
+
+    # Normalisation du mot pour s'assurer qu'il correspond bien au format des dictionnaires
+    mot_normalise = mot.strip().lower()
+
+    # Tentative de récupération depuis le Larousse
+    definition = definition_larousse(mot_normalise)
+    if definition != "err":
+        return definition
+
+    # Si non trouvé, tentative depuis le Wiktionnaire
+    definition = definition_wiktionnaire(mot_normalise)
+    if definition != "err":
+        return definition
+
+    # Si aucune définition n'est trouvée
+    return "err"    
     
 @lru_cache(maxsize=None)
 def somme_frequences(mot: str) -> float:
