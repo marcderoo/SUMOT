@@ -1,4 +1,4 @@
-/* Style de la grille du jeu */
+/* Game grid style */
 html {
   height: 100%;
   overflow: hidden;
@@ -15,27 +15,27 @@ body {
   gap: 3vh;
   padding: 1vh;
   height: calc(100% - 1vh - 1.5rem);
-  /*background-image: url("/static/wallpaper.jpg");*/ /* Remplacez par le chemin de votre image */
-  background-repeat: no-repeat; /* Pas de répétition de l'image */
-  background-position: center; /* Centre l'image */
-  background-size: auto; /* Pas de redimensionnement */
+  /*background-image: url("/static/wallpaper.jpg");*/
+  background-repeat: no-repeat; /* No image repetition */
+  background-position: center; /* Center imagee */
+  background-size: auto; /* No resizing */
   animation-name: opacityAnimation;
   animation-duration: 0.1s;
 }
 
 .grid-container {
   display: grid;
-  margin: auto; /* Centrer horizontalement et verticalement */
+  margin: auto;
   gap : 0.5rem;
-  box-sizing: border-box;/* Intégrer le padding dans le calcul de l'élément */
-  padding: 0.25rem;/* Pour facilier les calculs, le width de la grille ressemble alors a 1/2 * gap + cell + gap + cell + ... 1/2 * gap et la height à 1/2 * gap + cell + gap + cell + ... 1/2 * gap, on a donc height / width = k * (gap + cell) / (l * (gap + cell)) = k / l = NBTRY / NBLETTERS avec k et l des entiers */
+  box-sizing: border-box;/* Include padding in element calculation */
+  padding: 0.25rem;/* For ease of calculation, the grid width then looks like 1/2 * gap + cell + gap + cell + ... 1/2 * gap and the height as 1/2 * gap + cell + gap + cell + ... 1/2 * gap, so height / width = k * (gap + cell) / (l * (gap + cell)) = k / l = NBTRY / NBLETTERS with k and l integers */
 }
 
-/* Style des cellules */
+/* Cell styling */
 .cell {
-  background-color: #f0f0f0; /* Couleur des cellules */
-  display: -webkit-flex; /* Préfixe pour Safari mobile */
-  display: flex; /* Centrer le contenu */
+  background-color: #f0f0f0; /* Cell color */
+  display: -webkit-flex; /* Prefix for Safari mobile */
+  display: flex; /* Centering content */
   justify-content: center;
   align-items: center;
   border-radius: 10%;
@@ -67,15 +67,15 @@ img.noodles {
   height: 1.5em;
 }
 
-/* Conteneur pour l'alphabet */
+/* Alphabet container */
 .alphabet-container {
-  display: -webkit-flex; /* Préfixe pour Safari mobile */
+  display: -webkit-flex; /* Prefix for Safari mobile */
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-sizing: border-box;/* Intégrer le padding dans le calcul de l'élément */
-  padding: 0.25rem;/* Pour facilier les calculs, le width de la grille ressemble alors a 1/2 * gap + cell + gap + cell + ... 1/2 * gap et la height à 1/2 * gap + cell + gap + cell + ... 1/2 * gap, on a donc height / width = 3 * (gap + cell) / (10 * (gap + cell)) = 3 / 10*/
-  height: min(100%, calc(0.3 * (100vw - 20px)));/* Occupe la hauteur définie par la grille (ou moins si la largeur dépasse (height / width = 0.3))*/
+  box-sizing: border-box;/* Include padding in element calculation */
+  padding: 0.25rem;
+  height: min(100%, calc(0.3 * (100vw - 20px)));/* Occupies the height defined by the grid (or less if the width exceeds (height / width = 0.3))*/
 }
 
 .alphabet-grid {
@@ -88,15 +88,15 @@ img.noodles {
 }
 
 .alphabet-row {
-  display: -webkit-flex; /* Préfixe pour Safari mobile */
-  display: flex; /* Standard pour les navigateurs modernes */
+  display: -webkit-flex; /* Prefix for Safari mobile */
+  display: flex; /* Standard for modern browsers */
   justify-content: center;
   gap: 0.5rem;
   height: 100%;
 }
 
 .alphabet-cell {
-  display: -webkit-flex; /* Préfixe pour Safari mobile */
+  display: -webkit-flex; /* Prefix for Safari mobile */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -110,11 +110,11 @@ img.noodles {
 
 .alphabet-cell:hover {
   cursor: pointer;
-  filter: brightness(75%); /* Réduit la luminosité à 75% */
+  filter: brightness(75%); /* Reduces brightness to 75% */
 }
 
 .alphabet-cell.clicked {
-  filter: brightness(75%); /* Réduit la luminosité à 75% */
+  filter: brightness(75%); /* Reduces brightness to 75% */
   outline-color : black;
   outline-style: solid;
 }
@@ -123,10 +123,10 @@ img.noodles {
   background-color: unset;
 }
 
-/* Style de fond pour le menu */
+/* Menu background style */
 .menu-background {
   color: #f0f0f0;
-  display: -webkit-flex; /* Préfixe pour Safari mobile */
+  display: -webkit-flex; /* Prefix for Safari mobile */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -136,55 +136,52 @@ img.noodles {
   padding: 0;
 }
 
-/* Conteneur principal */
+/* Menu container */
 .menu-container {
   text-align: center;
   padding: 2em;
 }
 
-/* Titre du jeu */
+/* Game title */
 .menu-title {
   font-size: 4em;
   margin-bottom: 1em;
-  color: #f0f0f0; /* Couleur générale du texte */
+  color: #f0f0f0; /* General text color */
   font-weight: bold;
   margin-top: 0px;
 }
 
 .menu-title .highlight {
-  display: inline-block; /* Permet de contrôler la taille du surlignage */
-  width: 1em; /* Taille fixe pour chaque "case" */
-  height: 1em; /* Maintient la hauteur pour que chaque lettre ait une case égale */
-  text-align: center; /* Centrer la lettre dans la case */
-  line-height: 1em; /* Centre verticalement la lettre */
-  padding: 0 0.2em; /* Espacement autour de la lettre */
-  border-radius: 5px; /* Coins arrondis */
+  display: inline-block; /* Controls highlight size */
+  width: 1em; /* Fixed size for each square */
+  height: 1em; /* Maintains height so that each letter has an equal square */
+  text-align: center; /* Center the letter in the box */
+  line-height: 1em; /* Center the letter vertically */
+  padding: 0 0.2em; /* Letter spacing */
+  border-radius: 5px; /* Rounded corners */
 }
 
 .menu-title .S {
-  background-color: #4caf50; /* Fond vert */
+  background-color: #4caf50; /* Green background */
 }
 
 .menu-title .M {
-  background-color: #ffc107; /* Fond jaune */
+  background-color: #ffc107; /* Yellow background */
 }
 
 .menu-title .T {
-  background-color: #f44336; /* Fond rouge */
+  background-color: #f44336; /* Red background */
 }
 
-
-
-
-/* Conteneur des boutons */
+/* Button container */
 .button-container {
-  display: -webkit-flex; /* Préfixe pour Safari mobile */
+  display: -webkit-flex; /* Prefix for Safari mobile */
   display: flex;
   flex-direction: column;
   gap: 1.5em;
 }
 
-/* Boutons */
+/* Button */
 .menu-button {
   background: #f0f0f0;
   color: rgba(0, 0, 30, 0.95);
@@ -206,12 +203,11 @@ img.noodles {
   transform: scale(1.05);
 }
 
-/* Bouton Home */
+/* Home button */
 .home-button {
   background: #f0f0f0;
   color: rgba(0, 0, 30, 0.95);
   border: none;
-  /* font-size: 1em; */
   font-weight: bold;
   padding: 0.5em 1em;
   border-radius: 1em;
@@ -251,15 +247,15 @@ dialog {
 }
 
 dialog:not([open]) {
-  display: none; /* Assure la compatibilité si Safari ne supporte pas <dialog> */
+  display: none; /* Ensures compatibility if Safari does not support <dialog> */
 }
 
 dialog:focus-visible {
-  outline: none; /* Désactive l'indicateur de focus par défaut */
+  outline: none; /* Disables default focus indicator */
 }
 
 dialog button {
-  pointer-events: auto; /* S'assure que le bouton peut être cliqué */
+  pointer-events: auto; /* Ensures that the button can be clicked */
 }
 
 @keyframes dialog {
@@ -308,10 +304,10 @@ dialog::backdrop {
 }
 
 
-/* Style général */
+/* General style of rules */
 .rules-background {
-  color: #000; /* Texte noir */
-  background-color: #fff; /* Fond blanc */
+  color: #000; /* Black text */
+  background-color: #fff; /* White background */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -322,38 +318,38 @@ dialog::backdrop {
   padding: 0;
 }
 
-/* Centrage du titre */
+/* Centering the title */
 header {
   margin-top: 1em;
   text-align: center;
 }
 
-/* Titre stylisé avec surlignage alterné */
+/* Stylized title with alternate highlighting */
 .rules-title {
   font-size: 3em;
   margin-bottom: 1em;
   font-weight: bold;
-  letter-spacing: 0; /* Pas d'écart entre les lettres */
-  color: #f0f0f0; /* Couleur de titre */
+  letter-spacing: 0; /* No gap between letters */
+  color: #f0f0f0; /* Title color */
 }
 
 .rules-title .R { background-color: #4caf50; }
 .rules-title .G { background-color: #ffc107; }
 .rules-title .S { background-color: #f44336; }
 
-/* Conteneur des règles */
+/* Rules container */
 .rules-container {
-  text-align: center; /* Centrer le texte dans le conteneur */
+  text-align: center; /* Center text in container */
   padding: 2em;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 700px; /* Largeur limitée */
-  width: 90%; /* Largeur relative pour les petits écrans */
+  max-width: 700px; /* Limited width */
+  width: 90%; /* Relative width for small screens */
   margin: 1em auto;
 }
 
-/* Contenu des règles */
+/* Rules content */
 .rules-content {
   font-size: 1em;
   line-height: 1.5;
@@ -371,8 +367,8 @@ header {
 }
 
 .rules-content p {
-  margin-bottom: 1em; /* Espacement entre paragraphes */
-  text-align: center; /* Centrer chaque paragraphe */
+  margin-bottom: 1em;
+  text-align: center;
 }
 
 

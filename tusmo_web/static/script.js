@@ -153,12 +153,12 @@ function verify(written_word){
     return res;
 }
 
-function showDialog(showWord = false) {
-    /**
+/**
  * Show the final dialog (winner or looser screen)
  * 
  * @param {boolean} showWord - Show the word in the dialog
  */
+function showDialog(showWord = false) {
     const dialog = document.createElement("dialog");
 
     let definitionContent = def
