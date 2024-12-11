@@ -1,14 +1,27 @@
+/**
+ * Utility class to provide various functionalities, including dynamic CSS rules management,
+ * event handling, and caching via localStorage. Implements the Singleton design pattern.
+ */
 class AppUtils {
-    // Instance unique pour le Singleton
+    /**
+     * The unique instance of the class.
+     * @type {AppUtils}
+     */
     static instance;
 
-    // Constructeur privé pour éviter une instanciation multiple
+    /**
+     * Private constructor to ensure Singleton pattern.
+     */
     constructor() {
         if (AppUtils.instance) {
-            return AppUtils.instance;
+            return AppUtils.instance; // Returns the existing instance
         }
         AppUtils.instance = this;
 
+        /**
+         * Detects if the user is on a mobile device.
+         * @type {boolean}
+         */
         this.isMobileDevice = navigator.userAgent.match(/iPhone/i)
         || navigator.userAgent.match(/webOS/i)
         || navigator.userAgent.match(/Android/i)
@@ -17,44 +30,80 @@ class AppUtils {
         || navigator.userAgent.match(/BlackBerry/i)
         || navigator.userAgent.match(/Windows Phone/i);
 
+        /**
+         * A style element for managing dynamic CSS rules.
+         * @type {HTMLStyleElement}
+         */
         this.style = document.createElement('style');
         document.head.appendChild(this.style);
+
+        /**
+         * List of CSS rule IDs.
+         * @type {string[]}
+         */
         this.idsRules = [];
+
+        /**
+         * Mapping of rule IDs to event associations and callbacks.
+         * @type {Object.<string, {eventName: string, callback: Function}>}
+         */
         this.idsRulesFunc = {};
 
+        /**
+         * Deferred or conditional event handlers.
+         * @type {Object.<string, Function[]>}
+         */
         this.doIfOrWhenEvents = {};
-        this.events = {}; // Stockage des événements et de leurs abonnés
+
+        /**
+         * Mapping of event names to their listeners.
+         * @type {Object.<string, Function[]>}
+         */
+        this.events = {};
+
+        /**
+         * Set of past events.
+         * @type {Set<string>}
+         */
         this.pastEvents = new Set();
     }
 
-    // Charge des fichiers en utilisant le cache
+    /**
+     * Asynchronously loads an object, with optional caching in localStorage.
+     * @param {string} url - The URL of the resource to load.
+     * @param {boolean} [base64=false] - Whether to convert the response to Base64 format.
+     * @returns {Promise<string>} The loaded data.
+     * @throws {Error} If the fetch request fails.
+     */
     async loadObj(url, base64 = false) {
-        // Vérifie si l'objet est dans le localStorage
+        // Checks if object is in localStorage
         const obj = localStorage.getItem(url);
         if (obj) {
-            return obj; // Retourne directement si trouvé
+            return obj; // Returns directly if found
         } else {
-            // Télécharge l'objet via fetch
+            // Download object via fetch
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error(`Erreur lors du téléchargement : ${response.statusText}`);
             }
 
+            // Handles base64 formats if specified
             if(base64){
                 const blob = await response.blob();
     
-                // Convertit le blob en Base64
+                // Converts blob to Base64
                 return await new Promise((resolve, reject) => {
                     const reader = new FileReader();
                     reader.onload = function () {
                         const base64Data = reader.result;
-                        localStorage.setItem(url, base64Data); // Stocke en localStorage
-                        resolve(base64Data); // Retourne les données encodées
+                        localStorage.setItem(url, base64Data); // Save item in localStorage
+                        resolve(base64Data); // Returns encoded data
                     };
-                    reader.onerror = reject; // Gère les erreurs
-                    reader.readAsDataURL(blob); // Lecture du blob
+                    reader.onerror = reject; // Handles errors
+                    reader.readAsDataURL(blob); // Reading the blob
                 });
             } else {
+                // Returns text data and stores it in cache
                 const res =  await response.text();
                 localStorage.setItem(url, res);
                 return res;
@@ -62,6 +111,12 @@ class AppUtils {
         }
     }
 
+    /**
+     * Loads a value from localStorage or initializes it with a default value.
+     * @param {string} key - The key to load.
+     * @param {string} [default_=null] - The default value to set if the key does not exist.
+     * @returns {string} The loaded or default value.
+     */
     loadKey(key, default_ = null) {
         let val = localStorage.getItem(key);
         if(val){
@@ -72,10 +127,20 @@ class AppUtils {
         }
     }
 
+    /**
+     * Updates a value in localStorage.
+     * @param {string} key - The key to update.
+     * @param {string} val - The new value to set.
+     */
     updateKey(key, val) {
         localStorage.setItem(key, val);
     } 
 
+    /**
+     * Adds or updates a dynamic CSS rule.
+     * @param {string} id - The unique ID of the rule.
+     * @param {string} rule - The CSS rule to add.
+     */
     addRule(id, rule) {
         let idx = this.idsRules.indexOf(id);
         if(idx >= 0){
@@ -87,6 +152,10 @@ class AppUtils {
         this.style.sheet.insertRule(rule, idx);
     }
 
+    /**
+     * Removes a dynamic CSS rule and its associated events.
+     * @param {string} id - The ID of the rule to remove.
+     */
     removeRule(id) {
         let idx = this.idsRules.indexOf(id);
         if(idx >= 0){
@@ -100,6 +169,12 @@ class AppUtils {
         }
     }
 
+    /**
+     * Links a dynamic CSS rule to an event with a function generating the rule.
+     * @param {string} id - The unique ID of the rule.
+     * @param {string} eventName - The name of the event to link.
+     * @param {Function} func - A function generating the CSS rule.
+     */
     linkRuleTo(id, eventName, func){
         this.addRule(id, func());
         
@@ -110,6 +185,11 @@ class AppUtils {
         this.idsRulesFunc[id] = {"eventName" : eventName, "callback" : callback};
     }
 
+    /**
+     * Executes a function immediately if an event has already occurred or when it occurs.
+     * @param {string} eventName - The name of the event.
+     * @param {Function} callback - The function to execute.
+     */
     doIfOrWhen(eventName, callback) {
         if(this.pastEvents.has(eventName)){
             callback();
@@ -121,7 +201,11 @@ class AppUtils {
         }
     }
 
-    // Méthode pour s'abonner à un événement
+    /**
+     * Subscribes a callback to an event.
+     * @param {string} eventName - The name of the event.
+     * @param {Function} callback - The callback to subscribe.
+     */
     subscribe(eventName, callback) {
         if (!this.events[eventName]) {
             this.events[eventName] = [];
@@ -129,7 +213,11 @@ class AppUtils {
         this.events[eventName].push(callback);
     }
 
-    // Méthode pour se désabonner d'un événement
+    /**
+     * Unsubscribes a callback from an event.
+     * @param {string} eventName - The name of the event.
+     * @param {Function} callback - The callback to unsubscribe.
+     */
     unsubscribe(eventName, callback) {
         if (!this.events[eventName]) return;
 
@@ -137,13 +225,17 @@ class AppUtils {
             (listener) => listener !== callback
         );
 
-        // Supprime l'événement s'il n'a plus d'abonnés
+        // Deletes the event if it no longer has subscribers
         if (this.events[eventName].length === 0) {
             delete this.events[eventName];
         }
     }
 
-    // Méthode pour émettre un événement
+    /**
+     * Emits an event, notifying all its subscribers.
+     * @param {string} eventName - The name of the event.
+     * @param {any} [data] - Optional data to pass to subscribers.
+     */
     emit(eventName, data) {
         this.pastEvents.add(eventName);
 
@@ -154,6 +246,10 @@ class AppUtils {
         } 
     }
 
+    /**
+     * Redirects to a URL with a transition animation.
+     * @param {string} url - The destination URL.
+     */
     goToLocation(url){
       this.addRule("reAddBackGround", `        html {
             background-color: #FBA999;
@@ -169,10 +265,13 @@ class AppUtils {
     }
 }
 
-//Managing events
+/**
+ * Instance of the utility class to provide various functionalities, including dynamic CSS rules management,
+ * event handling, and caching via localStorage.
+ */
 const appUtils = new AppUtils();
 
-//classical events
+/* Add Classical Events */
 document.addEventListener('DOMContentLoaded', () => {
     appUtils.emit("DOMContentLoaded");
 });
@@ -191,16 +290,16 @@ window.addEventListener('resize', (event) => {
     appUtils.emit("windowResize", event);
 });
 
-/**Set Font Size*/
+/* Set Font Size*/
 appUtils.linkRuleTo("HTMLFontSize", 'windowResize', () => 
     `html {
         font-size : ${(appUtils.isMobileDevice ? 0.03 : 0.02) *  Math.min(window.innerHeight, window.innerWidth)}px;
     }`
 );
 
-/** Manage Body Height */
+/* Manage Body Height */
 appUtils.doIfOrWhen("DOMContentLoaded", () => {
-    // Récupération des styles calculés
+    // Recovering calculated styles
     const computedStyle = getComputedStyle(document.body);
 
     appUtils.addRule("ManageBodyHeight", `

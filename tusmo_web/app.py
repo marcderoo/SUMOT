@@ -5,13 +5,13 @@ import requests
 from bs4 import BeautifulSoup
 from functools import lru_cache
 
-app = Flask(__name__)
+app: object = Flask(__name__)
 
 with open("small_dico.txt", 'r') as file:
-    dico = [line.strip() for line in file]
+    dico: list[str] = [line.strip() for line in file]
 
 with open("frequences_lettres.txt", "r") as file:
-    frequences_lettres = {
+    frequences_lettres: dict[str, float] = {
         ligne.split(" : ")[0].strip(): float(ligne.split(" : ")[1].strip())
         for ligne in file if " : " in ligne
     }
@@ -27,11 +27,11 @@ def solo()-> str:
     count: int = 1
     
     if request.method == 'POST':
-        score = request.form.get('score', 0, type=int)  # Récupération de 'score' depuis le formulaire
-        count = request.form.get('count', 1, type=int)  # Récupération de 'count' depuis le formulaire
+        score: int = request.form.get('score', 0, type=int)  # Récupération de 'score' depuis le formulaire
+        count: int = request.form.get('count', 1, type=int)  # Récupération de 'count' depuis le formulaire
 
     random_word = random.choice(dico).upper()  # Mot mystère
-    return render_template('index.html', data={
+    return render_template('solo.html', data={
         "word": random_word,
         "score": score,
         "count": count
@@ -169,14 +169,14 @@ def bot_proposition_difficile(difficulte: str) -> Optional[str]:
         data["history"] : contient les derniers mots testés
     """
     difficulte: int = int(difficulte)
-    data: Dict[str, Union[int, List[str], Dict[str, Dict[str, Union[int, bool, List[int]]]]]] = request.get_json()
+    data: Dict[str, Union[int, str, Dict[str, Dict[str, Union[int, bool, List[int]]]]], List[Union[str, bool]], List[str]] = request.get_json()
     words: List[str] = [word.upper() for word in dico if len(word) == data["len"] and word[0].upper() == data["firstLetter"] and word not in data["history"]]
 
     filtred: List[str] = []
     for word in words:
         if difficulte > 0:
             countLetters: Dict[str, int] = {}
-            goToNext = False
+            goToNext: bool = False
             for letter in word:
                 if letter in countLetters:
                     countLetters[letter] += 1
@@ -207,11 +207,11 @@ def bot_proposition_difficile(difficulte: str) -> Optional[str]:
 
     if difficulte == 3:
         mots_uniques: List[str] = [mot for mot in filtred if len(set(mot)) == len(mot)]
-        filtred = max(mots_uniques or filtred , key=somme_frequences)
+        mot_final: str = max(mots_uniques or filtred , key=somme_frequences)
     else:
-        filtred = random.choice(filtred)
+        mot_final: str = random.choice(filtred)
 
-    return filtred
+    return mot_final
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)

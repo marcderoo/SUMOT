@@ -161,15 +161,15 @@ img.noodles {
   border-radius: 5px; /* Coins arrondis */
 }
 
-.menu-title .T {
+.menu-title .S {
   background-color: #4caf50; /* Fond vert */
 }
 
-.menu-title .s {
+.menu-title .M {
   background-color: #ffc107; /* Fond jaune */
 }
 
-.menu-title .o {
+.menu-title .T {
   background-color: #f44336; /* Fond rouge */
 }
 
