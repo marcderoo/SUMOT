@@ -176,5 +176,5 @@ and updates the UI to reflect the player's actions.
 | --- | --- | --- | --- |
 | key | <code>string</code> |  | The key to be pressed (e.g., 'A', 'BACKSPACE', 'ENTER'). |
 | [player] | <code>number</code> | <code>-1</code> | The player number (1 for AI, 0 for human, -1 for solo mode). |
-| [aiDifficulty] | <code>number</code> | <code>-1</code> | The difficulty level for AI (used only if it's IA turn). |
+| [aiDifficulty] | <code>number</code> | <code>-1</code> | The difficulty level for AI (used only if it's AI turn). |
 
