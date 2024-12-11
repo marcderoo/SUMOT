@@ -1,31 +1,5 @@
 # **SUMOT**
 
-
-## **A FAIRE**
-On trouvera ci-dessous la liste des tâches à effectuer avant la prochaine réunion : (Ajouter ✅ lorsque c'est fait, et ajouter ❌ lorsqu'il y a un problème)
-
-- Conteneurisation : docker (MARC) ✅\
-  docker build -t tusmo_web . \
-  docker run -d -p 5000:5000 tusmo_web
-\
-- Déploiement (Vercel : https://vercel.com/marcderoos-projects/sumot) ✅
-\
-- Documentation (python-doc / js-doc) (MARC)
-- ReadMe (MARC) ✅ (A UPDATE régulièrment)
-\  
-- Tests unitaires js (MAX)
-- IA ultime (MAX) ✅
-\ 
-- Tests unitaires python (MERYEM)
-- Typing (MERYEM)✅
-\
-- Aide de l'IA en mode solo (ARNAUD)✅
-- Shop 
-- Revoir les defs 
-- Idées d'amélioration (IA en moins de mots possibles✅ / mots par thèmes)
-
-
-
 ## **Description de SUMOT**
 Ce projet vise à développer un jeu inspiré de **Tusmo**, **Sutom** ou encore le jeu télévisé **Motus**. L'ajout de notre version est qu'elle propose un mode contre une IA à affronter selon différents niveaux de difficultés. Cette IA est aussi disponible en aide dans le mode Solo. De plus, un système de récompense est mis en place, ces dernières permettent de personnaliser son décor et son sumo.\
 
