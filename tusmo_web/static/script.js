@@ -153,6 +153,11 @@ function verify(written_word){
     return res;
 }
 
+/**
+ * Show the final dialog (winner or looser screen)
+ * 
+ * @param {boolean} showWord - Show the word in the dialog
+ */
 function showDialog(showWord = false){
     const dialog = document.createElement("dialog");
     dialog.innerHTML = (showWord ? `Dommage 😢, la réponse était : ${real_word} ...<br><br>` : "") + 

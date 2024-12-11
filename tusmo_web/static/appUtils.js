@@ -1,6 +1,5 @@
 /**
- * Utility class to provide various functionalities, including dynamic CSS rules management,
- * event handling, and caching via localStorage. Implements the Singleton design pattern.
+ * Utility class to provide various functionalities, including dynamic CSS rules management, event handling, and caching via localStorage. Implements the Singleton design pattern.
  */
 class AppUtils {
     /**
