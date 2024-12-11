@@ -153,6 +153,78 @@ function verify(written_word){
     return res;
 }
 
+function showDialog(showWord = false){
+    const dialog = document.createElement("dialog");
+    dialog.innerHTML = (showWord ? "Dommage 😢, la réponse était : ${real_word} ...<br><br>" : "") + 
+    `<h2 style="margin-top: 0px;">Le saviez-vous ?</h2>
+      ${def}<br><br>
+      <div class="
+          next-button
+      ">Mot Suivant <span style="
+          border-style: solid;
+          border-width: 0.25em 0.25em 0 0;
+          content: '';
+          display: inline-block;
+          height: 0.45em;
+          position: relative;
+          top: 0.20em;
+          transform: rotate(45deg);
+          vertical-align: top;
+          width: 0.45em;
+          left: 0em;
+      "></span></div><br><br>`
+
+    document.body.appendChild(dialog);
+
+    dialog.showModal();
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.id = 'form-end';
+    form.action = window.location.href;
+    form.hidden = true;
+
+    const countInput = document.createElement('input');
+    countInput.type = 'hidden';
+    countInput.name = 'count';
+    countInput.id = 'count';
+    countInput.value = count; 
+
+    const scoreInput = document.createElement('input');
+    scoreInput.type = 'hidden';
+    scoreInput.name = 'score';
+    scoreInput.id = 'score';
+    scoreInput.value = score; 
+
+    form.appendChild(countInput);
+    form.appendChild(scoreInput);
+
+    document.body.appendChild(form);
+
+    function goToNext(){
+        dialog.close();
+        appUtils.addRule("reAddBackGround", `        html {
+            background-color: #FBA999;
+        }`)
+        appUtils.addRule("goToLocationAnimation", `
+        body {
+            animation-name: revverseOpacityAnimation;
+            animation-duration: 0.1s;
+            opacity  : 0%;
+        }
+        `);
+      setTimeout(()  => form.submit(), 100);
+    }
+
+    document.querySelector(".next-button").addEventListener("click", goToNext);
+
+    appUtils.subscribe('keydown', function(key) {
+        if(key == "ENTER"){
+            goToNext();
+        }
+    })
+}
+
 /**
  * Initialize the game after loading the DOM.
  * This function manages the creation of the grid, letters and events.
@@ -476,83 +548,7 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                       score += (PLAYERTURN === -1 || attemps % 2 === PLAYERTURN) ? actScore : 0;
                       appUtils.updateKey("score", score);
 
-                      const dialog = document.createElement("dialog");
-                      dialog.innerHTML = `<h2 style="margin-top: 0px;">Le saviez-vous ?</h2>
-                        ${def}<br><br>
-                        <div class="
-                            next-button
-                        ">Mot Suivant <span style="
-                            border-style: solid;
-                            border-width: 0.25em 0.25em 0 0;
-                            content: '';
-                            display: inline-block;
-                            height: 0.45em;
-                            position: relative;
-                            top: 0.20em;
-                            transform: rotate(45deg);
-                            vertical-align: top;
-                            width: 0.45em;
-                            left: 0em;
-                        "></span></div><br><br>`
-
-                      document.body.appendChild(dialog);
-
-                      dialog.showModal();
-
-                        const form = document.createElement('form');
-                        form.method = 'POST';
-                        form.id = 'form-end';
-                        form.action = window.location.href;
-                        form.hidden = true;
-
-                        const countInput = document.createElement('input');
-                        countInput.type = 'hidden';
-                        countInput.name = 'count';
-                        countInput.id = 'count';
-                        countInput.value = count; 
-
-                        const scoreInput = document.createElement('input');
-                        scoreInput.type = 'hidden';
-                        scoreInput.name = 'score';
-                        scoreInput.id = 'score';
-                        scoreInput.value = score; 
-
-                        form.appendChild(countInput);
-                        form.appendChild(scoreInput);
-
-                        document.body.appendChild(form);
-
-                        document.querySelector(".next-button").addEventListener("click", () => {
-                            dialog.close();
-                            appUtils.addRule("reAddBackGround", `        html {
-                                background-color: #FBA999;
-                            }`)
-                            appUtils.addRule("goToLocationAnimation", `
-                            body {
-                                animation-name: revverseOpacityAnimation;
-                                animation-duration: 0.1s;
-                                opacity  : 0%;
-                            }
-                            `);
-                          setTimeout(()  => form.submit(), 100);
-                        })
-
-                        appUtils.subscribe('keydown', function(key) {
-                            if(key == "ENTER"){
-                                dialog.close();
-                                appUtils.addRule("reAddBackGround", `        html {
-                                    background-color: #FBA999;
-                                }`)
-                                appUtils.addRule("goToLocationAnimation", `
-                                body {
-                                    animation-name: revverseOpacityAnimation;
-                                    animation-duration: 0.1s;
-                                    opacity  : 0%;
-                                }
-                                `);
-                              setTimeout(()  => form.submit(), 100);
-                            }
-                        })
+                      showDialog(false);
 
                   } else {
                     actScore -= player == 1 ? (3 - aiDifficulty)   * 10 : 15;
@@ -576,83 +572,7 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                         
                         count += 1;
   
-                        const dialog = document.createElement("dialog");
-                        dialog.innerHTML = `Dommage 😢, la réponse était : ${real_word} ...<br><br><h2 style="margin-top: 0px;">Le saviez-vous ?</h2>
-                          ${def}<br><br>
-                          <div class="
-                              next-button
-                          ">Mot Suivant <span style="
-                              border-style: solid;
-                              border-width: 0.25em 0.25em 0 0;
-                              content: '';
-                              display: inline-block;
-                              height: 0.45em;
-                              position: relative;
-                              top: 0.20em;
-                              transform: rotate(45deg);
-                              vertical-align: top;
-                              width: 0.45em;
-                              left: 0em;
-                          "></span></div><br><br>`
-  
-                        document.body.appendChild(dialog);
-  
-                        dialog.showModal();
-  
-                          const form = document.createElement('form');
-                          form.method = 'POST';
-                          form.id = 'form-end';
-                          form.action = window.location.href;
-                          form.hidden = true;
-  
-                          const countInput = document.createElement('input');
-                          countInput.type = 'hidden';
-                          countInput.name = 'count';
-                          countInput.id = 'count';
-                          countInput.value = count; 
-  
-                          const scoreInput = document.createElement('input');
-                          scoreInput.type = 'hidden';
-                          scoreInput.name = 'score';
-                          scoreInput.id = 'score';
-                          scoreInput.value = score; 
-  
-                          form.appendChild(countInput);
-                          form.appendChild(scoreInput);
-  
-                          document.body.appendChild(form);
-
-                          document.querySelector(".next-button").addEventListener("click", () => {
-                            dialog.close();
-                            appUtils.addRule("reAddBackGround", `        html {
-                                background-color: #FBA999;
-                            }`)
-                            appUtils.addRule("goToLocationAnimation", `
-                            body {
-                                animation-name: revverseOpacityAnimation;
-                                animation-duration: 0.1s;
-                                opacity  : 0%;
-                            }
-                            `);
-                          setTimeout(()  => form.submit(), 100);
-                        })
-  
-                          appUtils.subscribe('keydown', function(key) {
-                              if(key == "ENTER"){
-                                dialog.close();
-                                appUtils.addRule("reAddBackGround", `        html {
-                                    background-color: #FBA999;
-                                }`)
-                                appUtils.addRule("goToLocationAnimation", `
-                                body {
-                                    animation-name: revverseOpacityAnimation;
-                                    animation-duration: 0.1s;
-                                    opacity  : 0%;
-                                }
-                                `);
-                              setTimeout(()  => form.submit(), 100);
-                              }
-                          })                        
+                        showDialog(true);
                     }
                   }
                 } else {
