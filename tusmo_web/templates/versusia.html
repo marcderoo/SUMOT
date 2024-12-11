@@ -88,7 +88,7 @@
 
         appUtils.subscribe('DOMContentLoaded', () => {
             /** 
-             * Show the message to indicate who starts the game (player or IA).
+             * Show the message to indicate who starts the game (player or AI).
              * The message is displayed briefly and then removed.
              * @type {HTMLElement}
              */
@@ -149,7 +149,7 @@
             appUtils.emit("changeDifficulty", difficultyVal);
 
             /** 
-             * Play the game if the IA starts, sending a request to the server to get IA's move.
+             * Play the game if the AI starts, sending a request to the server to get AI's move.
              * Sends the game state (letters, history, etc.) to the server and processes the response.
              */
             if(PLAYERTURN === 1){
@@ -192,7 +192,7 @@
         appUtils.subscribe("keydown", (key) => {
             /**
              * Handles the key press events to update the game board.
-             * It processes the key input, updates the game state, and sends requests for the IA's turn if necessary.
+             * It processes the key input, updates the game state, and sends requests for the AI's turn if necessary.
              * 
              * @param {string} key - The key pressed by the user.
              */
@@ -219,7 +219,7 @@
                     }
                 }
 
-                // If the "ENTER" key is pressed and it's the IA's turn, trigger the IA move
+                // If the "ENTER" key is pressed and it's the AI's turn, trigger the AI move
                 if(key == "ENTER" && Math.floor(cellBeforeFirstEmptyCellIdx / NBLETTERS) % 2 !== PLAYERTURN){
                     fetch(`ia/${difficultyVal}`, {
                         method: 'POST',
@@ -294,7 +294,7 @@
 
     <!-- Container of the help buttons -->
     <div class="help-container">
-        <div onclick="appUtils.emit('helpIA')" style="font-size: 3rem;" class="help-button" id="helpIA">🧠
+        <div onclick="appUtils.emit('helpAI')" style="font-size: 3rem;" class="help-button" id="helpAI">🧠
             <div class="tooltip">
                 Aide de l'IA <span class="tooltip-score">100 <img class="noodles"></span>
             </div>
