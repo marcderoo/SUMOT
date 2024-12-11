@@ -433,7 +433,7 @@ async function processKeys(data, player = 1, aiDifficulty  = -1) {
  *
  * @param {string} key - The key to be pressed (e.g., 'A', 'BACKSPACE', 'ENTER').
  * @param {number} [player=-1] - The player number (1 for AI, 0 for human, -1 for solo mode).
- * @param {number} [aiDifficulty=-1] - The difficulty level for AI (used only if it's IA turn).
+ * @param {number} [aiDifficulty=-1] - The difficulty level for AI (used only if it's AI turn).
  */
 const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 : humain, player 1 : ia
     const cells = Array.from(document.querySelectorAll("div.cell"));
@@ -633,7 +633,7 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
  */
 appUtils.subscribe("updateHelpersScore", () => {
     if(score  < 100){
-        const elmt = document.getElementById("helpIA");
+        const elmt = document.getElementById("helpAI");
         elmt.classList.add("unclickable");
         elmt.removeAttribute("onclick");
     }
@@ -663,7 +663,7 @@ appUtils.doIfOrWhen("DOMContentLoaded", () => {
 /**
  * Manage when the button for getting helped by AI is clicked, fetch a proposition of AI and update board if all conditions are valid
  */
-appUtils.subscribe("helpIA", () => {
+appUtils.subscribe("helpAI", () => {
     let cells = Array.from(document.querySelectorAll("div.cell"));
     let cellBeforeFirstEmptyCellIdx = cells.length - 1;
     for (let i = 0; i < cells.length; i++) {
