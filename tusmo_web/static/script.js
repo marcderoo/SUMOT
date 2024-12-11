@@ -153,12 +153,17 @@ function verify(written_word){
     return res;
 }
 
-function showDialog(showWord = false){
+function showDialog(showWord = false) {
     const dialog = document.createElement("dialog");
-    dialog.innerHTML = (showWord ? "Dommage 😢, la réponse était : ${real_word} ...<br><br>" : "") + 
-    `<h2 style="margin-top: 0px;">Le saviez-vous ?</h2>
-      ${def}<br><br>
-      <div class="
+
+    let definitionContent = def
+        .replace(/^1\.\s*/, "")  // Supprimer "1." au début de la définition
+
+    // Ajouter un en-tête et la définition formatée au dialogue
+    dialog.innerHTML = (showWord ? `Dommage 😢, la réponse était : ${real_word} ...<br><br>` : "") +
+        `<h2 style="margin-top: 0px;">Le saviez-vous ?</h2>` +
+        `<p>${definitionContent}</p><br><br>` +
+      `<div class="
           next-button
       ">Mot Suivant <span style="
           border-style: solid;
