@@ -2,27 +2,63 @@ from typing import List, Tuple, Dict, Optional
 import random
 import os
 
-from bs4 import BeautifulSoup
 import requests
-
+from bs4 import BeautifulSoup
 
 def obtenir_definition(mot: str) -> str:
-    """Récupère uniquement la définition principale pour le mot depuis le Wiktionnaire."""
-    url = f"https://fr.wiktionary.org/wiki/{mot}"
-    try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            soup = BeautifulSoup(response.text, "html.parser")
-            definition = soup.find("ol")  # Trouve la liste ordonnée
-            if definition:
-                premier_element = definition.find("li")  # Trouve la première entrée de la liste
-                if premier_element:
-                    # Ne garde que le texte avant les points ou les puces inutiles
-                    texte_principal: str = premier_element.text.split("\n")[0]  # Sépare sur les sauts de ligne et prend le premier élément
-                    return texte_principal.strip()  # Nettoie les espaces autour du texte
-        return "Définition introuvable."
-    except Exception as e:
-        return f"Erreur lors de la récupération de la définition : {e}"
+    """
+    Récupère la définition principale d'un mot, en cherchant d'abord sur le site du Larousse,
+    puis sur le Wiktionnaire si nécessaire. Retourne un message si aucune définition n'est trouvée.
+    
+    :param mot: Mot pour lequel chercher la définition
+    :return: Définition principale ou message d'erreur
+    """
+    # Fonction pour récupérer la définition depuis le Larousse
+    def definition_larousse(mot: str) -> str:
+        url = f"https://www.larousse.fr/dictionnaires/francais/{mot}"
+        try:
+            response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.text, "html.parser")
+                # Recherche de la définition, même si l'URL contient un identifiant supplémentaire
+                definition = soup.find("ul", class_="Definitions")  # Classe spécifique au Larousse
+                if definition:
+                    premier_element = definition.find("li")  # Trouve la première définition
+                    if premier_element:
+                        return premier_element.text.strip()
+            return None
+        except Exception as e:
+            return None
+
+    # Fonction pour récupérer la définition depuis le Wiktionnaire
+    def definition_wiktionnaire(mot: str) -> str:
+        url = f"https://fr.wiktionary.org/wiki/{mot}"
+        try:
+            response = requests.get(url, headers={"User-Agent": "Mozilla/5.0"})
+            if response.status_code == 200:
+                soup = BeautifulSoup(response.text, "html.parser")
+                definition = soup.find("ol")  # Trouve la liste ordonnée
+                if definition:
+                    premier_element = definition.find("li")  # Trouve la première entrée de la liste
+                    if premier_element:
+                        texte_principal = premier_element.text.split("\n")[0]  # Sépare sur les sauts de ligne
+                        return texte_principal.strip()
+            return None
+        except Exception as e:
+            return None
+
+    # Tentative de récupération depuis le Larousse
+    definition = definition_larousse(mot)
+    if definition:
+        return f"(Source: Larousse) {definition}"
+
+    # Si non trouvé, tentative depuis le Wiktionnaire
+    definition = definition_wiktionnaire(mot)
+    if definition:
+        return f"(Source: Wiktionnaire) {definition}"
+
+    # Si aucune définition n'est trouvée
+    return "Aucune définition trouvée pour ce mot."
 
 
 
