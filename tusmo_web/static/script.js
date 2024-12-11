@@ -73,17 +73,21 @@ fetch(`def/${real_word.toLowerCase()}`)
     if(data != "err"){
         const source  = "</p><p><i>Source :  "  + (data[0] ===  "0" ? "Larousse" : "Wiktionnaire") + "</i>";
         const raw_def = data.slice(1).replace(/^1\.\s*|\(.*?\)|:.*/g, "").trim();
+        let opposites_keyword = "Contraires";
         let opposites_splitted = raw_def.split("Contraires ");
         if(opposites_splitted.length == 1){
             opposites_splitted = raw_def.split("Contraire ");
+            opposites_keyword =  "Contraire";
         }
+        let synonyms_keyword = "Synonymes";
         let synonyms_splitted = opposites_splitted[0].split("Synonymes ");
         if(synonyms_splitted.length == 1){
+            synonyms_keyword = "Synonyme";
             synonyms_splitted =  opposites_splitted[0].split("Synonyme ");
         }
         const before  = synonyms_splitted[0];
-        const synonyms = synonyms_splitted.length > 1 ? "</p><p><strong>Synonymes  :  </strong>" + synonyms_splitted[1].split(" - ").slice(0, 2).join(", ") : "";
-        const opposites = synonyms_splitted.length > 1 ? "</p><p><strong>Contraires  :  </strong>" + opposites_splitted[1].split(" - ").slice(0, 2).join(", ") : "";
+        const synonyms = synonyms_splitted.length > 1 ? ("</p><p><strong>" + synonyms_keyword + "  :  </strong>" + synonyms_splitted[1].split(" - ").slice(0, 2).join(", ")) : "";
+        const opposites = opposites_splitted.length > 1 ? ("</p><p><strong>" + opposites_keyword + "  :  </strong>" + opposites_splitted[1].split(" - ").slice(0, 2).join(", ")) : "";
         def = `<strong>${real_word.charAt(0).toUpperCase() + real_word.slice(1).toLowerCase()} :</strong> ${before + synonyms + opposites  + source}`;
     }
   })
