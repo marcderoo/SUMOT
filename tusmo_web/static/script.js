@@ -158,7 +158,7 @@ function verify(written_word){
  * 
  * @param {boolean} showWord - Show the word in the dialog
  */
-function showDialog(showWord = false){
+function showDialog(showWord){
     const dialog = document.createElement("dialog");
     dialog.innerHTML = (showWord ? `Dommage 😢, la réponse était : ${real_word} ...<br><br>` : "") + 
     `<h2 style="margin-top: 0px;">Le saviez-vous ?</h2>
@@ -533,10 +533,11 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                   const unvalidLeft = ["A",  "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",  "N",  "O", "P",  "Q",  "R", "S", "T", "U",  "V", "W", "X", "Y",  "Z"]
                   .filter((letter)  => {
                       let res = Object.keys(stateLetters).includes(letter) && stateLetters[letter].count == 0 && stateLetters[letter].notMore; // Lettre déjà affiché comme mauvaise
-                      res ||= real_word.includes(letter); // Lettre bonne
+                      res ||= real_word.includes(letter); // Good letter
                       return !res;
                   });
-              
+                  
+                 // Disable giving unvalid letter help if every unvalid letter as already been detected
                   if(unvalidLeft.length == 0){
                       const elmt = document.getElementById("helpLetterM");
                       elmt.classList.add("unclickable");
@@ -544,6 +545,11 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                   }
 
                   confirmed = true;
+
+                  /*
+                   * Updates the UI and state based on the result of a player's action.
+                   * If the action leads to a victory, triggers end-of-game procedures
+                   */
                   if(res.every(e => e === 2)){
                       end = true;
                       confetti.launch();
@@ -554,8 +560,7 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                       appUtils.updateKey("score", score);
 
                       showDialog(false);
-
-                  } else {
+                  } else {/* Otherwise updates the score and modifies the state of game cells */
                     actScore -= player == 1 ? (3 - aiDifficulty)   * 10 : 15;
                     if(cellBeforeFirstEmptyCell.index !== cells.length - 1){
                         for(let i = 0; i < res.length; i++){
@@ -576,13 +581,17 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                         end = true;
                         
                         count += 1;
-  
+                        
+                        /* Show looser dialog */
                         showDialog(true);
                     }
                   }
-                } else {
+                } else {/* Case where the word is not in the  dictionnary */
+                  /* Then add uncorrect  class to the cells of the line */
                   cells.slice(cellBeforeFirstEmptyCell.index + 1 - NBLETTERS, cellBeforeFirstEmptyCell.index + 1).forEach(elmt => elmt.classList.add("uncorrect"));
                   end = true;
+
+                  /* Wait a little and resets the line as the beginning */
                   setTimeout(function(){
                     for(let i = 0; i < NBLETTERS; i++){
                         cells[cellBeforeFirstEmptyCell.index + 1 - NBLETTERS + i].classList.remove("uncorrect");
@@ -619,6 +628,9 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
 }
 
 /** Help buttons*/
+/**
+ * Update buttons clickability and the score when "updateHelpersScore" event is emit
+ */
 appUtils.subscribe("updateHelpersScore", () => {
     if(score  < 100){
         const elmt = document.getElementById("helpIA");
@@ -641,10 +653,16 @@ appUtils.subscribe("updateHelpersScore", () => {
     appUtils.emit("updateNoodlesImages");
 });
 
+/**
+ * Update buttons clickability and the score when DOM is load
+ */
 appUtils.doIfOrWhen("DOMContentLoaded", () => {
     appUtils.emit("updateHelpersScore");
 })
 
+/**
+ * Manage when the button for getting helped by AI is clicked, fetch a proposition of AI and update board if all conditions are valid
+ */
 appUtils.subscribe("helpIA", () => {
     let cells = Array.from(document.querySelectorAll("div.cell"));
     let cellBeforeFirstEmptyCellIdx = cells.length - 1;
@@ -656,7 +674,7 @@ appUtils.subscribe("helpIA", () => {
     }
 
     if(PLAYERTURN === -1 || Math.floor(cellBeforeFirstEmptyCellIdx / NBLETTERS) % 2 === PLAYERTURN) {
-        appUtils.emit("cancelProcessKey");
+        appUtils.emit("cancelProcessKey"); // Early stop of the last processKey action if it still running for avoiding bug
 
         fetch(`ia/3`, {
             method: 'POST',
@@ -696,7 +714,10 @@ appUtils.subscribe("helpIA", () => {
     }
 })
 
-appUtils.subscribe("helpLetterBP", () => { //Lettre bonne et bien placé
+/**
+ * Manage when the button for getting a valid letter is clicked (= good and well positioned)
+ */
+appUtils.subscribe("helpLetterBP", () => {
     let cells = Array.from(document.querySelectorAll("div.cell"));
     let cellBeforeFirstEmptyCellIdx = cells.length - 1;
     for (let i = 0; i < cells.length; i++) {
@@ -745,11 +766,14 @@ appUtils.subscribe("helpLetterBP", () => { //Lettre bonne et bien placé
     }
 })
 
-appUtils.subscribe("helpLetterM", () => { // Lettre mauvaise
+/**
+ * Manage when the button for getting a uncorrect letter is clicked
+ */
+appUtils.subscribe("helpLetterM", () => {
     const possiblesLetters = ["A",  "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",  "N",  "O", "P",  "Q",  "R", "S", "T", "U",  "V", "W", "X", "Y",  "Z"]
     .filter((letter)  => {
         let res = Object.keys(stateLetters).includes(letter) && stateLetters[letter].count == 0 && stateLetters[letter].notMore; // Lettre déjà affiché comme mauvaise
-        res ||= real_word.includes(letter); // Lettre bonne
+        res ||= real_word.includes(letter); // Good letter
         return !res;
     });
 
