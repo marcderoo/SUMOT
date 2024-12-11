@@ -1,9 +1,9 @@
 # JS files documentation :
 
-[appUtils.js](/static/appUtils.md)  
-[confetti.js](/static/confetti.md)
+[appUtils.js](/tusmo_web/static/appUtils.md)  
+[confetti.js](/tusmo_web/static/confetti.md)
 
-# How to launch own md doc  :
+# How to update this documentation  :
 
 Install Node.JS on your computer and paste the following commands into the shell:
 
