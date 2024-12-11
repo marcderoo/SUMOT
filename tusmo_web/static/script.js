@@ -155,7 +155,7 @@ function verify(written_word){
 
 function showDialog(showWord = false){
     const dialog = document.createElement("dialog");
-    dialog.innerHTML = (showWord ? "Dommage 😢, la réponse était : ${real_word} ...<br><br>" : "") + 
+    dialog.innerHTML = (showWord ? `Dommage 😢, la réponse était : ${real_word} ...<br><br>` : "") + 
     `<h2 style="margin-top: 0px;">Le saviez-vous ?</h2>
       ${def}<br><br>
       <div class="
