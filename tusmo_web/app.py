@@ -16,7 +16,6 @@ with open("frequences_lettres.txt", "r") as file:
         for ligne in file if " : " in ligne
     }
 
-# Route d'accueil
 @app.route('/') 
 def menu()-> str:
     return render_template('menu.html')
@@ -27,10 +26,10 @@ def solo()-> str:
     count: int = 1
     
     if request.method == 'POST':
-        score: int = request.form.get('score', 0, type=int)  # Récupération de 'score' depuis le formulaire
-        count: int = request.form.get('count', 1, type=int)  # Récupération de 'count' depuis le formulaire
+        score: int = request.form.get('score', 0, type=int)  # Score retrieval from form
+        count: int = request.form.get('count', 1, type=int)  # Word count retrival from form
 
-    random_word = random.choice(dico).upper()  # Mot mystère
+    random_word = random.choice(dico).upper()  # Real word
     return render_template('solo.html', data={
         "word": random_word,
         "score": score,
@@ -43,10 +42,10 @@ def versus_ia()-> str:
     count: int = 1
     
     if request.method == 'POST':
-        score = request.form.get('score', 0, type=int)  # Récupération de 'score' depuis le formulaire
-        count = request.form.get('count', 1, type=int)  # Récupération de 'count' depuis le formulaire
+        score = request.form.get('score', 0, type=int)  # Score retrieval from form
+        count = request.form.get('count', 1, type=int)  # Word count retrival from form
 
-    random_word = random.choice(dico).upper()  # Mot mystère
+    random_word = random.choice(dico).upper()  # Real word
     return render_template('versusia.html', data={
         "word": random_word,
         "score": score,
