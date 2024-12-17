@@ -5,7 +5,7 @@ from app import somme_frequences
 import os
 from unittest.mock import patch, MagicMock
 import requests
-
+import json
 
 # Mock data for testing
 with open("small_dico.txt", 'r') as file:
@@ -189,7 +189,79 @@ class TestMenuRoute(unittest.TestCase):
         result1 = somme_frequences("esi")
         result2 = somme_frequences("esi")  # Should be fetched from cache
         self.assertEqual(result1, result2)
+        
+        
+    @patch('app.dico', ["ABRICOT", "AMBRE", "AMARRE", "AMULET", "ANANAS"]) 
+    @patch('app.frequences_lettres', {"A": 0.0817, "P": 0.0193, "L": 0.0278, "E": 0.1270, "R": 0.0599, "O": 0.0751, "M": 0.0241, "B": 0.0149, "I": 0.0697, "H": 0.0609})
+    def test_easy_difficulty(self):
+        data = {
+            "len": 5,
+            "firstLetter": "A",
+            "stateLetters": {},
+            "validLetters": ["A", "", "", "", ""],
+            "history":[]
+        }
 
+        response = self.app.post('/ia/0', data=json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(response.get_data(as_text=True), ["ABRICOT", "AMBRE", "AMARRE", "AMULET", "ANANAS"])
+
+    @patch('app.dico', ["MOTIVANT", "MALICIEUX", "MARTINET", "MILLIONS"])  
+    @patch('app.frequences_lettres', {"A": 0.0817, "P": 0.0193, "L": 0.0278, "E": 0.1270, "R": 0.0599, "O": 0.0751, "M": 0.0241, "B": 0.0149, "I": 0.0697, "H": 0.0609})
+    def test_hard_difficulty(self):
+        # Define the data for the POST request
+        data = {
+            "len": 8,
+            "firstLetter": "M",
+            "stateLetters": {
+                "M": {"count": 1, "posValid": [0], "posGood": [], "notMore": False},
+                "A": {"count": 1, "posValid": [1], "posGood": [], "notMore": False}
+            },
+            "validLetters": ["M", "A", False, False, False, False, False, False],
+            "history":[]
+        }
+
+        # Send the POST request
+        response = self.app.post('/ia/3', data=json.dumps(data), content_type='application/json')
+
+        # Assert the status code of the response
+        self.assertEqual(response.status_code, 200)
+
+        # Define the expected valid words for this test case
+        expected_words = [ "MALICIEUX", "MARTINET"]  # Update this to reflect valid words
+        response_word = response.get_data(as_text=True)
+
+        # Assert that the response word is among the expected words
+        self.assertIn(response_word, expected_words)
+        
+    
+    @patch('app.dico', ["MOTIVANT", "MALICIEUX", "MARTINET", "MILLIONS"])  
+    @patch('app.frequences_lettres', {"A": 0.0817, "P": 0.0193, "L": 0.0278, "E": 0.1270, "R": 0.0599, "O": 0.0751, "M": 0.0241, "B": 0.0149, "I": 0.0697, "H": 0.0609})
+    def test_hard_difficulty2(self):
+        # Define the data for the POST request
+        data = {
+            "len": 8,
+            "firstLetter": "M",
+            "stateLetters": {
+                "M": {"count": 1, "posValid": [0], "posGood": [], "notMore": False}
+            },
+            "validLetters": ["M", False, False, False, False, False, False, False],
+            "history":[]
+        }
+
+        # Send the POST request
+        response = self.app.post('/ia/3', data=json.dumps(data), content_type='application/json')
+
+        # Assert the status code of the response
+        self.assertEqual(response.status_code, 200)
+
+        # Define the expected valid words for this test case
+        expected_words = ["MOTIVANT", "MALICIEUX", "MARTINET", "MILLIONS"]  # Updated expected words
+        response_word = response.get_data(as_text=True)
+
+        # Assert that the response word is among the expected words
+        self.assertIn(response_word, expected_words)
+    
 
 
 
