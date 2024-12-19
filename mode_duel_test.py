@@ -172,5 +172,70 @@ class TestObtenirDefinition(unittest.TestCase):
         expected = "\x1b[93ma\x1b[0m\x1b[91mb\x1b[0m\x1b[93mc\x1b[0m\x1b[91md\x1b[0m"  
         self.assertEqual(result, expected)
 
+
+
+class TestBotPropositionUltime(unittest.TestCase):
+    def setUp(self):
+        # Sample list of possible words
+        self.mots_possibles = [
+            "laser", "lacer", "local", "logic", "liver", "lemon", "lodge", "lapse"
+        ]
+
+        # Sample historical data
+        self.historiques = [
+            ("laser", ["vert", "rouge", "rouge", "orange", "vert"]),
+            ("lacer", ["rouge", "vert", "rouge", "rouge", "rouge"]),
+        ]
+
+        # Mock frequency data
+        self.frequency_data = """l : 0.1
+            a : 0.2
+            s : 0.3
+            e : 0.15
+            r : 0.1
+            c : 0.05
+            o : 0.2
+            g : 0.1
+            i : 0.1
+            v : 0.05
+            p : 0.05
+            """
+
+    @patch("builtins.open", new_callable=mock_open, read_data="")
+    def test_bot_proposition_ultime_with_mocked_file(self, mock_file):
+        # Setup mock file return value
+        mock_file.return_value.__enter__.return_value.read.return_value = self.frequency_data
+
+        # Call the function
+        result = mode_duel.bot_proposition_ultime_1(self.mots_possibles, self.historiques)
+
+        # Expected result based on filtering and frequency logic
+        expected_result = "laser"  
+
+        # Assert that the result is as expected
+        self.assertEqual(result, expected_result)
+
+
+    @patch("builtins.open", new_callable=mock_open, read_data="")
+    def test_bot_proposition_ultime_multiple_valid_words(self, mock_file):
+        # Setup mock file return value
+        mock_file.return_value.__enter__.return_value.read.return_value = self.frequency_data
+
+        # Add more historical guesses that should leave multiple valid words
+        historiques_multiple_valid = [
+            ("laser", ["vert", "rouge", "rouge", "orange", "vert"]),
+            ("liver", ["rouge", "vert", "rouge", "rouge", "rouge"]),
+        ]
+
+        # Call the function
+        result = mode_duel.bot_proposition_ultime_1(self.mots_possibles, historiques_multiple_valid)
+
+        # Here, we expect the result to be the word with the highest frequency sum
+        expected_result = "laser"  
+
+        # Assert that the result is as expected
+        self.assertEqual(result, expected_result)
+
+
 if __name__ == "__main__":
     unittest.main()
