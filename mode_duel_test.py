@@ -1,7 +1,8 @@
 import unittest
 from unittest.mock import patch, MagicMock,mock_open
-
 import mode_duel
+from mode_duel import jouer
+
 
 class TestObtenirDefinition(unittest.TestCase):
 
@@ -235,7 +236,66 @@ class TestBotPropositionUltime(unittest.TestCase):
 
         # Assert that the result is as expected
         self.assertEqual(result, expected_result)
+        
+    
+    
+    
+    @patch("builtins.input", side_effect=["1", "mottest"])  # Mock user inputs
+    @patch("builtins.print")  # Mock print to suppress output
+    @patch("os.path.exists", return_value=True)  # Mock file existence check
+    @patch("mode_duel.charger_dictionnaire", return_value=["mottest", "autre"])  # Mock dictionary loading
+    @patch("mode_duel.choisir_mot", return_value="mottest")  # Mock word selection
+    @patch("mode_duel.colorier_mot_graphique", return_value="🎨 Mot coloré")  # Mock color formatting
+    @patch("mode_duel.obtenir_definition", return_value="Un mot de test.")  # Mock word definition
+    @patch("mode_duel.bot_proposition_facile", return_value="mottest")  # Mock bot behavior for difficulty 1
+    def test_jouer_successful_game(
+        self, mock_bot, mock_definition, mock_color, mock_choose_word,
+        mock_load_dict, mock_exists, mock_print, mock_input
+    ):
+        jouer()
+    
+        # Assert the dictionary file was checked for existence
+        mock_exists.assert_called_once_with("dictionnaire_clean.txt")
+        
+        # Assert the dictionary was loaded
+        mock_load_dict.assert_called_once_with("dictionnaire_clean.txt")
+        
+        # Assert the chosen word was "mottest"
+        mock_choose_word.assert_called_once_with(["mottest", "autre"])
+        
+        # Assert print was called with the congratulatory message
+        mock_print.assert_any_call("🎉 Félicitations, vous avez trouvé le mot !")
+        mock_print.assert_any_call("Définition de 'mottest' :", "Un mot de test.")
+        
+        
+    @patch("builtins.input", side_effect=["5", "1", "invalide", "mottest"])  # Mock invalid and valid inputs
+    @patch("builtins.print")  # Mock print to suppress output
+    @patch("os.path.exists", return_value=False)  # Mock file not found
+    def test_jouer_file_not_found(self, mock_exists, mock_print, mock_input):
+        jouer()
+        
+        # Assert the dictionary file was checked for existence
+        mock_exists.assert_called_once_with("dictionnaire_clean.txt")
+        
+        # Assert print was called with the file-not-found message
+        mock_print.assert_any_call("Le fichier dictionnaire_clean.txt est introuvable.")
 
+    @patch("builtins.input", side_effect=["1", "mauvailongueur", "mottest"])  # Mock inputs with wrong word length
+    @patch("builtins.print")  # Mock print to suppress output
+    @patch("os.path.exists", return_value=True)  # Mock file existence check
+    @patch("mode_duel.charger_dictionnaire", return_value=["mottest", "autre"])  # Mock dictionary loading
+    @patch("mode_duel.choisir_mot", return_value="mottest")  # Mock word selection
+    def test_jouer_invalid_word_length(
+        self, mock_choose_word, mock_load_dict, mock_exists, mock_print, mock_input
+    ):
+        jouer()
+        
+        # Assert print was called with the length error message
+        mock_print.assert_any_call("Le mot proposé n'a pas la bonne longueur.")
+    
+
+
+    
 
 if __name__ == "__main__":
     unittest.main()
