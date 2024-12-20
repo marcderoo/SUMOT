@@ -81,10 +81,10 @@
         const PLAYERTURN = Math.floor(Math.random() * 2);
 
         /**
-         * The initial difficulty value, loaded from local storage or set to 3 (Expert) if not found.
+         * The initial difficulty value, loaded from local storage or set to 1 (Middle) if not found.
          * @type {number}
          */
-        let difficultyVal = parseInt(appUtils.loadKey("difficulty", 3));
+        let difficultyVal = parseInt(appUtils.loadKey("difficulty", 1));
 
         appUtils.subscribe('DOMContentLoaded', () => {
             /** 
