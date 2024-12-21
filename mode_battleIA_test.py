@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import mock_open, patch, MagicMock
 import random
 from typing import List, Tuple, Optional
-from mode_battleIA import charger_dictionnaire
+from mode_battleIA import charger_dictionnaire, mode_battle_ia
 
 
 
@@ -23,7 +23,26 @@ class TestChargerDictionnaire(unittest.TestCase):
             mocked_file.assert_called_once_with(fichier, "r", encoding="utf-8")
             self.assertEqual(result, expected_output)
     
-    
+
+    @patch("mode_battleIA.random.choice")
+    @patch("mode_battleIA.charger_dictionnaire")
+    def test_mode_battle_ia(self, mock_charger_dictionnaire, mock_random_choice):
+        # Simulate a dictionary of words
+        mock_charger_dictionnaire.return_value = ["mot1", "mot2", "mot3"]
+
+        # Use a generator to produce infinite "mot1"
+        mock_random_choice.side_effect = (x for x in ["mot1"] * 10000)  # Infinite generator
+
+        # Mock os.path.exists to ensure the dictionary file is "found"
+        with patch("mode_battleIA.os.path.exists", return_value=True):
+            # Run the function
+            mode_battle_ia()
+
+            # Check that the dictionary was loaded
+            mock_charger_dictionnaire.assert_called_once_with("dictionnaire_clean.txt")
+
+            # Log the call count to verify behavior
+            print(f"random.choice called {mock_random_choice.call_count} times")
     
 
     
