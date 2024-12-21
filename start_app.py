@@ -13,9 +13,17 @@ def run_tests():
         "solveur_test.py",
     ]
 
+    env = os.environ.copy()
+    env["PYTHONIOENCODING"] = "utf-8"  # Force utf-8 encoding
+
     for test_file in test_files:
         print(f"Running tests in {test_file}...")
-        result = subprocess.run([sys.executable, "-m", "unittest", test_file], capture_output=True, text=True)
+        result = subprocess.run(
+            [sys.executable, "-m", "unittest", test_file],
+            capture_output=True,
+            text=True,
+            env=env,  # Use the updated environment
+        )
 
         if result.returncode != 0:
             print(f"❌ Tests failed in {test_file}:")
