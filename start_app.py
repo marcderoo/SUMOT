@@ -41,8 +41,12 @@ def start_flask_app():
     Start the Flask application.
     """
     os.chdir("tusmo_web") 
-    print("Starting Flask app...")
-    subprocess.run([sys.executable, "app.py"])
+    value=subprocess.run([sys.executable, "start_test_app.py"])
+    if value.returncode == 0:
+        print("Starting Flask app...")
+        subprocess.run([sys.executable, "app.py"])
+    else:
+        print(f"❌ Tests failed in test_app.py:")
 
 
 if __name__ == "__main__":
