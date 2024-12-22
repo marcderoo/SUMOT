@@ -45,14 +45,15 @@ def start_flask_app():
     value=subprocess.run([sys.executable, "start_test_app.py"])
     if value.returncode == 0:
         print("✅ Tests passed in start_test_app.py .")
-        print("Starting Flask app...")
-        subprocess.run([sys.executable, "app.py"])
+        return True
     else:
         print(f"❌ Tests failed in test_app.py:")
+        return False
 
 
 if __name__ == "__main__":
-    if run_tests():
-        start_flask_app()
+    results=run_tests() and start_flask_app()
+    if results:
+        print("✅ All tests passed")
     else:
         print("❌ Tests failed. Flask app will not start.")

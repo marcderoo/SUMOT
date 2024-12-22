@@ -25,19 +25,19 @@ pip install -r requirements.txt
 
 Lancer l'application localement :
 ```bash
-python app.py
+python start_app.py
 ```
 
 Docker :
 ```bash
-docker build -t tusmo_web .
-docker run -d -p 5000:5000 tusmo_web
+docker compose up -d --build
 ```
 
 Tests :
 ```bash
-python -m unittest discover tests
+python test_tusmo_app.py
 ```
+
 
 ## **Aperçu**
 <div style="display: flex; justify-content: space-around;">
