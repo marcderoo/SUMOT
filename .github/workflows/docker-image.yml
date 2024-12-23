@@ -21,10 +21,9 @@ jobs:
 
     - name: Display flask-app logs
       run: |
-        docker-compose up --build -d
-        docker-compose logs flask-app
+        docker-compose up --build --force-recreate --remove-orphans -d
 
     - name: Tear down services
-      if: always()
       run: |
+        run: sleep 10
         docker-compose down
