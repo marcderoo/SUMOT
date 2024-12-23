@@ -41,6 +41,7 @@ jobs:
       # Étape 5 : Vérifier si les tests ont réussi
       - name: Check test result
         run: |
+          cat test_output.log
           if grep -q "✅ All tests passed" last_line.log; then
             echo "Tests passed successfully!"
           else
