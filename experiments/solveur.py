@@ -8,6 +8,9 @@
 from typing import List, Set, Dict
 import unidecode
 import re
+import os
+if not os.getcwd().endswith("experiments"):
+    os.chdir("experiments") 
 
 # Lire le fichier dictionnaire.txt (dictionnaire original)
 with open("dictionnaire.txt", "r", encoding="utf-8") as fichier:
@@ -24,7 +27,7 @@ for mot in mots:
         mots_corriges.add(mot_sans_accents)  # Ajouter au set
 
 # Sauvegarder les mots corrigés dans un fichier dictionnaire_clean.txt
-with open("dictionnaire_clean.txt", "w", encoding="utf-8") as fichier_clean:
+with open("../dictionnaire_clean.txt", "w", encoding="utf-8") as fichier_clean:
     fichier_clean.write("\n".join(sorted(mots_corriges)))  # Trier avant d'écrire
 
 # Afficher un message de confirmation

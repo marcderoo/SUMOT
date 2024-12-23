@@ -2,7 +2,9 @@ import unittest
 from unittest.mock import mock_open, patch, MagicMock
 import random
 from typing import List, Tuple, Optional
-from experiments.mode_battleIA import charger_dictionnaire, mode_battle_ia as mode_battle_ia
+from mode_battleIA import charger_dictionnaire, mode_battle_ia
+
+
 
 class TestChargerDictionnaire(unittest.TestCase):
     def test_charger_dictionnaire(self):
@@ -11,7 +13,7 @@ class TestChargerDictionnaire(unittest.TestCase):
         
         # Patch the open function
         with patch("builtins.open", mock_open(read_data=mock_file_content)) as mocked_file:
-            fichier = "dictionnaire_clean.txt"
+            fichier = "../dictionnaire_clean.txt"
             expected_output = ["mot1", "mot2", "mot3"]
 
             # Call the function
@@ -37,7 +39,7 @@ class TestChargerDictionnaire(unittest.TestCase):
             mode_battle_ia()
 
             # Check that the dictionary was loaded
-            mock_charger_dictionnaire.assert_called_once_with("dictionnaire_clean.txt")
+            mock_charger_dictionnaire.assert_called_once_with("../dictionnaire_clean.txt")
 
             # Log the call count to verify behavior
             print(f"random.choice called {mock_random_choice.call_count} times")

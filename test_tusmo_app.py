@@ -42,6 +42,7 @@ def start_flask_app():
     Start the Flask application.
     """
     print("Running tests in start_test_app.py...")
+    os.chdir("..") 
     value=subprocess.run([sys.executable, "start_test_app.py"])
     if value.returncode == 0:
         print("✅ Tests passed in start_test_app.py .")

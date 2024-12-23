@@ -1,6 +1,8 @@
 from typing import List, Tuple, Dict, Optional
 import random
 import os
+if not os.getcwd().endswith("experiments"):
+    os.chdir("experiments") 
 
 import requests
 from bs4 import BeautifulSoup
@@ -248,7 +250,7 @@ def bot_proposition_ultime_1(mots_possibles: List[str], historiques: List[Tuple[
 
     # Charger les fréquences des lettres depuis le fichier texte
     frequences_lettres: Dict[str, float] = {}
-    with open("frequences_lettres.txt", "r") as fichier:
+    with open("../frequences_lettres.txt", "r") as fichier:
         for ligne in fichier:
             ligne = ligne.strip()
             if " : " in ligne:  # Vérifie que la ligne contient " : "
@@ -289,7 +291,7 @@ def bot_proposition_ultime_1(mots_possibles: List[str], historiques: List[Tuple[
 
 
 def jouer()-> None:
-    fichier: str = "dictionnaire_clean.txt"
+    fichier: str = "../dictionnaire_clean.txt"
     if not os.path.exists(fichier):
         print("Le fichier dictionnaire_clean.txt est introuvable.")
         return

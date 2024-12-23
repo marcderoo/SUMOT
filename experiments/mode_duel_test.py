@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock,mock_open
-import experiments.mode_duel as mode_duel
-from experiments.mode_duel import jouer
+import mode_duel
+from mode_duel import jouer
 
 
 class TestObtenirDefinition(unittest.TestCase):
@@ -63,11 +63,11 @@ class TestObtenirDefinition(unittest.TestCase):
         # Mock content of the dictionary file
         mock_file_content = "lapin\nchien\nchat\n\n"
         with patch("builtins.open", mock_open(read_data=mock_file_content)) as mock_file:
-            mots = mode_duel.charger_dictionnaire("dictionnaire_clean.txt")
+            mots = mode_duel.charger_dictionnaire("../dictionnaire_clean.txt")
             # Verify the content of the loaded list
             self.assertEqual(mots, ["lapin", "chien", "chat"])
             # Ensure the file was opened correctly
-            mock_file.assert_called_once_with("dictionnaire_clean.txt", "r", encoding="utf-8")
+            mock_file.assert_called_once_with("../dictionnaire_clean.txt", "r", encoding="utf-8")
     
     def test_choisir_mot(self):
         # Mock list of words
@@ -255,10 +255,10 @@ class TestBotPropositionUltime(unittest.TestCase):
         jouer()
     
         # Assert the dictionary file was checked for existence
-        mock_exists.assert_called_once_with("dictionnaire_clean.txt")
+        mock_exists.assert_called_once_with("../dictionnaire_clean.txt")
         
         # Assert the dictionary was loaded
-        mock_load_dict.assert_called_once_with("dictionnaire_clean.txt")
+        mock_load_dict.assert_called_once_with("../dictionnaire_clean.txt")
         
         # Assert the chosen word was "mottest"
         mock_choose_word.assert_called_once_with(["mottest", "autre"])
@@ -275,7 +275,7 @@ class TestBotPropositionUltime(unittest.TestCase):
         jouer()
         
         # Assert the dictionary file was checked for existence
-        mock_exists.assert_called_once_with("dictionnaire_clean.txt")
+        mock_exists.assert_called_once_with("../dictionnaire_clean.txt")
         
         # Assert print was called with the file-not-found message
         mock_print.assert_any_call("Le fichier dictionnaire_clean.txt est introuvable.")

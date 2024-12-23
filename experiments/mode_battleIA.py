@@ -1,5 +1,7 @@
 import random
 import os
+if not os.getcwd().endswith("experiments"):
+    os.chdir("experiments") 
 from typing import List, Tuple
 
 # Import des fonctions des bots
@@ -14,7 +16,7 @@ def charger_dictionnaire(fichier: str) -> List[str]:
 
 # Fonction principale pour le mode Battle IA
 def mode_battle_ia()-> None:
-    fichier = "dictionnaire_clean.txt"
+    fichier = "../dictionnaire_clean.txt"
     if not os.path.exists(fichier):
         print("Le fichier dictionnaire_clean.txt est introuvable.")
         return
