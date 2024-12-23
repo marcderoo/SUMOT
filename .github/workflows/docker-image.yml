@@ -33,7 +33,7 @@ jobs:
       # Étape 4 : Exécuter les tests unitaires
       - name: Run unit tests
         run: |
-          python -m test_tusmo_app.py
+          python test_tusmo_app.py
           done
 
         env:
