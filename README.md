@@ -56,8 +56,8 @@ python test_tusmo_app.py
 ---
 
 ## **Overview** <div style="display: flex; justify-content: space-around;">
-    <img src="https://github.com/user-attachments/assets/82385267-01a7-4deb-a0eb-a66ea6b5c085" alt="Image 1" width="300" style="margin-right: 10px;">
-    <img src="https://github.com/user-attachments/assets/d9339eb4-8469-415f-94ad-bb9f0fc06932" alt="Image 2" width="300">
+    <img src="menu.png" alt="Image 1" style="margin-right: 10px;">
+    <img src="versusia.png" alt="Image 2" >
 </div>
 
 ---
@@ -134,7 +134,7 @@ The project is divided into two main parts:
   - **`static/`** : Contains front-end files: 
     - **CSS** : Style management.
  
-    - **JavaScript** : Game logic and interactivity ([Documentation (JSDoc)](https://chatgpt.com/doc.md) ).
+    - **JavaScript** : Game logic and interactivity ([Documentation (JSDoc)](/doc.md) ).
  
     - **`dico/`** : Includes dictionaries sorted by initial letter and word length.
 
