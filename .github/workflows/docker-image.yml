@@ -33,17 +33,8 @@ jobs:
       # Étape 4 : Exécuter les tests unitaires
       - name: Run unit tests
         run: |
-          cd experiments
-          for test_file in mode_duel_test.py mode_battleIA_test.py solveur_test.py; do
-            echo "Running tests in $test_file..."
-            python -m unittest "$test_file"
+          python -m test_tusmo_app.py
           done
 
         env:
           PYTHONIOENCODING: "utf-8"
-
-      # Étape 5 : Lancer les tests Flask
-      - name: Test Flask app
-        run: |
-          cd ..
-          python start_test_app.py
