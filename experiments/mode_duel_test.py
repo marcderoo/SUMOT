@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, MagicMock,mock_open
-import mode_duel
-from mode_duel import jouer
+import experiments.mode_duel as mode_duel
+from experiments.mode_duel import jouer
 
 
 class TestObtenirDefinition(unittest.TestCase):

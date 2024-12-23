@@ -8,9 +8,9 @@ def run_tests():
     Run all specified test files and return whether they pass.
     """
     test_files = [
-        "mode_duel_test.py",
-        "mode_battleIA_test.py",
-        "solveur_test.py",
+        "experiments/mode_duel_test.py",
+        "experiments/mode_battleIA_test.py",
+        "experiments/solveur_test.py"
     ]
 
     env = os.environ.copy()
@@ -40,7 +40,6 @@ def start_flask_app():
     """
     Start the Flask application.
     """
-    os.chdir("tusmo_web") 
     print("Running tests in start_test_app.py...")
     value=subprocess.run([sys.executable, "start_test_app.py"])
     if value.returncode == 0:
