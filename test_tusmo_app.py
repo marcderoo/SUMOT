@@ -8,14 +8,15 @@ def run_tests():
     Run all specified test files and return whether they pass.
     """
     test_files = [
-        "experiments/mode_duel_test.py",
-        "experiments/mode_battleIA_test.py",
-        "experiments/solveur_test.py"
+        "mode_duel_test.py",
+        "mode_battleIA_test.py",
+        "solveur_test.py",
     ]
 
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"  # Force utf-8 encoding
 
+    os.chdir("experiments") 
     for test_file in test_files:
         print(f"Running tests in {test_file}...")
         result = subprocess.run(

@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import mock_open, patch, MagicMock
 import random
 from typing import List, Tuple, Optional
-from experiments.mode_battleIA import charger_dictionnaire, mode_battle_ia as mode_battleIA
+from experiments.mode_battleIA import charger_dictionnaire, mode_battle_ia as mode_battle_ia
 
 class TestChargerDictionnaire(unittest.TestCase):
     def test_charger_dictionnaire(self):
