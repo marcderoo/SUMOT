@@ -128,7 +128,7 @@ The project is divided into two main parts:
  
   - **`requirements.txt`** : List of Python dependencies.
 
-  - **`start_app.py`** : Start Flask application after Unit Tests.
+  - **`start_app.py`** : Check validity of unit tests and start the Flask application.
  
   - **`templates/`** : HTML templates for the application's pages.
  
@@ -143,6 +143,9 @@ The project is divided into two main parts:
  
 - Execute `start_app.py` after installing the dependencies via `requirements.txt`.
 
+### Notes: 
+
+- Unit tests are done automatically in github (with "Unit tests CI" workflow in the section Actions of the tab bar)
 
 ---
 
