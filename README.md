@@ -9,7 +9,8 @@ The objectives are:
  
 - To develop an **AI**  capable of suggesting optimal words by considering well-placed, misplaced, and absent letters in the word.
 
-- To display a definition of the word once it is guessed.
+- To display a definition of the word once it is guessed.  
+
 This project was developed as part of the *Infrastructures and Software Systems* course in the ENSAE Master's Degree in Data Science.
 
 ---
