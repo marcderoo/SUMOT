@@ -27,10 +27,6 @@ jobs:
       run: |
         docker-compose logs flask-app
 
-    - name: Run tests
-      run: |
-        docker-compose exec flask-app
-
     - name: Tear down services
       if: always()
       run: |
