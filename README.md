@@ -55,7 +55,8 @@ python test_tusmo_app.py
 
 ---
 
-## **Overview** <p align="center">
+## **Overview** 
+<p align="center">
     <img src="./menu.png" alt="Image 1" width="300" style="margin-right: 10px;">
     <img src="./versusia.png" alt="Image 2" width="300">
 </p>
