@@ -1,12 +1,11 @@
 # **SUMOT**
 
 ## **Description de SUMOT**
-Ce projet vise à développer un jeu inspiré de **Tusmo**, **Sutom** ou encore le jeu télévisé **Motus**. L'ajout de notre version est qu'elle propose un mode contre une IA à affronter selon différents niveaux de difficultés. Cette IA est aussi disponible en aide dans le mode Solo. De plus, un système de récompense est mis en place, ces dernières permettent de personnaliser son décor et son sumo.\
+Ce projet vise à développer un jeu inspiré de **Tusmo**, **Sutom** ou encore du jeu télévisé **Motus**. L'ajout de notre version est qu'elle propose un mode contre une IA à affronter selon différents niveaux de difficultés. Cette IA est aussi disponible en aide dans le mode Solo. \
 
 L'objectif est de :
 - déployer le jeu avec une **interface web** intuitive et fluide.
 - développer une **IA** capable de proposer des mots optimaux, en tenant compte des lettres bien placées, mal placées et non existantes dans le mot.
-- proposer un **sytème de récompense** et de **personnalisation** de son jeu.
 
 Ce projet a été conçu dans le cadre de la matière *Infrastructures et Systèmes Logiciels* du Mastère Spécialisé Data Science de l'ENSAE.
 
