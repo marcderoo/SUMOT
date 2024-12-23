@@ -10,6 +10,7 @@ L'objectif est de :
 
 Ce projet a été conçu dans le cadre de la matière *Infrastructures et Systèmes Logiciels* du Mastère Spécialisé Data Science de l'ENSAE.
 
+---
 
 ## **Installation et prérequis**
 Cloner ce dépot :
@@ -38,6 +39,7 @@ Tests :
 python test_tusmo_app.py
 ```
 
+---
 
 ## **Aperçu**
 <div style="display: flex; justify-content: space-around;">
@@ -45,6 +47,7 @@ python test_tusmo_app.py
     <img src="https://github.com/user-attachments/assets/d9339eb4-8469-415f-94ad-bb9f0fc06932" alt="Image 2" width="300">
 </div>
 
+---
 
 ## **Fonctionnement de l'application**
 
@@ -102,7 +105,7 @@ Le projet est divisé en deux grandes parties :
 ### Lancer l'application localement :
 - Exécutez `app.py` après avoir installé les dépendances via `requirements.txt`.
 
-
+---
 
 ## **Architecture du projet**
 PROJET_INFRA_TUSMO/ \
@@ -133,7 +136,7 @@ PROJET_INFRA_TUSMO/ \
 │   ├── freq_lettre_chat_gpt.txt\
 │   └── .gitignore               # Files and folders excluded from Git\
 
-
+---
 
 ## **Contributeurs**
 Chappuis Maxime\
