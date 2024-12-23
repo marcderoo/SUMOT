@@ -11,7 +11,7 @@ The objectives are:
 
 - To display a definition of the word once it is guessed.  
 
-This project was developed as part of the *Infrastructures and Software Systems* course in the ENSAE Master's Degree in Data Science.
+This project was developed as part of the *Infrastructures et systèmes logiciels* course in the ENSAE Master's Degree in Data Science.
 
 ---
 
