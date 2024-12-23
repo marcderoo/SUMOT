@@ -24,9 +24,9 @@ jobs:
 
     - name: Build and display flask-app logs
       run: |
-        docker-compose up --build --force-recreate --remove-orphans -d
+        docker-compose up --build --force-recreate --remove-orphans
         echo "Displaying flask-app logs..."
-        docker-compose logs
+        docker-compose logs -f
 
     - name: Tear down services
       run: |
