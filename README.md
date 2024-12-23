@@ -56,8 +56,8 @@ python test_tusmo_app.py
 ---
 
 ## **Overview** <div style="display: flex; justify-content: space-around;">
-    <img src="menu.png" alt="Image 1" style="margin-right: 10px;">
-    <img src="versusia.png" alt="Image 2" >
+    <img src="https://github.com/user-attachments/menu.png" alt="Image 1" width="300" style="margin-right: 10px;">
+    <img src="https://github.com/user-attachments/versusia.png" alt="Image 2" width="300">
 </div>
 
 ---
