@@ -7,9 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -19,11 +17,18 @@ jobs:
       run: |
         docker-compose --version || sudo apt-get update && sudo apt-get install -y docker-compose
 
-    - name: Display flask-app logs
+    - name: Display flask-app files
+      run: |
+        echo "Listing project files..."
+        ls -R
+
+    - name: Build and display flask-app logs
       run: |
         docker-compose up --build --force-recreate --remove-orphans -d
+        echo "Displaying flask-app logs..."
+        docker-compose logs
 
     - name: Tear down services
       run: |
-        run: sleep 10
+        sleep 10
         docker-compose down
