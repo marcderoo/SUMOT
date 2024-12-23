@@ -1,147 +1,186 @@
 # **SUMOT**
 
-## **Description de SUMOT**
-Ce projet vise à développer un jeu inspiré de **Tusmo**, **Sutom** ou encore du jeu télévisé **Motus**. L'ajout de notre version est qu'elle propose un mode contre une IA à affronter selon différents niveaux de difficultés. Cette IA est aussi disponible en aide dans le mode Solo. \
+## **Description of SUMOT** 
 
-L'objectif est de :
-- déployer le jeu avec une **interface web** intuitive et fluide.
-- développer une **IA** capable de proposer des mots optimaux, en tenant compte des lettres bien placées, mal placées et non existantes dans le mot.
-- proposer une définition du mot quand ce dernier est trouvé.
+This project aims to develop a game inspired by **Tusmo** , **Sutom** , and the TV game show **Motus** . Our version introduces a mode where players compete against an AI with varying difficulty levels. This AI is also available as a helper in Solo mode.
+The objectives are:
+ 
+- To deploy the game with an intuitive and smooth **web interface** .
+ 
+- To develop an **AI**  capable of suggesting optimal words by considering well-placed, misplaced, and absent letters in the word.
 
-Ce projet a été conçu dans le cadre de la matière *Infrastructures et Systèmes Logiciels* du Mastère Spécialisé Data Science de l'ENSAE.
+- To display a definition of the word once it is guessed.
+This project was developed as part of the *Infrastructures and Software Systems* course in the ENSAE Master's Degree in Data Science.
 
 ---
 
-## **Installation et prérequis**
-Cloner ce dépot :
+## **Installation and Prerequisites** 
+Clone this repository:
+
+
 ```bash
 git clone https://github.com/username/Projet_Infra_Tusmo.git \
 cd Projet_Infra_Tusmo
 ```
 
-Installer les dépendances nécessaires :
+Install the necessary dependencies:
+
+
 ```bash
 pip install -r requirements.txt
 ```
 
-Lancer l'application localement :
+Run the application locally (& Unit Tests):
+
+
 ```bash
 python start_app.py
 ```
 
-Docker :
+Using Docker:
+
+
 ```bash
 docker compose up -d --build
 ```
 
-Tests :
+Run tests:
+
+
 ```bash
 python test_tusmo_app.py
 ```
 
+
 ---
 
-## **Aperçu**
-<div style="display: flex; justify-content: space-around;">
+## **Overview** <div style="display: flex; justify-content: space-around;">
     <img src="https://github.com/user-attachments/assets/82385267-01a7-4deb-a0eb-a66ea6b5c085" alt="Image 1" width="300" style="margin-right: 10px;">
     <img src="https://github.com/user-attachments/assets/d9339eb4-8469-415f-94ad-bb9f0fc06932" alt="Image 2" width="300">
 </div>
 
 ---
 
-## **Fonctionnement de l'application**
+## **Application Features** 
+The application includes a main menu with access to three distinct pages:
+ 
+1. **Solo** :
+  - Classic gameplay where the player must guess the word in up to 6 attempts.
 
-L'application propose un menu principal avec accès à trois pages distinctes :
+  - The goal is to achieve the longest streak to accumulate a high score.
 
-1. **Solo** : 
-   - Mode de jeu classique où le joueur doit trouver le mot en 6 essais maximum.
-   - L'objectif est de réaliser la plus longue série possible pour accumuler un score élevé.
-   - Les scores sont dégressifs selon le nombre d'essais nécessaires pour trouver le mot.
-   - Des aides sont disponibles en échange de points :
-     - **100 points** : Proposition d’un mot par l'IA experte.
-     - **60 points** : Révélation d'une lettre bien placée.
-     - **30 points** : Suppression d'une lettre absente du mot.
-   - **Code couleur** :
-     - **Vert** : Lettre bien placée.
-     - **Jaune** : Lettre présente mais mal placée.
-     - **Effacé (clavier du jeu)** : Lettre absente du mot.
-   - **Clavier interactif** : Un clavier visuel facilite le suivi des lettres et permet de jouer sur téléphone.
+  - Scores decrease based on the number of attempts needed to guess the word.
+ 
+  - Hints are available in exchange for points: 
+    - **100 points** : The expert AI suggests a word.
+ 
+    - **60 points** : A well-placed letter is revealed.
+ 
+    - **30 points** : A letter absent from the word is removed.
+ 
+  - **Color codes** : 
+    - **Green** : Well-placed letter.
+ 
+    - **Yellow** : Correct letter but misplaced.
+ 
+    - **Greyed out (keyboard)** : Letter absent from the word.
+ 
+  - **Interactive keyboard** : A visual keyboard helps track letters and allows gameplay on mobile devices.
+ 
+2. **Versus AI** :
+  - Duel mode where the player competes against the AI, taking turns to guess the word.
 
-2. **Versus IA** :
-   - Mode de jeu en duel contre l'IA, où chaque joueur tente de trouver le mot en premier, tour par tour.
-   - Le joueur débutant est tiré au sort.
-   - Difficulté de l'IA configurable avec 4 niveaux :
-     - **Facile** : Utilisation des lettres bien placées uniquement.
-     - **Moyen** : Utilisation des lettres bien placées et mal placées.
-     - **Difficile** : Ajout de la prise en compte des lettres absentes.
-     - **Experte** : Utilisation optimale de toutes les informations, maximisant les fréquences de lettres tout en diversifiant les essais.
+  - The starting player is chosen randomly.
+ 
+  - AI difficulty is configurable with 4 levels: 
+    - **Easy** : Only considers well-placed letters.
+ 
+    - **Medium** : Considers well-placed and misplaced letters.
+ 
+    - **Hard** : Includes absent letters in its strategy.
+ 
+    - **Expert** : Optimally uses all information, maximizing letter frequencies while diversifying attempts.
+ 
+3. **Rules** :
+  - A detailed explanation of the game rules.
 
-3. **Règles** :
-   - Contient un rappel détaillé des règles du jeu.
+### Notes: 
 
-### Remarques :
-- Les mots à trouver ont entre 6 et 9 lettres et appartiennent à une liste de mots courants pour simplifier l'expérience.
-- Le joueur peut entrer n'importe quel mot du dictionnaire pour ses essais.
+- Words to guess are between 6 and 9 letters long and belong to a common word list to simplify the experience.
+
+- The player can use any valid word from the dictionary for their attempts.
+
 
 ---
 
-## **Fonctionnement du code**
-
-Le projet est divisé en deux grandes parties :
-
+## **Code Structure** 
+The project is divided into two main parts:
+ 
 1. **Experiments** :
-   - Contient les codes expérimentaux et les essais réalisés lors du développement.
+  - Contains experimental code and development trials.
+ 
+2. **Root** :
+  - Includes components needed to run the application.
+ 
+  - **`app.py`** : Entry point for the Flask application.
+ 
+  - **`requirements.txt`** : List of Python dependencies.
 
-2. **Web** :
-   - Regroupe les éléments nécessaires pour faire tourner l'application. 
-   - **`app.py`** : Point d’entrée de l’application Flask.
-   - **`requirements.txt`** : Liste des dépendances Python.
-   - **`templates/`** : Regroupe les interfaces HTML pour chaque page de l'application.
-   - **`static/`** : Contient les fichiers front-end :
-     - **CSS** : Gestion du style.
-     - **JavaScript** : Logique et interactivité du jeu.
-   - **Dossier `dico/`** : Inclut les dictionnaires, triés par lettre initiale et longueur des mots.
+  - **`start_app.py`** : Start Flask application after Unit Tests.
+ 
+  - **`templates/`** : HTML templates for the application's pages.
+ 
+  - **`static/`** : Contains front-end files: 
+    - **CSS** : Style management.
+ 
+    - **JavaScript** : Game logic and interactivity ([Documentation (JSDoc)](https://chatgpt.com/doc.md) ).
+ 
+    - **`dico/`** : Includes dictionaries sorted by initial letter and word length.
 
-### Lancer l'application localement :
-- Exécutez `app.py` après avoir installé les dépendances via `requirements.txt`.
+### Running the application locally: 
+ 
+- Execute `start_app.py` after installing the dependencies via `requirements.txt`.
+
 
 ---
 
-## **Architecture du projet**
-PROJET_INFRA_TUSMO/ \
-├── tusmo_web/ \
-│   ├── app.py                   # Main Flask application entry point \
-│   ├── requirements.txt         # Python dependencies \
-│   ├── Dockerfile \
-│   ├── .dockerignore \
-│   ├── vercel.json \
-│   ├── small_dico.txt \
-│   ├── frequences_lettres.txt \
-│   ├── compute_dico.py \
-│   ├── static/                  # Static files (CSS, JS, images, fonts)\
-│   │   ├── styles.css           # Main stylesheet for the game\
-│   │   ├── script.js            # Core JavaScript logic\
-│   │   ├── images/              # Game assets (icons, backgrounds, etc.)\
-│   │   └── fonts/               # Custom fonts for UI design\
-│   ├── templates/               # HTML templates for rendering views\
-│   │   └── index.html           # Main game interface\
-│   ├── tests/                   # Unit and integration tests\
-│   │   └── test_app.py          # Flask app test cases\
-│   ├── README.md                # Project documentation\
-│   ├── solveur.py\
-│   ├── mode_duel.py\
-│   ├── mode_battleIA.py\
-│   ├── dictionnaire.txt\
-│   ├── dictionnaire_clean.txt\
-│   ├── freq_lettre_chat_gpt.txt\
-│   └── .gitignore               # Files and folders excluded from Git\
+## **Project Architecture** 
+
+```php
+PROJET_INFRA_TUSMO/
+├── app.py                   # Main Flask application entry point
+├── requirements.txt         # Python dependencies
+├── Dockerfile
+├── .dockerignore
+├── vercel.json
+├── small_dico.txt
+├── frequences_lettres.txt
+├── compute_dico.py
+├── static/                  # Static files (CSS, JS, images, fonts)
+│   ├── styles.css           # Main stylesheet for the game
+│   ├── script.js            # Core JavaScript logic
+│   ├── images/              # Game assets (icons, backgrounds, etc.)
+│   └── fonts/               # Custom fonts for UI design
+├── templates/               # HTML templates for rendering views
+│   └── index.html           # Main game interface
+├── tests/                   # Unit and integration tests
+│   └── test_app.py          # Flask app test cases
+├── README.md                # Project documentation
+├── experiments/
+│   ├── solveur.py
+│   ├── mode_duel.py
+│   ├── mode_battleIA.py
+│   └── dictionnaire.txt
+```
+
 
 ---
 
-## **Contributeurs**
-Chappuis Maxime\
-Cournil Arnaud\
-Deroo Marc\
-El Aissaoui Meryem
+## **Contributors** 
+- Maxime Chappuis
 
+- Arnaud Cournil
 
+- Marc Deroo
+
+- Meryem El Aissaoui
