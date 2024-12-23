@@ -42,7 +42,6 @@ def test_flask_app():
     Test the Flask application.
     """
     os.chdir("..") 
-    print("Running tests in start_test_app.py...")
     # Prepare environment variables
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"  # Force UTF-8 encoding
