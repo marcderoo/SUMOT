@@ -327,10 +327,13 @@ header {
 /* Stylized title with alternate highlighting */
 .rules-title {
   font-size: 3em;
-  margin-bottom: 0;
+  margin: 1rem;
   font-weight: bold;
-  letter-spacing: 0; /* No gap between letters */
-  color: #f0f0f0; /* Title color */
+  letter-spacing: 0;
+  color: #f0f0f0;
+  position: absolute;
+  top: calc(1vh + 10px - 0.25em);
+  justify-self: center;
 }
 
 .rules-title .R { background-color: #4caf50; }
@@ -339,14 +342,16 @@ header {
 
 /* Rules container */
 .rules-container {
-  text-align: center; /* Center text in container */
+  text-align: center;
   padding: 2em;
   background-color: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  max-width: 700px; /* Limited width */
-  width: 90%; /* Relative width for small screens */
+  max-width: 700px;
+  width: 90%;
   margin: 1em auto;
+  position: absolute;
+  justify-self: center;
 }
 
 /* Rules content */
