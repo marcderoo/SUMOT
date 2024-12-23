@@ -37,24 +37,38 @@ def run_tests():
     return True
 
 
-def start_flask_app():
+def test_flask_app():
     """
-    Start the Flask application.
+    Test the Flask application.
     """
-    print("Running tests in start_test_app.py...")
     os.chdir("..") 
-    value=subprocess.run([sys.executable, "start_test_app.py"])
-    if value.returncode == 0:
-        print("✅ Tests passed in start_test_app.py .")
-        return True
-    else:
+    print("Running tests in start_test_app.py...")
+    # Prepare environment variables
+    env = os.environ.copy()
+    env["PYTHONIOENCODING"] = "utf-8"  # Force UTF-8 encoding
+
+    print(f"Running tests in test_app.py...")
+
+    result = subprocess.run(
+        [sys.executable, "-m", "unittest", "test_app.py"],
+        capture_output=True,
+        text=True,
+        env=env,  # Use the updated environment
+    )
+
+    if result.returncode != 0:
         print(f"❌ Tests failed in test_app.py:")
+        print(result.stdout)
+        print(result.stderr)
         return False
+
+    print(f"✅ Tests passed in test_app.py.")
+
+    return True
 
 
 if __name__ == "__main__":
-    results=run_tests() and start_flask_app()
-    if results:
+    if run_tests() and test_flask_app():
         print("✅ All tests passed")
     else:
-        print("❌ Tests failed. Flask app will not start.")
+        print("❌ Tests failed.")

@@ -148,31 +148,57 @@ The project is divided into two main parts:
 
 ## **Project Architecture** 
 
-```php
+```
 PROJET_INFRA_TUSMO/
-├── app.py                   # Main Flask application entry point
-├── requirements.txt         # Python dependencies
-├── Dockerfile
-├── .dockerignore
-├── vercel.json
-├── small_dico.txt
-├── frequences_lettres.txt
-├── compute_dico.py
-├── static/                  # Static files (CSS, JS, images, fonts)
-│   ├── styles.css           # Main stylesheet for the game
-│   ├── script.js            # Core JavaScript logic
-│   ├── images/              # Game assets (icons, backgrounds, etc.)
-│   └── fonts/               # Custom fonts for UI design
-├── templates/               # HTML templates for rendering views
-│   └── index.html           # Main game interface
-├── tests/                   # Unit and integration tests
-│   └── test_app.py          # Flask app test cases
-├── README.md                # Project documentation
-├── experiments/
-│   ├── solveur.py
-│   ├── mode_duel.py
-│   ├── mode_battleIA.py
-│   └── dictionnaire.txt
+├── .dockerignore            # List of files/folders to exclude from the Docker image
+├── app.py                   # Main entry point of the Flask application
+├── compute_dico.py          # Script for generating or manipulating dictionaries
+├── dictionnaire_clean.txt   # Cleaned dictionary used by the project
+├── doc.md                   # Additional project documentation
+├── docker-compose.yml       # Docker Compose configuration for deployment
+├── Dockerfile               # Docker configuration to build the image
+├── frequences_lettres.txt   # File containing letter frequencies
+├── menu.png                 # Image used in the README
+├── README.md                # Main documentation (this file)
+├── requirements.txt         # List of Python dependencies
+├── small_dico.txt           # Reduced version of the dictionary for using frequents words in the game
+├── start_app.py             # Script to start the application with all Unit tests
+├── test_app.py              # Unit tests for the Flask application
+├── test_tusmo_app.py        # Script to start only all Unit tests
+├── vercel.json              # Configuration for deployment on Vercel
+├── versusia.png             # Another image used in the README
+├── dico/                    # Dictionaries organized by letters and length
+│   ├── A_6.txt              # Words starting with "A" and having 6 letters
+│   ├── A_7.txt              # Words starting with "A" and having 7 letters
+│   ├── A_8.txt              # Words starting with "A" and having 8 letters
+│   ├── A_9.txt              # Words starting with "A" and having 9 letters
+│   ├── B_6.txt              # Words starting with "B" and having 6 letters
+│   ├── ...
+│   └── Z_9.txt              # Words starting with "Z" and having 9 letters
+├── static/                  # Static files (CSS, JS, images)
+│   ├── appUtils.js          # Utility library
+│   ├── appUtils.md          # Documentation for appUtils.js
+│   ├── confetti.js          # JavaScript logic for displaying victory confetti
+│   ├── confetti.md          # Documentation for confetti.js
+│   ├── favicon.png          # Application icon
+│   ├── noodles.png          # Vector image of a bowl of noodles
+│   ├── script.js            # Main JavaScript logic
+│   ├── script.md            # Documentation for script.js
+│   ├── styles.css           # Main stylesheet
+│   └── wallpaper.jpg        # Background image for the application
+├── templates/               # HTML templates for views
+│   ├── menu.html            # Game homepage with the menu
+│   ├── regles.html          # Page explaining the rules
+│   ├── solo.html            # Interface for solo game mode
+│   └── versusia.html        # Interface for the game mode against Artificial Intelligence
+├── experiments/             # Experimental scripts and features
+│   ├── dictionnaire.txt     # Raw dictionary
+|   ├── mode_battleIA_test.py# Unit tests for mode_battleIA.py
+│   ├── mode_battleIA.py     # Battle mode against an AI
+│   ├── mode_duel_test.py    # Unit tests for mode_duel.py
+│   ├── mode_duel.py         # Duel mode between players
+|   ├── solveur_test.py      # Unit tests for solveur.py
+│   └── solveur.py           # Solver for the game
 ```
 
 
