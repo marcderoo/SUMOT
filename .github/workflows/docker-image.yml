@@ -25,7 +25,7 @@ jobs:
     - name: Build services and capture logs for 30 seconds
       run: |
         docker-compose up --build --force-recreate --remove-orphans -d
-        timeout 30s docker-compose logs flask-app > logs.txt
+        timeout 30s docker-compose logs flask-app -f > logs.txt
 
     - name: Display logs.txt content
       run: |
