@@ -30,11 +30,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Étape 4 : Exécuter les tests unitaires
+      # Étape 4 : Exécuter les tests unitaires et capturer la sortie
       - name: Run unit tests
         run: |
-          python test_tusmo_app.py
-          done
-
+          python test_tusmo_app.py > test_output.log 2>&1
+          tail -n 1 test_output.log > last_line.log
         env:
           PYTHONIOENCODING: "utf-8"
+
+      # Étape 5 : Vérifier si les tests ont réussi
+      - name: Check test result
+        run: |
+          if grep -q "✅ All tests passed" last_line.log; then
+            echo "Tests passed successfully!"
+          else
+            echo "Tests failed!" && exit 1
+          fi
