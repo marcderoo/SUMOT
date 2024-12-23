@@ -1,4 +1,4 @@
-name: Docker Compose CI
+name: Docker Image CI
 
 on:
   push:
@@ -7,18 +7,27 @@ on:
     branches: [ "main" ]
 
 jobs:
+
   build:
 
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
-
+    
     - name: Set up Docker Compose
-      run: docker-compose --version
+      run: |
+        docker-compose --version || sudo apt-get update && sudo apt-get install -y docker-compose
 
-    - name: Build and Start Services
-      run: docker-compose up --build -d
+    - name: Build and start services
+      run: |
+        docker-compose up --build -d
 
-    - name: Stop and Clean Up
-      run: docker-compose down
+    - name: Run tests (if applicable)
+      run: |
+        docker-compose exec flask-app
+
+    - name: Tear down services
+      if: always()
+      run: |
+        docker-compose down
