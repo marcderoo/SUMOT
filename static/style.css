@@ -327,7 +327,7 @@ header {
 /* Stylized title with alternate highlighting */
 .rules-title {
   font-size: 3em;
-  margin-bottom: 1em;
+  margin-bottom: 0;
   font-weight: bold;
   letter-spacing: 0; /* No gap between letters */
   color: #f0f0f0; /* Title color */
