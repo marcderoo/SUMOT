@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    
+
     - name: Set up Docker Compose
       run: |
         docker-compose --version || sudo apt-get update && sudo apt-get install -y docker-compose
@@ -22,10 +22,10 @@ jobs:
         echo "Listing project files..."
         ls -R
 
-    - name: Build and display flask-app logs
+    - name: Build services and capture logs for 30 seconds
       run: |
-        docker-compose up --build --force-recreate --remove-orphans | tee logs.txt
-        docker-compose logs flask-app -f | tee -a logs.txt
+        docker-compose up --build --force-recreate --remove-orphans -d
+        timeout 30s docker-compose logs flask-app > logs.txt
 
     - name: Display logs.txt content
       run: |
