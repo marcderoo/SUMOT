@@ -2,18 +2,20 @@
 
 ## Idées amélioration dans le cadre de 'Mise en Production'
 
-- Mise en place des bonnes pratiques (linter puis formatter / loguru)
-- fichiers LICENSE et .gitignore
-- architecture cookiecutter
-- Mettre les données sur S3 (SSPCLoud)
-- packagiser le code
-- Interfacer DOCKER avec GITHUB
-- StreamLit (créer une page dashboard pour monitorer l'appli)
-- Automatiser l’ingestion des données en entrée pour que le site web se mette à jour régulièrement
-- Industrialiser le déploiement en mode GitOps avec ArgoCD
-- Gérer le monitoring de l’application : logs, métriques de suivi des performances, etc.
+- Mise en place des bonnes pratiques (linter puis formatter / loguru) (plutot a la fin)
+- fichiers LICENSE et .gitignore (mtn)
+- architecture cookiecutter (mtn)
+- Mettre les données sur S3 (SSPCLoud) (mtn)
+- (packagiser le code)
+- Interfacer DOCKER avec GITHUB (à la fin)
+- StreamLit (créer une page dashboard pour monitorer l'appli) (mtn)
+- Automatiser l’ingestion des données en entrée pour que le site web se mette à jour régulièrement (mtn)
+- Industrialiser le déploiement en mode GitOps avec ArgoCD (attendre le cours dessus)
+- Gérer le monitoring de l’application : logs, métriques de suivi des performances, etc. (mtn)
 
-- Ajouter un mot du jour qui se base sur un mot tendance google
+---
+
+- Ajouter un mot du jour qui se base sur un mot tendance google 
 - Chronométrer la résolution du mot du jour (et collecter les temps)
 - Customiser : fonds d'écrans, thèmes de mots (films, animaux, gateaux, ...)
 - Bonus : pourvoir comparer avec ses amis (bouton partager)
