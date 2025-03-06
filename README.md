@@ -1,5 +1,18 @@
 # **SUMOT**
 
+## Idées amélioration dans le cadre de 'Mise en Production'
+
+- Mise en place des bonnes pratiques (linter puis formatter / loguru)
+- fichiers LICENSE et .gitignore
+- architecture cookiecutter
+- Mettre les données sur S3 (SSPCLoud)
+- packagiser le code
+- Interfacer DOCKER avec GITHUB
+- StreamLit
+- Automatiser l’ingestion des données en entrée pour que le site web se mette à jour régulièrement
+- Industrialiser le déploiement en mode GitOps avec ArgoCD
+- Gérer le monitoring de l’application : logs, métriques de suivi des performances, etc.
+
 ## **Description of SUMOT** 
 
 This project aims to develop a game inspired by **Tusmo** , **Sutom** , and the TV game show **Motus** . Our version introduces a mode where players compete against an AI with varying difficulty levels. This AI is also available as a helper in Solo mode.
