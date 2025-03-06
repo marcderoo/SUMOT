@@ -8,10 +8,16 @@
 - Mettre les données sur S3 (SSPCLoud)
 - packagiser le code
 - Interfacer DOCKER avec GITHUB
-- StreamLit
+- StreamLit (créer une page dashboard pour monitorer l'appli)
 - Automatiser l’ingestion des données en entrée pour que le site web se mette à jour régulièrement
 - Industrialiser le déploiement en mode GitOps avec ArgoCD
 - Gérer le monitoring de l’application : logs, métriques de suivi des performances, etc.
+
+- Ajouter un mot du jour qui se base sur un mot tendance google
+- Chronométrer la résolution du mot du jour (et collecter les temps)
+- Customiser : fonds d'écrans, thèmes de mots (films, animaux, gateaux, ...)
+- Bonus : pourvoir comparer avec ses amis (bouton partager)
+- Bonus : mettre une version en anglais (= customiser CSS etc.)
 
 ## **Description of SUMOT** 
 
