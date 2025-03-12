@@ -77,7 +77,7 @@ def versus_ia()-> str:
 
     random_word = random.choice(dico).upper()  # Real word
     return render_template('versusia.html', data={
-        "word": random_word,
+        "word": daily_word.upper(),
         "score": score,
         "count": count
     })
