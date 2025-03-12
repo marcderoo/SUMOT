@@ -4,6 +4,8 @@ import random
 import requests
 from bs4 import BeautifulSoup
 from functools import lru_cache
+from apscheduler.schedulers.background import BackgroundScheduler
+from unidecode import unidecode
 
 app = Flask(__name__)
 
@@ -15,6 +17,34 @@ with open("frequences_lettres.txt", "r") as file:
         ligne.split(" : ")[0].strip(): float(ligne.split(" : ")[1].strip())
         for ligne in file if " : " in ligne
     }
+
+daily_word = None
+
+def get_daily_word():
+    global daily_word
+
+    try:
+        url = "https://api.magicapi.dev/api/v1/datarise/twitter/trends/?woeid=23424819"
+        response = requests.get(url, headers={
+            "accept": "application/json",
+            "x-magicapi-key": "cm85xxupg0008k003ggyouam3"
+        })
+        response.raise_for_status()
+        response_json = response.json()
+
+        trends = [trend["name"] for trend in response_json[0]['trends'] if trend["tweet_volume"] is not None]
+        
+        for trend in trends:
+            words = unidecode(trend).lower().split(" ")
+            for word in words:
+                if word in dico:
+                    daily_word = word
+                    return  # Arrêter la fonction dès qu'un mot valide est trouvé
+
+    except requests.RequestException as e:
+        print(f"Erreur lors de la récupération des tendances : {e}")
+
+    print("Daily World :", daily_word)
 
 @app.route('/') 
 def menu()-> str:
@@ -48,6 +78,21 @@ def versus_ia()-> str:
     random_word = random.choice(dico).upper()  # Real word
     return render_template('versusia.html', data={
         "word": random_word,
+        "score": score,
+        "count": count
+    })
+
+@app.route('/daily', methods=['POST', 'GET'])
+def solo()-> str:
+    score: int = 0
+    count: int = 1
+    
+    if request.method == 'POST':
+        score: int = request.form.get('score', 0, type=int)  # Score retrieval from form
+        count: int = request.form.get('count', 1, type=int)  # Word count retrival from form
+
+    return render_template('daily.html', data={
+        "word": daily_word.upper(),
         "score": score,
         "count": count
     })
@@ -170,4 +215,11 @@ def bot_proposition_difficile(difficulte: str) -> Optional[str]:
     return filtred
 
 if __name__ == '__main__':
+    # Configuration de APScheduler
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(get_daily_word, 'interval', days=1)  # À partir du 13 mars 2025
+    scheduler.start()
+
+    get_daily_word()
+
     app.run(host="0.0.0.0", port=5000, debug=True)
