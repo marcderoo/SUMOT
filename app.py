@@ -38,7 +38,7 @@ def get_daily_word():
             words = unidecode(trend).lower().split(" ")
             for word in words:
                 if word in dico:
-                    daily_word = word
+                    daily_word = word.upper()
                     return  # Arrêter la fonction dès qu'un mot valide est trouvé
 
     except requests.RequestException as e:
@@ -77,15 +77,16 @@ def versus_ia()-> str:
 
     random_word = random.choice(dico).upper()  # Real word
     return render_template('versusia.html', data={
-        "word": daily_word.upper(),
+        "word": random_word,
         "score": score,
         "count": count
     })
 
-@app.route('/daily')
+@app.route('/daily', methods=['POST', 'GET'])
 def daily()-> str:
+    global daily_word
     return render_template('daily.html', data={
-        "word": daily_word.upper(),
+        "word": daily_word,
         "score": 0,
         "count": 1
     })
