@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup
 from functools import lru_cache
 from apscheduler.schedulers.background import BackgroundScheduler
 from unidecode import unidecode
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
@@ -225,7 +226,7 @@ def bot_proposition_difficile(difficulte: str) -> Optional[str]:
 if __name__ == '__main__':
     # Configuration de APScheduler
     scheduler = BackgroundScheduler()
-    scheduler.add_job(get_daily_word, 'interval', days=1)  # À partir du 13 mars 2025
+    scheduler.add_job(get_daily_word, 'interval', days=1, next_run_time=datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1))  # À partir du 13 mars 2025
     scheduler.start()
 
     get_daily_word()
