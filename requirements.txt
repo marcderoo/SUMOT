@@ -3,3 +3,4 @@ beautifulsoup4==4.12.3
 tqdm==4.67.1
 requests==2.32.3
 unidecode
+APScheduler==3.11.0
