@@ -56,6 +56,7 @@ def load_daily_word():
             daily_word = f.read().strip().upper()
     except FileNotFoundError:
         daily_word = "DEFAUT"
+    return daily_word
 
 @app.route('/') 
 def menu()-> str:
