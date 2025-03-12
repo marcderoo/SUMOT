@@ -84,6 +84,7 @@ def versus_ia()-> str:
 
 @app.route('/daily', methods=['POST', 'GET'])
 def daily()-> str:
+    return daily_word
     return render_template('daily.html', data={
         "word": daily_word.upper(),
         "score": 0,
