@@ -82,7 +82,7 @@ def versus_ia()-> str:
         "count": count
     })
 
-@app.route('/daily', methods=['GET'])
+@app.route('/daily', methods=['POST', 'GET'])
 def daily()-> str:
     return render_template('daily.html', data={
         "word": daily_word.upper(),
