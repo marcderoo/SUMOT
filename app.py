@@ -40,24 +40,11 @@ def get_daily_word():
             for word in words:
                 if word in dico:
                     daily_word = word.upper()
-                    return  # Arrêter la fonction dès qu'un mot valide est trouvé
-                
-        with open("daily_word.txt", "w") as f:
-            f.write(daily_word)
+                    return daily_word
 
     except requests.RequestException as e:
         print(f"Erreur lors de la récupération des tendances : {e}")
-
-    print("Daily World :", daily_word)
-
-def load_daily_word():
-    global daily_word
-    try:
-        with open("daily_word.txt", "r") as f:
-            daily_word = f.read().strip().upper()
-    except FileNotFoundError:
-        daily_word = "DEFAUT"
-    return daily_word
+        return "DEFAUT"
 
 @app.route('/') 
 def menu()-> str:
@@ -229,6 +216,6 @@ if __name__ == '__main__':
     scheduler.add_job(get_daily_word, 'interval', days=1, next_run_time=datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1))  # À partir du 13 mars 2025
     scheduler.start()
 
-    get_daily_word()
+    daily_word = get_daily_word()
 
     app.run(host="0.0.0.0", port=5000, debug=True)
