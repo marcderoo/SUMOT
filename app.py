@@ -82,19 +82,12 @@ def versus_ia()-> str:
         "count": count
     })
 
-@app.route('/daily', methods=['POST', 'GET'])
-def solo()-> str:
-    score: int = 0
-    count: int = 1
-    
-    if request.method == 'POST':
-        score: int = request.form.get('score', 0, type=int)  # Score retrieval from form
-        count: int = request.form.get('count', 1, type=int)  # Word count retrival from form
-
+@app.route('/daily', methods=['GET'])
+def daily()-> str:
     return render_template('daily.html', data={
         "word": daily_word.upper(),
-        "score": score,
-        "count": count
+        "score": 0,
+        "count": 1
     })
 
 @app.route('/regles')
