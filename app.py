@@ -22,7 +22,6 @@ daily_word = None
 
 def get_daily_word():
     global daily_word
-    daily_word = "DEFAULT"  # Met un mot par défaut pour vérifier la mise à jour
 
     try:
         url = "https://api.magicapi.dev/api/v1/datarise/twitter/trends/?woeid=23424819"
@@ -41,11 +40,22 @@ def get_daily_word():
                 if word in dico:
                     daily_word = word.upper()
                     return  # Arrêter la fonction dès qu'un mot valide est trouvé
+                
+        with open("daily_word.txt", "w") as f:
+            f.write(daily_word)
 
     except requests.RequestException as e:
         print(f"Erreur lors de la récupération des tendances : {e}")
 
     print("Daily World :", daily_word)
+
+def load_daily_word():
+    global daily_word
+    try:
+        with open("daily_word.txt", "r") as f:
+            daily_word = f.read().strip().upper()
+    except FileNotFoundError:
+        daily_word = "DEFAUT"
 
 @app.route('/') 
 def menu()-> str:
@@ -86,6 +96,8 @@ def versus_ia()-> str:
 @app.route('/daily', methods=['POST', 'GET'])
 def daily()-> str:
     global daily_word
+    if daily_word == None:
+        daily_word = load_daily_word()
     return render_template('daily.html', data={
         "word": daily_word,
         "score": 0,
