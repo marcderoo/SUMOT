@@ -22,6 +22,7 @@ daily_word = None
 
 def get_daily_word():
     global daily_word
+    daily_word = "DEFAULT"  # Met un mot par défaut pour vérifier la mise à jour
 
     try:
         url = "https://api.magicapi.dev/api/v1/datarise/twitter/trends/?woeid=23424819"
