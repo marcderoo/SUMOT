@@ -4,7 +4,7 @@
 
 - Mise en place des bonnes pratiques (linter puis formatter / loguru) (plutot a la fin)
 - fichiers LICENSE et .gitignore ✅ (LICENSE GNU, ok pour vous ?)
-- architecture cookiecutter ✅ (adapter la nouvelle structure dans le README)
+- architecture cookiecutter --> pb avec le tests unitaires car du coup ils sont mtn dans tests/, pbs de chemins quoi, horrible arnaud heeelp 
 - Mettre les données sur S3 (SSPCLoud) (mtn)
 - Interfacer DOCKER avec GITHUB (à la fin)
 - StreamLit (créer une page dashboard pour monitorer l'appli) (mtn)
