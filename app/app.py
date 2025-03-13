@@ -10,10 +10,10 @@ from datetime import datetime, timedelta
 
 app = Flask(__name__)
 
-with open("small_dico.txt", 'r') as file:
+with open("app/small_dico.txt", 'r') as file:
     dico = [line.strip() for line in file]
 
-with open("frequences_lettres.txt", "r") as file:
+with open("app/frequences_lettres.txt", "r") as file:
     frequences_lettres = {
         ligne.split(" : ")[0].strip(): float(ligne.split(" : ")[1].strip())
         for ligne in file if " : " in ligne

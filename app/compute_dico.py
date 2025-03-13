@@ -36,7 +36,7 @@ def organize_words(input_file: str, scnd_input_file: str, output_dir: str) -> No
             file.write(word + "\n")
 
 # Exemple d'utilisation
-input_file: str = "dictionnaire_clean.txt"  # Remplacez par le chemin vers votre fichier d'entrée
-scnd_input_file: str = "small_dico.txt"
-output_dir: str = "dico"  # Répertoire de sortie
+input_file: str = "app/dictionnaire_clean.txt"  # Remplacez par le chemin vers votre fichier d'entrée
+scnd_input_file: str = "app/small_dico.txt"
+output_dir: str = "app/dico"  # Répertoire de sortie
 organize_words(input_file, scnd_input_file, output_dir)
