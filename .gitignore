@@ -1,0 +1,31 @@
+# 🔹 Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+
+# 🔹 Logs et fichiers temporaires
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# 🔹 Config locales
+.env
+config.json
+.idea/
+.vscode/
+
+# 🔹 Dépendances
+node_modules/
+.pip_cache/
+.pytest_cache/
+
+# 🔹 Docker
+docker-compose.override.yml
+*.dockerfile
+
+# 🔹 Vercel
+.vercel/
