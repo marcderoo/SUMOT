@@ -45,7 +45,7 @@ def get_daily_word():
 
     except Exception as e:
         print(f"Erreur lors de la récupération des tendances : {e}")
-        memory["daily_word"] = str(e)
+        memory["daily_word"] = "DEFAUT"
 
 @app.route('/') 
 def menu()-> str:
