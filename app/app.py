@@ -25,6 +25,7 @@ with open("frequences_lettres.txt", "r") as file:
     }
 
 def get_daily_word():
+    global memory
     try:
         url = "https://api.magicapi.dev/api/v1/datarise/twitter/trends/?woeid=23424819"
         response = requests.get(url, headers={
@@ -85,6 +86,7 @@ def versus_ia()-> str:
 
 @app.route('/daily', methods=['POST', 'GET'])
 def daily()-> str:
+    global memory
     return render_template('daily.html', data={
         "word": memory["daily_word"],
         "score": 0,
