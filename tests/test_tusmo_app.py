@@ -2,23 +2,32 @@ import subprocess
 import sys
 import os
 
+def get_path(full_path):
+    """
+    Get the full path of a file in the project.
+    """
+    root = os.path.dirname(os.path.abspath(__file__))
+
+    # Go up until we find the LICENSE file
+    while not os.path.exists(os.path.join(root, "LICENSE")):
+        root = os.path.dirname(root)
+    return os.path.join(root, full_path)
 
 def run_tests():
     """
     Run all specified test files and return whether they pass.
     """
     test_files = [
-        "mode_duel_test.py",
-        "mode_battleIA_test.py",
-        "solveur_test.py",
+        get_path("app/experiments/mode_duel_test.py"),
+        get_path("app/experiments/mode_battleIA_test.py"),
+        get_path("app/experiments/solveur_test.py"),
     ]
 
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"  # Force utf-8 encoding
 
-    os.chdir("experiments") 
     for test_file in test_files:
-        print(f"Running tests in {test_file}...")
+        print(f"Running tests in {test_file.split("/")[-1]}...")
         result = subprocess.run(
             [sys.executable, "-m", "unittest", test_file],
             capture_output=True,
@@ -27,12 +36,12 @@ def run_tests():
         )
 
         if result.returncode != 0:
-            print(f"❌ Tests failed in {test_file}:")
+            print(f"❌ Tests failed in {test_file.split("/")[-1]}:")
             print(result.stdout)
             print(result.stderr)
             return False
 
-        print(f"✅ Tests passed in {test_file}.")
+        print(f"✅ Tests passed in {test_file.split("/")[-1]}.")
 
     return True
 
@@ -41,7 +50,6 @@ def test_flask_app():
     """
     Test the Flask application.
     """
-    os.chdir("..") 
     # Prepare environment variables
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"  # Force UTF-8 encoding
@@ -49,7 +57,7 @@ def test_flask_app():
     print(f"Running tests in test_app.py...")
 
     result = subprocess.run(
-        [sys.executable, "-m", "unittest", "test_app.py"],
+        [sys.executable, "-m", "unittest", get_path("tests/test_app.py")],
         capture_output=True,
         text=True,
         env=env,  # Use the updated environment

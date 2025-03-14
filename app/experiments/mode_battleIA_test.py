@@ -3,8 +3,18 @@ from unittest.mock import mock_open, patch, MagicMock
 import random
 from typing import List, Tuple, Optional
 from mode_battleIA import charger_dictionnaire, mode_battle_ia
+import os
 
+def get_path(full_path: str) -> str:
+    """
+    Get the full path of a file in the project.
+    """
+    root = os.path.dirname(os.path.abspath(__file__))
 
+    # Go up until we find the LICENSE file
+    while not os.path.exists(os.path.join(root, "LICENSE")):
+        root = os.path.dirname(root)
+    return os.path.join(root, full_path)
 
 class TestChargerDictionnaire(unittest.TestCase):
     def test_charger_dictionnaire(self):
@@ -13,7 +23,7 @@ class TestChargerDictionnaire(unittest.TestCase):
         
         # Patch the open function
         with patch("builtins.open", mock_open(read_data=mock_file_content)) as mocked_file:
-            fichier = "../dictionnaire_clean.txt"
+            fichier = get_path("app/dictionnaire_clean.txt")
             expected_output = ["mot1", "mot2", "mot3"]
 
             # Call the function
@@ -39,7 +49,7 @@ class TestChargerDictionnaire(unittest.TestCase):
             mode_battle_ia()
 
             # Check that the dictionary was loaded
-            mock_charger_dictionnaire.assert_called_once_with("../dictionnaire_clean.txt")
+            mock_charger_dictionnaire.assert_called_once_with(get_path("app/dictionnaire_clean.txt"))
 
             # Log the call count to verify behavior
             print(f"random.choice called {mock_random_choice.call_count} times")

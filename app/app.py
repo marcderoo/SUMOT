@@ -7,13 +7,25 @@ from functools import lru_cache
 from apscheduler.schedulers.background import BackgroundScheduler
 from unidecode import unidecode
 from datetime import datetime, timedelta
+import os
 
 app = Flask(__name__)
 
-with open("app/small_dico.txt", 'r') as file:
+def get_path(full_path: str) -> str:
+    """
+    Get the full path of a file in the project.
+    """
+    root = os.path.dirname(os.path.abspath(__file__))
+
+    # Go up until we find the LICENSE file
+    while not os.path.exists(os.path.join(root, "LICENSE")):
+        root = os.path.dirname(root)
+    return os.path.join(root, full_path)
+
+with open(get_path("app/small_dico.txt"), 'r') as file:
     dico = [line.strip() for line in file]
 
-with open("app/frequences_lettres.txt", "r") as file:
+with open(get_path("app/frequences_lettres.txt"), "r") as file:
     frequences_lettres = {
         ligne.split(" : ")[0].strip(): float(ligne.split(" : ")[1].strip())
         for ligne in file if " : " in ligne
@@ -48,7 +60,7 @@ def get_daily_word():
 
 @app.route('/') 
 def menu()-> str:
-    return render_template('menu.html')
+    return render_template(get_path("app/menu.html"))
 
 @app.route('/solo', methods=['POST', 'GET'])
 def solo()-> str:
@@ -60,7 +72,7 @@ def solo()-> str:
         count: int = request.form.get('count', 1, type=int)  # Word count retrival from form
 
     random_word = random.choice(dico).upper()  # Real word
-    return render_template('solo.html', data={
+    return render_template(get_path("app/solo.html"), data={
         "word": random_word,
         "score": score,
         "count": count
@@ -76,7 +88,7 @@ def versus_ia()-> str:
         count = request.form.get('count', 1, type=int)  # Word count retrival from form
 
     random_word = random.choice(dico).upper()  # Real word
-    return render_template('versusia.html', data={
+    return render_template(get_path("app/versusia.html"), data={
         "word": random_word,
         "score": score,
         "count": count
@@ -85,9 +97,7 @@ def versus_ia()-> str:
 @app.route('/daily', methods=['POST', 'GET'])
 def daily()-> str:
     global daily_word
-    if daily_word == None:
-        daily_word = load_daily_word()
-    return render_template('daily.html', data={
+    return render_template(get_path("app/daily.html"), data={
         "word": daily_word,
         "score": 0,
         "count": 1
@@ -95,11 +105,11 @@ def daily()-> str:
 
 @app.route('/regles')
 def regles()-> str:
-    return render_template('regles.html')
+    return render_template(get_path("app/regles.html"))
 
 @app.route('/dico/<filename>')
 def get_dico(filename: str)-> Union[str, bytes]:
-    return send_file('dico/' + filename)
+    return send_file(get_path("app/dico/") + filename)
 
 @app.route('/def/<mot>')
 def get_def(mot: str) -> str:

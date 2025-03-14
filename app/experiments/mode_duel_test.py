@@ -1,7 +1,24 @@
 import unittest
 from unittest.mock import patch, MagicMock,mock_open
-import mode_duel
-from mode_duel import jouer
+import importlib.util
+import os
+
+def get_path(full_path: str) -> str:
+    """
+    Get the full path of a file in the project.
+    """
+    root = os.path.dirname(os.path.abspath(__file__))
+
+    # Go up until we find the LICENSE file
+    while not os.path.exists(os.path.join(root, "LICENSE")):
+        root = os.path.dirname(root)
+    return os.path.join(root, full_path)
+
+# Charger dynamiquement le module
+module_name = "mode_duel"  # Nom du module sans l'extension
+spec = importlib.util.spec_from_file_location(module_name, get_path("app/experiments/mode_duel.py"))
+mode_duel = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(mode_duel)
 
 
 class TestObtenirDefinition(unittest.TestCase):
@@ -252,7 +269,7 @@ class TestBotPropositionUltime(unittest.TestCase):
         self, mock_bot, mock_definition, mock_color, mock_choose_word,
         mock_load_dict, mock_exists, mock_print, mock_input
     ):
-        jouer()
+        mode_duel.jouer()
     
         # Assert the dictionary file was checked for existence
         mock_exists.assert_called_once_with("../dictionnaire_clean.txt")
@@ -272,7 +289,7 @@ class TestBotPropositionUltime(unittest.TestCase):
     @patch("builtins.print")  # Mock print to suppress output
     @patch("os.path.exists", return_value=False)  # Mock file not found
     def test_jouer_file_not_found(self, mock_exists, mock_print, mock_input):
-        jouer()
+        mode_duel.jouer()
         
         # Assert the dictionary file was checked for existence
         mock_exists.assert_called_once_with("../dictionnaire_clean.txt")
@@ -288,7 +305,7 @@ class TestBotPropositionUltime(unittest.TestCase):
     def test_jouer_invalid_word_length(
         self, mock_choose_word, mock_load_dict, mock_exists, mock_print, mock_input
     ):
-        jouer()
+        mode_duel.jouer()
         
         # Assert print was called with the length error message
         mock_print.assert_any_call("Le mot proposé n'a pas la bonne longueur.")

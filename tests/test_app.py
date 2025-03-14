@@ -7,11 +7,22 @@ from unittest.mock import patch, MagicMock
 import requests
 import json
 
+def get_path(full_path):
+    """
+    Get the full path of a file in the project.
+    """
+    root = os.path.dirname(os.path.abspath(__file__))
+
+    # Go up until we find the LICENSE file
+    while not os.path.exists(os.path.join(root, "LICENSE")):
+        root = os.path.dirname(root)
+    return os.path.join(root, full_path)
+
 # Mock data for testing
-with open("small_dico.txt", 'r') as file:
+with open(get_path("app/small_dico.txt"), 'r') as file:
     dico = [line.strip() for line in file]
     
-with open("frequences_lettres.txt", "r") as file:
+with open(get_path("app/frequences_lettres.txt"), "r") as file:
     frequences_lettres = {
         ligne.split(" : ")[0].strip(): float(ligne.split(" : ")[1].strip())
         for ligne in file if " : " in ligne
@@ -22,7 +33,7 @@ class TestMenuRoute(unittest.TestCase):
         # Set up a test client for the Flask app
         self.app = app.test_client()
         self.app.testing = True  # Enable testing mode for better error reporting
-        self.test_dir = 'dico'
+        self.test_dir = get_path('tests/dico')
         os.makedirs(self.test_dir, exist_ok=True)
         with open(os.path.join(self.test_dir, 'test.txt'), 'w') as f:
             f.write('This is a test file.')

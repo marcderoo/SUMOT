@@ -2,6 +2,17 @@ import os
 from tqdm import tqdm
 from typing import Set
 
+def get_path(full_path: str) -> str:
+    """
+    Get the full path of a file in the project.
+    """
+    root = os.path.dirname(os.path.abspath(__file__))
+
+    # Go up until we find the LICENSE file
+    while not os.path.exists(os.path.join(root, "LICENSE")):
+        root = os.path.dirname(root)
+    return os.path.join(root, full_path)
+
 def organize_words(input_file: str, scnd_input_file: str, output_dir: str) -> None:
     """
     Organize words from a file into a folder structure.
@@ -36,7 +47,7 @@ def organize_words(input_file: str, scnd_input_file: str, output_dir: str) -> No
             file.write(word + "\n")
 
 # Exemple d'utilisation
-input_file: str = "app/dictionnaire_clean.txt"  # Remplacez par le chemin vers votre fichier d'entrée
-scnd_input_file: str = "app/small_dico.txt"
-output_dir: str = "app/dico"  # Répertoire de sortie
+input_file: str = get_path("app/dictionnaire_clean.txt")  # Remplacez par le chemin vers votre fichier d'entrée
+scnd_input_file: str = get_path("app/small_dico.txt")
+output_dir: str = get_path("app/dico")  # Répertoire de sortie
 organize_words(input_file, scnd_input_file, output_dir)

@@ -9,11 +9,20 @@ from typing import List, Set, Dict
 import unidecode
 import re
 import os
-if not os.getcwd().endswith("experiments"):
-    os.chdir("experiments") 
+
+def get_path(full_path: str) -> str:
+    """
+    Get the full path of a file in the project.
+    """
+    root = os.path.dirname(os.path.abspath(__file__))
+
+    # Go up until we find the LICENSE file
+    while not os.path.exists(os.path.join(root, "LICENSE")):
+        root = os.path.dirname(root)
+    return os.path.join(root, full_path)
 
 # Lire le fichier dictionnaire.txt (dictionnaire original)
-with open("dictionnaire.txt", "r", encoding="utf-8") as fichier:
+with open(get_path("app/experiments/dictionnaire.txt"), "r", encoding="utf-8") as fichier:
     mots: List[str] = fichier.readlines()
 
 # Transformer les mots en minuscules, enlever les accents et supprimer les espaces et les traits d'union
@@ -27,7 +36,7 @@ for mot in mots:
         mots_corriges.add(mot_sans_accents)  # Ajouter au set
 
 # Sauvegarder les mots corrigés dans un fichier dictionnaire_clean.txt
-with open("../dictionnaire_clean.txt", "w", encoding="utf-8") as fichier_clean:
+with open(get_path("app/dictionnaire_clean.txt"), "w", encoding="utf-8") as fichier_clean:
     fichier_clean.write("\n".join(sorted(mots_corriges)))  # Trier avant d'écrire
 
 # Afficher un message de confirmation
