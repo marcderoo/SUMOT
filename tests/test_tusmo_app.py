@@ -27,7 +27,7 @@ def run_tests():
     env["PYTHONIOENCODING"] = "utf-8"  # Force utf-8 encoding
 
     for test_file in test_files:
-        print(f"Running tests in {test_file.split("/")[-1]}...")
+        print(f"Running tests in {test_file}...")
         result = subprocess.run(
             [sys.executable, "-m", "unittest", test_file],
             capture_output=True,
@@ -36,12 +36,12 @@ def run_tests():
         )
 
         if result.returncode != 0:
-            print(f"❌ Tests failed in {test_file.split("/")[-1]}:")
+            print(f"❌ Tests failed in {test_file}:")
             print(result.stdout)
             print(result.stderr)
             return False
 
-        print(f"✅ Tests passed in {test_file.split("/")[-1]}.")
+        print(f"✅ Tests passed in {test_file}.")
 
     return True
 
