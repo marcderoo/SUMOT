@@ -211,11 +211,11 @@ def bot_proposition_difficile(difficulte: str) -> Optional[str]:
     return filtred
 
 if __name__ == '__main__':
+    get_daily_word()
+
     # Configuration de APScheduler
     scheduler = BackgroundScheduler()
     scheduler.add_job(get_daily_word, 'interval', days=1, next_run_time=datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1))  # À partir du 13 mars 2025
     scheduler.start()
-
-    get_daily_word()
 
     app.run(host="0.0.0.0", port=5000, debug=True)
