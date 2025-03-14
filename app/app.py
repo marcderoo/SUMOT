@@ -9,6 +9,8 @@ from unidecode import unidecode
 from datetime import datetime, timedelta
 import os
 
+memory = {}
+
 app = Flask(__name__)
 
 os.chdir(os.path.dirname(__file__))
@@ -22,11 +24,7 @@ with open("frequences_lettres.txt", "r") as file:
         for ligne in file if " : " in ligne
     }
 
-daily_word = None
-
 def get_daily_word():
-    global daily_word
-
     try:
         url = "https://api.magicapi.dev/api/v1/datarise/twitter/trends/?woeid=23424819"
         response = requests.get(url, headers={
@@ -42,10 +40,10 @@ def get_daily_word():
             words = unidecode(trend).lower().split(" ")
             for word in words:
                 if word in dico:
-                    daily_word = word.upper()
-                    return daily_word
+                    memory["daily_word"] = word.upper()
+                    return
 
-    except requests.RequestException as e:
+    except Exception as e:
         print(f"Erreur lors de la récupération des tendances : {e}")
         return "DEFAUT"
 
@@ -87,9 +85,8 @@ def versus_ia()-> str:
 
 @app.route('/daily', methods=['POST', 'GET'])
 def daily()-> str:
-    global daily_word
     return render_template('daily.html', data={
-        "word": daily_word,
+        "word": memory["daily_word"],
         "score": 0,
         "count": 1
     })
@@ -217,6 +214,6 @@ if __name__ == '__main__':
     scheduler.add_job(get_daily_word, 'interval', days=1, next_run_time=datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1))  # À partir du 13 mars 2025
     scheduler.start()
 
-    daily_word = get_daily_word()
+    get_daily_word()
 
     app.run(host="0.0.0.0", port=5000, debug=True)
