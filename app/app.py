@@ -9,7 +9,7 @@ from unidecode import unidecode
 from datetime import datetime, timedelta
 import os
 
-memory: Dict[str, str] = {}  # Ensure memory is initialized as a dictionary
+memory = {}
 
 app = Flask(__name__)
 
@@ -40,12 +40,12 @@ def get_daily_word():
             words = unidecode(trend).lower().split(" ")
             for word in words:
                 if word in dico:
-                    memory["daily_word"] = word.upper()  # Update memory with the daily word
+                    memory["daily_word"] = word.upper()
                     return
 
     except Exception as e:
         print(f"Erreur lors de la récupération des tendances : {e}")
-        memory["daily_word"] = "DEFAUT"  # Set a default value in case of an error
+        memory["daily_word"] = "DEFAUT"
 
 @app.route('/') 
 def menu()-> str:
@@ -84,9 +84,9 @@ def versus_ia()-> str:
     })
 
 @app.route('/daily', methods=['POST', 'GET'])
-def daily() -> str:
+def daily()-> str:
     return render_template('daily.html', data={
-        "word": memory.get("daily_word", "DEFAUT"),  # Use memory to get the daily word
+        "word": memory["daily_word"],
         "score": 0,
         "count": 1
     })
