@@ -7,4 +7,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5000:5000" 
-    command: python tests/start_app.py
+    command: |
+      cd tests
+      python start_app.py
