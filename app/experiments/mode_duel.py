@@ -12,8 +12,15 @@ def get_path(full_path: str) -> str:
 
     # Go up until we find the LICENSE file
     while not os.path.exists(os.path.join(root, "LICENSE")):
-        root = os.path.dirname(root)
-    return os.path.join(root, full_path)
+        new_root = os.path.dirname(root)
+        if new_root == root:  # Évite une boucle infinie
+            raise FileNotFoundError("LICENSE file not found")
+        root = new_root
+    if "\\" in root :
+        full_path = full_path.replace("/", "\\")
+    else:
+        full_path = full_path.replace("\\", "/")
+    return str(os.path.join(root, full_path))
 
 def obtenir_definition(mot: str) -> str:
     """

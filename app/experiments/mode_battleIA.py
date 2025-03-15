@@ -1,11 +1,27 @@
 import random
 import os
-if not os.getcwd().endswith("experiments"):
-    os.chdir("experiments") 
 from typing import List, Tuple
 
 # Import des fonctions des bots
 from mode_duel import bot_proposition_difficile, bot_proposition_ultime_1
+
+def get_path(full_path: str) -> str:
+    """
+    Get the full path of a file in the project.
+    """
+    root = os.path.dirname(os.path.abspath(__file__))
+
+    # Go up until we find the LICENSE file
+    while not os.path.exists(os.path.join(root, "LICENSE")):
+        new_root = os.path.dirname(root)
+        if new_root == root:  # Évite une boucle infinie
+            raise FileNotFoundError("LICENSE file not found")
+        root = new_root
+    if "\\" in root :
+        full_path = full_path.replace("/", "\\")
+    else:
+        full_path = full_path.replace("\\", "/")
+    return str(os.path.join(root, full_path))
 
 # Fonction pour charger les mots du dictionnaire
 def charger_dictionnaire(fichier: str) -> List[str]:
@@ -16,7 +32,7 @@ def charger_dictionnaire(fichier: str) -> List[str]:
 
 # Fonction principale pour le mode Battle IA
 def mode_battle_ia()-> None:
-    fichier = "../dictionnaire_clean.txt"
+    fichier = get_path("app/dictionnaire_clean.txt")
     if not os.path.exists(fichier):
         print("Le fichier dictionnaire_clean.txt est introuvable.")
         return

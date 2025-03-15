@@ -11,15 +11,21 @@ def get_path(full_path: str) -> str:
 
     # Go up until we find the LICENSE file
     while not os.path.exists(os.path.join(root, "LICENSE")):
-        root = os.path.dirname(root)
-    return os.path.join(root, full_path)
+        new_root = os.path.dirname(root)
+        if new_root == root:  # Évite une boucle infinie
+            raise FileNotFoundError("LICENSE file not found")
+        root = new_root
+    if "\\" in root :
+        full_path = full_path.replace("/", "\\")
+    else:
+        full_path = full_path.replace("\\", "/")
+    return str(os.path.join(root, full_path))
 
 # Charger dynamiquement le module
 module_name = "mode_duel"  # Nom du module sans l'extension
 spec = importlib.util.spec_from_file_location(module_name, get_path("app/experiments/mode_duel.py"))
 mode_duel = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mode_duel)
-
 
 class TestObtenirDefinition(unittest.TestCase):
 
@@ -80,11 +86,11 @@ class TestObtenirDefinition(unittest.TestCase):
         # Mock content of the dictionary file
         mock_file_content = "lapin\nchien\nchat\n\n"
         with patch("builtins.open", mock_open(read_data=mock_file_content)) as mock_file:
-            mots = mode_duel.charger_dictionnaire("../dictionnaire_clean.txt")
+            mots = mode_duel.charger_dictionnaire(get_path("app/dictionnaire_clean.txt"))
             # Verify the content of the loaded list
             self.assertEqual(mots, ["lapin", "chien", "chat"])
             # Ensure the file was opened correctly
-            mock_file.assert_called_once_with("../dictionnaire_clean.txt", "r", encoding="utf-8")
+            mock_file.assert_called_once_with(get_path("app/dictionnaire_clean.txt"), "r", encoding="utf-8")
     
     def test_choisir_mot(self):
         # Mock list of words
@@ -272,10 +278,10 @@ class TestBotPropositionUltime(unittest.TestCase):
         mode_duel.jouer()
     
         # Assert the dictionary file was checked for existence
-        mock_exists.assert_called_once_with("../dictionnaire_clean.txt")
+        mock_exists.assert_called_once_with(get_path("app/dictionnaire_clean.txt"))
         
         # Assert the dictionary was loaded
-        mock_load_dict.assert_called_once_with("../dictionnaire_clean.txt")
+        mock_load_dict.assert_called_once_with(get_path("app/dictionnaire_clean.txt"))
         
         # Assert the chosen word was "mottest"
         mock_choose_word.assert_called_once_with(["mottest", "autre"])
@@ -292,7 +298,7 @@ class TestBotPropositionUltime(unittest.TestCase):
         mode_duel.jouer()
         
         # Assert the dictionary file was checked for existence
-        mock_exists.assert_called_once_with("../dictionnaire_clean.txt")
+        mock_exists.assert_called_once_with(get_path("app/dictionnaire_clean.txt"))
         
         # Assert print was called with the file-not-found message
         mock_print.assert_any_call("Le fichier dictionnaire_clean.txt est introuvable.")

@@ -10,8 +10,15 @@ def get_path(full_path):
 
     # Go up until we find the LICENSE file
     while not os.path.exists(os.path.join(root, "LICENSE")):
-        root = os.path.dirname(root)
-    return os.path.join(root, full_path)
+        new_root = os.path.dirname(root)
+        if new_root == root:  # Évite une boucle infinie
+            raise FileNotFoundError("LICENSE file not found")
+        root = new_root
+    if "\\" in root :
+        full_path = full_path.replace("/", "\\")
+    else:
+        full_path = full_path.replace("\\", "/")
+    return str(os.path.join(root, full_path))
 
 def run_tests():
     """
@@ -26,6 +33,7 @@ def run_tests():
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"  # Force utf-8 encoding
 
+    res = True
     for test_file in test_files:
         print(f"Running tests in {test_file}...")
         result = subprocess.run(
@@ -39,11 +47,12 @@ def run_tests():
             print(f"❌ Tests failed in {test_file}:")
             print(result.stdout)
             print(result.stderr)
-            return False
+            res = False
+            continue
 
         print(f"✅ Tests passed in {test_file}.")
 
-    return True
+    return res
 
 
 def test_flask_app():
