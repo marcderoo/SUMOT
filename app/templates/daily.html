@@ -78,6 +78,39 @@
          * @type {number}
          */
         const PLAYERTURN = -1;
+        
+        /**
+         *  
+         * @type {number}
+         */
+        const TIME_START = Date.now();
+
+        /**
+         *  Convert timespan to string
+         *  
+         * @function formatTimespan
+         */
+        formatTimespan = (milliseconds)  => {
+            const seconds = Math.floor(parseFloat(milliseconds / 1000));
+            const units = [
+                { label: "heure", plural: "heures", value: 3600 },
+                { label: "minute", plural: "minutes", value: 60 },
+                { label: "seconde", plural: "secondes", value: 1 }
+            ];
+            
+            let remainingSeconds = seconds;
+            let result = [];
+
+            for (let { label, plural, value } of units) {
+                const count = Math.floor(remainingSeconds / value);
+                remainingSeconds %= value;
+                if (count > 0) {
+                    result.push(`${count} ${count > 1 ? plural : label}`);
+                }
+            }
+
+            return result.join(" ") || "0 seconde";
+        }
 
        /**
          *  Apply a decorator to showDialog function for adding stuff in dialog of daily
@@ -87,11 +120,22 @@
         showDialog = ((fn) => (showWord) => {
             fn(showWord);
             if (showWord === false){ //  If it's a victory
+                const cells = Array.from(document.querySelectorAll("div.cell"));
+                let cellBeforeFirstEmptyCell = { cell : cells[cells.length - 1], index : cells.length - 1 };
+
+                // Loop to find the first empty cell or placeholder
+                for (let i = 0; i < cells.length; i++) {                    
+                    if (cells[i].innerHTML == ""){
+                        cellBeforeFirstEmptyCell = { cell: cells[i - 1], index: i - 1 };
+                        break;
+                    }
+                }
+
                 const dialog = document.querySelector("dialog");
                 dialog.innerHTML = `
                     <h2 style="margin-top: 0px;">Victoire</h2>
-                    <p><strong>Durée : </strong>38 secondes</p>
-                    <p><strong>Essais : </strong>1</p>` + dialog.innerHTML.replace('<h2 style="margin-top: 0px;">', '<h2>');
+                    <p><strong>Durée : </strong>${formatTimespan(Date.now()   - TIME_START)}</p>
+                    <p><strong>Essais : </strong>${(cellBeforeFirstEmptyCell.index + 1) / NBLETTERS}</p>` + dialog.innerHTML.replace('<h2 style="margin-top: 0px;">', '<h2>');
                 document.querySelector("form").action = window.location.href.replace("daily", "solo");
             }
         })(showDialog);
