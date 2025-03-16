@@ -79,6 +79,21 @@
          */
         const PLAYERTURN = -1;
 
+       /**
+         *  Apply a decorator to showDialog function for adding stuff in dialog of daily
+         *  
+         * @function showDialog
+         */
+        showDialog = ((fn) => (...args) => {
+            fn(...args);
+            const dialog = document.querySelector("dialog");
+            dialog.innerHTML = `
+                <h2 style="margin-top: 0px;">Victoire</h2>
+                <p><strong>Durée : </strong>38 secondes</p>
+                <p><strong>Essais : </strong>1</p>` + dialog.innerHTML.replace('<h2 style="margin-top: 0px;">', '<h2>');
+            document.querySelector("form").action = window.location.href.replace("daily", "solo");
+        })(showDialog);
+
         /**
          * Subscribes to the keydown event and triggers the enterKey function.
          *
@@ -86,7 +101,6 @@
          * @param {string} event - The event to subscribe to (here, 'keydown').
          * @param {function} callback - The callback function to execute when the event is triggered.
          */
-        showDialog  = () => {};
         appUtils.subscribe("keydown", (key) => enterKey(key));
     </script>
 </head>
