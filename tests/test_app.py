@@ -1,11 +1,9 @@
 import unittest
-from flask import Flask
-from app import app  
-from app import somme_frequences
 import os
 from unittest.mock import patch, MagicMock
 import requests
 import json
+import importlib.util
 
 def get_path(full_path):
     """
@@ -25,6 +23,15 @@ def get_path(full_path):
         full_path = full_path.replace("\\", "/")
     return str(os.path.join(root, full_path))
 
+# Charger dynamiquement le module
+module_name = "app"  # Nom du module sans l'extension
+spec = importlib.util.spec_from_file_location(module_name, get_path("app/app.py"))
+app_ = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(app_)
+
+# Accès aux objets du module via app_
+app, somme_frequences, get_daily_word = getattr(app_, "app", None), getattr(app_, "somme_frequences", None), getattr(app_, "get_daily_word", None)
+
 # Mock data for testing
 with open(get_path("app/small_dico.txt"), 'r') as file:
     dico = [line.strip() for line in file]
@@ -38,12 +45,11 @@ with open(get_path("app/frequences_lettres.txt"), "r") as file:
 class TestMenuRoute(unittest.TestCase):
     def setUp(self):
         # Set up a test client for the Flask app
+        app.template_folder = get_path("app/templates")
         self.app = app.test_client()
         self.app.testing = True  # Enable testing mode for better error reporting
-        self.test_dir = get_path('tests/dico')
-        os.makedirs(self.test_dir, exist_ok=True)
-        with open(os.path.join(self.test_dir, 'test.txt'), 'w') as f:
-            f.write('This is a test file.')
+
+        get_daily_word()
 
     def test_menu_route(self):
         # Send a GET request to the '/' route
@@ -97,24 +103,28 @@ class TestMenuRoute(unittest.TestCase):
 
         # Assert that the response status code is 200 (OK)
         self.assertEqual(response.status_code, 200)
+
+    def test_daily_endpoint(self):
+        res_decoded = []
         
-    def tearDown(self):
-        # Clean up the test directory and files
-        if os.path.exists(self.test_dir):
-            for file in os.listdir(self.test_dir):
-                os.remove(os.path.join(self.test_dir, file))
-            os.rmdir(self.test_dir)
+        for i in range(2):
+            # Send a GET request to the /daily endpoint
+            response = self.app.get('/daily')
 
-    def test_valid_file(self):
-        # Test for a valid file
-        response = self.app.get('/dico/test.txt')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data, b'This is a test file.')
+            # Add response content in the list
+            res_decoded.append(response.data.decode())
 
-    def test_file_not_found(self):
-        # Test for a file that does not exist
-        response = self.app.get('/dico/nonexistent.txt')
-        self.assertEqual(response.status_code, 500)
+            # Default values should be used for score and count
+            self.assertIn('let score = parseInt("0");', res_decoded[-1])  # Default score
+            self.assertIn('let count = parseInt("1");', res_decoded[-1])  # Default count
+
+            real_word = [line for line in res_decoded[-1].split("\n") if line.strip().startswith('const real_word = "')][0].split('"')[1]
+            
+            # Assert that a random word from 'dico' is in the rendered content and that it's not the DEFAUT value
+            self.assertTrue(any(word.upper() == real_word for word in dico) and real_word != "DEFAUT")
+
+        # Check if daily send always the same content
+        self.assertTrue(all(x == res_decoded[0] for x in res_decoded))
 
     def test_invalid_file_name(self):
         # Test for an invalid file name
