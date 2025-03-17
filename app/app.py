@@ -97,6 +97,10 @@ def daily()-> str:
 def regles()-> str:
     return render_template('regles.html')
 
+@app.route('/robots.txt')
+def robots()-> str:
+    return send_file('static/robots.txt')
+
 @app.route('/dico/<filename>')
 def get_dico(filename: str)-> Union[str, bytes]:
     return send_file('dico/' + filename)
