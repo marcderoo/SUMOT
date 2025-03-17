@@ -204,11 +204,11 @@ SUMOT/
 │   ├── confetti.js          # JavaScript logic for displaying victory confetti
 │   ├── confetti.md          # Documentation for confetti.js
 │   ├── favicon.png          # Application icon
-│   ├── noodles.png          # Vector image of a bowl of noodles
+│   ├── noodles.webp          # Vector image of a bowl of noodles
 │   ├── script.js            # Main JavaScript logic
 │   ├── script.md            # Documentation for script.js
 │   ├── styles.css           # Main stylesheet
-│   └── wallpaper.jpg        # Background image for the application
+│   └── wallpaper.webp        # Background image for the application
 ├── templates/               # HTML templates for views
 │   ├── menu.html            # Game homepage with the menu
 │   ├── regles.html          # Page explaining the rules

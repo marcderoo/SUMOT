@@ -15,7 +15,7 @@ body {
   gap: 3vh;
   padding: 1vh;
   height: calc(100% - 1vh - 1.5rem);
-  /*background-image: url("/static/wallpaper.jpg");*/
+  /*background-image: url("/static/wallpaper.webp");*/
   background-repeat: no-repeat; /* No image repetition */
   background-position: center; /* Center imagee */
   background-size: auto; /* No resizing */

@@ -3,7 +3,7 @@ score = Math.max(score, appUtils.loadKey("score", 0));
 appUtils.updateKey("score", score);
 
 /** Import the noodles logo */
-appUtils.loadObj("/static/noodles.png", true).then((res) => {
+appUtils.loadObj("/static/noodles.webp", true).then((res) => {
     appUtils.subscribe("updateNoodlesImages",  () => {
         document.querySelectorAll('img.noodles').forEach(elmt =>  {
             elmt.src = res;
