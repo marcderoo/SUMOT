@@ -4,3 +4,4 @@ Disallow: /dialy
 Disallow: /solo
 Disallow: /versusia
 Disallow: /regles
+Disallow: /static/*
