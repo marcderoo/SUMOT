@@ -5,8 +5,8 @@
 - Mise en place des bonnes pratiques
   - pylint sur les .py amélioration de 5/10 à 8/10 en moyenne (le prof a dit que 7 c'est très bien) ✅
   - regarder équivalent sur les js
-- fichiers LICENSE et .gitignore ✅ (LICENSE GNU, ok pour vous ?)
-- architecture cookiecutter --> pb avec le tests unitaires car du coup ils sont mtn dans tests/, pbs de chemins quoi, horrible arnaud heeelp 
+- fichiers LICENSE (GNU) et .gitignore ✅
+- architecture cookiecutter --> pbs tests unitaires 
 - Mettre les données sur S3 (SSPCLoud) (mtn)
 - Interfacer DOCKER avec GITHUB (à la fin)
 - StreamLit (créer une page dashboard pour monitorer l'appli) (mtn)
@@ -16,8 +16,8 @@
 
 ---
 
-- Ajouter un mot du jour qui se base sur un mot tendance google ✅ (ajouter le mode dans le jeu)
-- Chronométrer la résolution du mot du jour (et collecter les temps)
+- Ajouter un mot du jour qui se base sur un mot tendance google ✅
+- Chronométrer la résolution du mot du jour ✅ 
 - Customiser : fonds d'écrans, thèmes de mots (films, animaux, gateaux, ...)
 - Bonus : pourvoir comparer avec ses amis (bouton partager)
 - Bonus : mettre une version en anglais (= customiser CSS etc.)
