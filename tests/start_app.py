@@ -1,3 +1,7 @@
+"""
+Script to start the application with all Unit tests
+"""
+
 import subprocess
 import sys
 import os

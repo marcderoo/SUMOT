@@ -1,3 +1,8 @@
+"""
+Script to start only all Unit tests
+"""
+
+
 import subprocess
 import sys
 import os

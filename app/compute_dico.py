@@ -1,6 +1,10 @@
+"""
+Script for generating or manipulating dictionaries
+"""
+
 import os
-from tqdm import tqdm
 from typing import Set
+from tqdm import tqdm
 
 def get_path(full_path: str) -> str:
     """
@@ -20,24 +24,27 @@ def get_path(full_path: str) -> str:
         full_path = full_path.replace("\\", "/")
     return str(os.path.join(root, full_path))
 
-def organize_words(input_file: str, scnd_input_file: str, output_dir: str) -> None:
+def organize_words(input_file_local: str, scnd_input_file_local: \
+                    str, output_dir_local: str) -> None:
     """
     Organize words from a file into a folder structure.
 
     Args:
-        input_file (str): Path to the input file where each line contains one word.
-        output_dir (str): Path to the output directory to organize the words.
+        input_file_local (str): Path to the input file where each line contains one word.
+        output_dir_local (str): Path to the output directory to organize the words.
     """
     # Assure que le répertoire de sortie existe
-    os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(output_dir_local, exist_ok=True)
 
     # Charger les mots depuis le fichier
-    with open(input_file, 'r') as file:
-        words: Set[str] = set([line.strip() for line in file if line.strip() and len(line) >= 7 and len(line) <= 10])  # Retirer les espaces vides
-  
+    with open(input_file_local, 'r', encoding='utf-8') as file:
+        words: Set[str] = set([line.strip() for line in file \
+            if line.strip() and len(line) >= 7 and len(line) <= 10])  # Retirer les espaces vides
+
     # Charger les mots depuis le fichier
-    with open(scnd_input_file, 'r') as file:
-        words = words.union(set([line.strip() for line in file if line.strip() and len(line) >= 7 and len(line) <= 10]))  # Retirer les espaces vides
+    with open(scnd_input_file_local, 'r', encoding='utf-8') as file:
+        words = words.union(set([line.strip() for line in file \
+            if line.strip() and len(line) >= 7 and len(line) <= 10]))  # Retirer les espaces vides
 
     # Progression sur les mots
     for word in tqdm(words, desc="Processing words"):
@@ -49,12 +56,12 @@ def organize_words(input_file: str, scnd_input_file: str, output_dir: str) -> No
         word_length: int = len(word)
 
         # Créer le fichier pour la longueur et y ajouter le mot
-        file_path: str = os.path.join(output_dir, f"{first_letter}_{word_length}.txt")
-        with open(file_path, 'a') as file:
+        file_path: str = os.path.join(output_dir_local, f"{first_letter}_{word_length}.txt")
+        with open(file_path, 'a', encoding="utf-8") as file:
             file.write(word + "\n")
 
 # Exemple d'utilisation
-input_file: str = get_path("app/dictionnaire_clean.txt")  # Remplacez par le chemin vers votre fichier d'entrée
-scnd_input_file: str = get_path("app/small_dico.txt")
-output_dir: str = get_path("app/dico")  # Répertoire de sortie
-organize_words(input_file, scnd_input_file, output_dir)
+input_file_local: str = get_path("app/dictionnaire_clean.txt")  #chemin vers votre fichier d'entrée
+scnd_input_file_local: str = get_path("app/small_dico.txt")
+output_dir_local: str = get_path("app/dico")  # Répertoire de sortie
+organize_words(input_file_local, scnd_input_file_local, output_dir_local)
