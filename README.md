@@ -2,7 +2,9 @@
 
 ## Idées amélioration dans le cadre de 'Mise en Production'
 
-- Mise en place des bonnes pratiques (linter puis formatter / loguru) (plutot a la fin)
+- Mise en place des bonnes pratiques
+  - pylint sur les .py amélioration de 5/10 à 8/10 en moyenne (le prof a dit que 7 c'est très bien) ✅
+  - regarder équivalent sur les js
 - fichiers LICENSE et .gitignore ✅ (LICENSE GNU, ok pour vous ?)
 - architecture cookiecutter --> pb avec le tests unitaires car du coup ils sont mtn dans tests/, pbs de chemins quoi, horrible arnaud heeelp 
 - Mettre les données sur S3 (SSPCLoud) (mtn)
