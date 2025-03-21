@@ -3,7 +3,7 @@ Main entry point of the Flask application
 """
 
 from typing import List, Dict, Optional, Union
-from flask import Flask, render_template, send_file, request
+from flask import Flask, render_template, send_file, request, redirect, url_for
 import random
 import requests
 from bs4 import BeautifulSoup
@@ -13,7 +13,7 @@ from unidecode import unidecode
 from datetime import datetime, timedelta
 import os
 
-DAILY_WORD = "DEFAUT"
+daily_word = None
 
 app = Flask(__name__)
 
@@ -33,11 +33,12 @@ def get_daily_word():
     Récupère le mot quotidien depuis une source externe.
     Cette fonction utilise un web scraping pour extraire le mot du jour.
     """
+    global daily_word  # Ajout pour modifier la variable globale
     try:
         url = "https://api.magicapi.dev/api/v1/datarise/twitter/trends/?woeid=23424819"
         response = requests.get(url, headers={
             "accept": "application/json",
-            "x-magicapi-key": "cm85xxupg0008k003ggyouam3"
+            "x-magicapi-key": "cm8iwrbwt0009lb033mj5mvng"
         },
         timeout=5)
         response.raise_for_status()
@@ -50,14 +51,17 @@ def get_daily_word():
             words = unidecode(trend).lower().split(" ")
             for word in words:
                 if word in dico:
-                    DAILY_WORD = word.upper()
+                    daily_word = word.upper()
+                    print("Found", daily_word)
                     return
-
     except Exception as e:
         print(f"Erreur lors de la récupération des tendances : {e}")
 
+    daily_word = random.choice(dico).upper()
+    print("Utilisation du mot aleatoire", daily_word)
+
 @app.route('/')
-def menu() -> str:
+def index() -> str:
     return render_template('menu.html')
 
 @app.route('/solo', methods=['POST', 'GET'])
@@ -94,8 +98,12 @@ def versus_ia() -> str:
 
 @app.route('/daily', methods=['POST', 'GET'])
 def daily() -> str:
+    if request.method == 'POST':
+        return redirect(url_for('index'))
+
+    global daily_word
     return render_template('daily.html', data={
-        "word": DAILY_WORD,
+        "word": daily_word,
         "score": 0,
         "count": 1
     })
