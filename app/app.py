@@ -34,6 +34,7 @@ def get_daily_word():
     Cette fonction utilise un web scraping pour extraire le mot du jour.
     """
     global daily_word  # Ajout pour modifier la variable globale
+    """
     try:
         url = "https://api.magicapi.dev/api/v1/datarise/twitter/trends/?woeid=23424819"
         response = requests.get(url, headers={
@@ -52,13 +53,13 @@ def get_daily_word():
             for word in words:
                 if word in dico:
                     daily_word = word.upper()
-                    print("Found", daily_word)
+                    print("Mot du jour (depuis twitter) :", daily_word)
                     return
     except Exception as e:
         print(f"Erreur lors de la récupération des tendances : {e}")
-
+    """
     daily_word = random.choice(dico).upper()
-    print("Utilisation du mot aleatoire", daily_word)
+    print("Mot du jour (mot aleatoire) :", daily_word)
 
 @app.route('/')
 def index() -> str:
@@ -250,4 +251,4 @@ if __name__ == '__main__':
 
     get_daily_word()
 
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000)
