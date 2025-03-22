@@ -222,6 +222,10 @@ def bot_proposition_difficile(difficulte: str) -> Optional[str]:
 def dashboard()-> str:
     return render_template('dashboard.html')
 
+@app.route('/table')
+def table()-> str:
+    return render_template('table.html')
+
 if __name__ == '__main__':
     # Configuration de APScheduler
     scheduler = BackgroundScheduler()
