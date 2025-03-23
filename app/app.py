@@ -8,6 +8,25 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from unidecode import unidecode
 from datetime import datetime, timedelta
 import os
+import json
+
+def get_path(full_path: str) -> str:
+    """
+    Get the full path of a file in the project.
+    """
+    root = os.path.dirname(os.path.abspath(__file__))
+
+    # Go up until we find the LICENSE file
+    while not os.path.exists(os.path.join(root, "LICENSE")):
+        new_root = os.path.dirname(root)
+        if new_root == root:  # Évite une boucle infinie
+            raise FileNotFoundError("LICENSE file not found")
+        root = new_root
+    if "\\" in root :
+        full_path = full_path.replace("/", "\\")
+    else:
+        full_path = full_path.replace("\\", "/")
+    return str(os.path.join(root, full_path))
 
 daily_word = "DEFAUT"
 
@@ -224,7 +243,15 @@ def dashboard()-> str:
 
 @app.route('/table')
 def table()-> str:
-    return render_template('table.html')
+    title = request.args.get('title', 'Sans titre')
+
+    with open(get_path("app/static/exemple.json"), 'r', encoding="utf8") as file:
+        data = json.load(file)
+
+    return render_template('table.html', data={
+        "title" : title,
+        "content" : json.dumps(data)
+    })
 
 if __name__ == '__main__':
     # Configuration de APScheduler
