@@ -14,6 +14,8 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 # Exposer le port de l'application Flask
 EXPOSE 5000
 
-# Définir la commande pour démarrer l'application
-CMD ["cd", "tests"]
+# Changer le répertoire de travail avant d'exécuter la commande
+WORKDIR /tests
+
+# Démarrer l'application
 CMD ["python", "start_app.py"]
