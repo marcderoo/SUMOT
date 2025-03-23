@@ -40,6 +40,20 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+/** Manage requests */
+requests_elmts = document.querySelectorAll(".request");
+promises = Array.from(requests_elmts).map(elmt => new Promise((resolve)  => {
+    fetch("fetch?" + elmt.getAttribute("aria-params")).then((res) =>{
+        res.text().then(txt => {
+            document.querySelector(elmt.getAttribute("aria-txt")).innerHTML = txt;
+            elmt.classList.add('hidden');
+            document.querySelector(elmt.getAttribute("aria-related")).classList.remove('hidden');
+            resolve();
+        });
+    })
+}));
+Promise.all(promises);
+
 /** Differents charts */
 
 generateChart('chart1', {

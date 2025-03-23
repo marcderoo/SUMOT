@@ -9,6 +9,7 @@ from unidecode import unidecode
 from datetime import datetime, timedelta
 import os
 import json
+import time
 
 def get_path(full_path: str) -> str:
     """
@@ -252,6 +253,11 @@ def table()-> str:
         "title" : title,
         "content" : json.dumps(data)
     })
+
+@app.route('/fetch')
+def fetch()-> str:
+    time.sleep(1)
+    return "65,241,241"
 
 if __name__ == '__main__':
     # Configuration de APScheduler
