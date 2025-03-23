@@ -200,7 +200,7 @@ h3 {
 }
 
 canvas {
-    place-self: center
+    place-self: center;
 }
 
 /* Modal*/

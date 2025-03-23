@@ -77,7 +77,9 @@ generateChart('chart1', {
             legend: {
                 display: false // Désactive l'affichage de la légende
             }
-        }
+        },
+        responsive: true,  // Active le redimensionnement automatique
+        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
     }
 })
 
@@ -98,7 +100,9 @@ generateChart('chart2', {
             legend: {
                 display: false // Désactive l'affichage de la légende
             }
-        }
+        },
+        responsive: true,  // Active le redimensionnement automatique
+        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
     }
   })
 
@@ -119,7 +123,9 @@ generateChart('chart2', {
             legend: {
                 display: false // Désactive l'affichage de la légende
             }
-        }
+        },
+        responsive: true,  // Active le redimensionnement automatique
+        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
     }
   })
 
@@ -140,7 +146,9 @@ generateChart('chart2', {
             legend: {
                 display: false // Désactive l'affichage de la légende
             }
-        }
+        },
+        responsive: true,  // Active le redimensionnement automatique
+        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
     }
   })
 
@@ -161,7 +169,9 @@ generateChart('chart2', {
             legend: {
                 display: false // Désactive l'affichage de la légende
             }
-        }
+        },
+        responsive: true,  // Active le redimensionnement automatique
+        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
     }
   })
 
@@ -182,7 +192,9 @@ generateChart('chart2', {
             legend: {
                 display: false // Désactive l'affichage de la légende
             }
-        }
+        },
+        responsive: true,  // Active le redimensionnement automatique
+        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
     }
   })
 
@@ -203,6 +215,8 @@ generateChart('chart2', {
             legend: {
                 display: false // Désactive l'affichage de la légende
             }
-        }
+        },
+        responsive: true,  // Active le redimensionnement automatique
+        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
     }
   })
