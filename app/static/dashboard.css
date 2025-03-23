@@ -293,3 +293,9 @@ canvas {
 .hidden {
     display: none;
 }
+
+/** Own grid */
+.own-grid {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+}

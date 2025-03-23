@@ -101,3 +101,108 @@ generateChart('chart2', {
         }
     }
   })
+
+  generateChart('chart3', {
+    type: 'line',
+    data: {
+        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        datasets: [{
+          label: 'Mon premier jeu de données',
+          data: [65, 59, 80, 81, 56, 55, 40],
+          fill: false,
+          borderColor: '#EC643C',
+          tension: 0.1
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: false // Désactive l'affichage de la légende
+            }
+        }
+    }
+  })
+
+  generateChart('chart4', {
+    type: 'line',
+    data: {
+        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        datasets: [{
+          label: 'Mon premier jeu de données',
+          data: [65, 59, 80, 81, 56, 55, 40],
+          fill: false,
+          borderColor: '#EC643C',
+          tension: 0.1
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: false // Désactive l'affichage de la légende
+            }
+        }
+    }
+  })
+
+  generateChart('chart5', {
+    type: 'line',
+    data: {
+        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        datasets: [{
+          label: 'Mon premier jeu de données',
+          data: [65, 59, 80, 81, 56, 55, 40],
+          fill: false,
+          borderColor: '#EC643C',
+          tension: 0.1
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: false // Désactive l'affichage de la légende
+            }
+        }
+    }
+  })
+
+  generateChart('chart6', {
+    type: 'line',
+    data: {
+        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        datasets: [{
+          label: 'Mon premier jeu de données',
+          data: [65, 59, 80, 81, 56, 55, 40],
+          fill: false,
+          borderColor: '#EC643C',
+          tension: 0.1
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: false // Désactive l'affichage de la légende
+            }
+        }
+    }
+  })
+
+  generateChart('chart7', {
+    type: 'line',
+    data: {
+        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        datasets: [{
+          label: 'Mon premier jeu de données',
+          data: [65, 59, 80, 81, 56, 55, 40],
+          fill: false,
+          borderColor: '#EC643C',
+          tension: 0.1
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: false // Désactive l'affichage de la légende
+            }
+        }
+    }
+  })
