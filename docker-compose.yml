@@ -8,3 +8,4 @@ services:
     ports:
       - "5000:5000" 
     command: ["python", "/tests/start_app.py"]
+#test
