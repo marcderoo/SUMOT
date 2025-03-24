@@ -29,3 +29,5 @@ docker-compose.override.yml
 
 # 🔹 Vercel
 .vercel/
+
+*.exe
