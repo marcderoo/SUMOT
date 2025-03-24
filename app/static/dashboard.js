@@ -57,100 +57,252 @@ Promise.all(promises).then(proms => {
 /** Differents charts */
 
 generateChart('chart1', {
-    type: 'bar',
+    type: 'line',
     data: {
-        labels: ['Rouge', 'Bleu', 'Jaune', 'Vert', 'Violet', 'Orange'],
+        labels: ['18/03', '19/03', '20/03', '21/03', '22/03', '23/03', '24/03'],
         datasets: [{
-        label: 'Nb de Votes',
-        data: [12, 19, 3, 5, 2, 3],
-        borderWidth: 1,
-        backgroundColor:  '#EC643C'
+            label: 'Utilisateurs par jour',
+            data: [12, 13, 15, 14, 16, 17, 19],
+            fill: false,
+            borderColor: '#EC643C',
+            tension: 0.2
         }]
     },
     options: {
-        scales: {
-        y: {
-            beginAtZero: true
-        }
-        },
         plugins: {
+            title: {
+                display: true,
+                text: 'Nombre d\'utilisateurs quotidiens',
+                font: {
+                    size: 18
+                },
+                padding: {
+                    top: 10,
+                    bottom: 5
+                }
+            },
+            subtitle: {
+                display: true,
+                text: 'Du 18 au 24 mars 2025',
+                font: {
+                    size: 14
+                },
+                color: '#666'
+            },
             legend: {
-                display: false // Désactive l'affichage de la légende
+                display: false
             }
         },
-        responsive: true,  // Active le redimensionnement automatique
-        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'Nombre d’utilisateurs'
+                }
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false
     }
 })
 
-generateChart('chart2', {
-    type: 'line',
-    data: {
-        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
-        datasets: [{
-          label: 'Mon premier jeu de données',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          fill: false,
-          borderColor: '#EC643C',
-          tension: 0.1
-        }]
-    },
-    options: {
-        plugins: {
-            legend: {
-                display: false // Désactive l'affichage de la légende
-            }
-        },
-        responsive: true,  // Active le redimensionnement automatique
-        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
-    }
-  })
 
+
+/** Chart 2 - Carte du monde avec utilisateurs */
+const idToISO3 = {
+    250: 'FRA',
+    840: 'USA',
+    76:  'BRA',
+    156: 'CHN',
+    356: 'IND',
+    276: 'DEU',
+    643: 'RUS',
+    124: 'CAN',
+    36:  'AUS',
+    710: 'ZAF'
+  };
+
+  const utilisateurs = {
+    'FRA': 250,
+    'USA': 800,
+    'BRA': 420,
+    'CHN': 600,
+    'IND': 550,
+    'DEU': 300,
+    'RUS': 320,
+    'CAN': 150,
+    'AUS': 180,
+    'ZAF': 90
+  };
+  
+  
+  fetch('https://unpkg.com/world-atlas/countries-50m.json')
+  .then((response) => response.json())
+  .then((data) => {
+    const countries = ChartGeo.topojson.feature(data, data.objects.countries).features;
+
+    // Force la hauteur du canvas
+    document.getElementById('chart2').style.height = '200px';
+
+    generateChart('chart2', {
+      type: 'choropleth',
+      data: {
+        labels: countries.map(d => d.properties.name),
+        datasets: [{
+          label: 'Utilisateurs par pays',
+          data: countries.map(d => {
+            const iso = idToISO3[d.id];
+            return {
+              feature: d,
+              value: utilisateurs[iso] || 0
+            };
+          })
+        }]
+      },
+      options: {
+        showOutline: true,
+        showGraticule: false,
+        scales: {
+          projection: {
+            axis: 'x',
+            projection: 'equalEarth'
+          },
+          color: {
+            axis: 'color',
+            quantize: 5,
+            legend: {
+              position: 'bottom-right',
+              title: 'Nombre d’utilisateurs'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx =>
+                `${ctx.chart.data.labels[ctx.dataIndex]} : ${ctx.raw.value} utilisateurs`
+            }
+          },
+          title: {
+            display: true,
+            text: 'Répartition des utilisateurs dans le monde',
+            font: {
+              size: 18
+            }
+          }
+        },
+        responsive: true,
+        maintainAspectRatio: false
+      }
+    });
+  });
+
+
+
+
+
+// PAS UN GRAPH
   generateChart('chart3', {
-    type: 'line',
+    type: 'bar',
     data: {
-        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        labels: [
+            "Moins de 10s",
+            "10-30s",
+            "30-60s",
+            "1-2 min",
+            "2-5 min",
+            "5+ min"
+        ],
         datasets: [{
-          label: 'Mon premier jeu de données',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          fill: false,
-          borderColor: '#EC643C',
-          tension: 0.1
+            label: "Nombre de joueurs",
+            data: [12, 30, 45, 25, 15, 4], // Données fictives
+            backgroundColor: '#EC643C'
         }]
     },
     options: {
         plugins: {
+            title: {
+                display: true,
+                text: "Répartition des temps pour trouver le mot",
+                font: {
+                    size: 16
+                },
+                padding: {
+                    bottom: 10
+                }
+            },
             legend: {
-                display: false // Désactive l'affichage de la légende
+                display: false
             }
         },
-        responsive: true,  // Active le redimensionnement automatique
-        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: "Nombre de joueurs"
+                }
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: "Temps écoulé"
+                }
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false
     }
-  })
+})
 
-  generateChart('chart4-1', {
-    type: 'line',
+
+
+// Forcer la taille du canvas
+document.getElementById('chart4-1').style.height = '220px';
+
+generateChart('chart4-1', {
+    type: 'pie',
     data: {
-        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        labels: ["Victoire", "Défaite"],
         datasets: [{
-          label: 'Mon premier jeu de données',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          fill: false,
-          borderColor: '#EC643C',
-          tension: 0.1
+            data: [75, 25],
+            backgroundColor: ["#4CAF50", "#EC643C"]
         }]
     },
     options: {
         plugins: {
+            title: {
+                display: true,
+                text: "Taux de victoire - Mode facile",
+                font: {
+                    size: 16
+                },
+                padding: {
+                    bottom: 10
+                }
+            },
             legend: {
-                display: false // Désactive l'affichage de la légende
+                display: true,
+                position: 'bottom'
+            },
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        return `${context.label} : ${context.parsed}%`;
+                    }
+                }
             }
         },
-        responsive: true,  // Active le redimensionnement automatique
-        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
+        responsive: true,
+        maintainAspectRatio: false
     }
-  })
+});
+
+
 
   generateChart('chart4-2', {
     type: 'line',
@@ -222,27 +374,59 @@ generateChart('chart2', {
   })
 
   generateChart('chart5', {
-    type: 'line',
+    type: 'bar',
     data: {
-        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        labels: [
+            "Moins de 10s",
+            "10-30s",
+            "30-60s",
+            "1-2 min",
+            "2-5 min",
+            "5+ min"
+        ],
         datasets: [{
-          label: 'Mon premier jeu de données',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          fill: false,
-          borderColor: '#EC643C',
-          tension: 0.1
+            label: "Nombre de joueurs",
+            data: [12, 30, 45, 25, 15, 4], // Données fictives
+            backgroundColor: '#EC643C'
         }]
     },
     options: {
         plugins: {
+            title: {
+                display: true,
+                text: "Répartition des temps pour trouver le mot",
+                font: {
+                    size: 16
+                },
+                padding: {
+                    bottom: 10
+                }
+            },
             legend: {
-                display: false // Désactive l'affichage de la légende
+                display: false
             }
         },
-        responsive: true,  // Active le redimensionnement automatique
-        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: "Nombre de joueurs"
+                }
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: "Temps écoulé"
+                }
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false
     }
-  })
+})
+
+
 
   generateChart('chart6', {
     type: 'line',
