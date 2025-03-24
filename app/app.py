@@ -256,7 +256,6 @@ def table()-> str:
 
 @app.route('/fetch')
 def fetch()-> str:
-    time.sleep(1)
     return "65,241,241"
 
 if __name__ == '__main__':
