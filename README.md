@@ -77,8 +77,8 @@ python test_tusmo_app.py
 
 ## **Overview** 
 <p align="center">
-    <img src="./menu.png" alt="Image 1" height="400" style="margin-right: 10px;">
-    <img src="./versusia.png" alt="Image 2" height="400">
+    <img src="./app/static/menu.png" alt="Image 1" height="400" style="margin-right: 10px;">
+    <img src="./app/static/versusia.png" alt="Image 2" height="400">
 </p>
 
 ---
