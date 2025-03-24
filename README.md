@@ -4,15 +4,13 @@
 
 - Mise en place des bonnes pratiques
   - pylint sur les .py amélioration de 5/10 à 8/10 en moyenne (le prof a dit que 7 c'est très bien) ✅
-  - regarder équivalent sur les js
 - fichiers LICENSE (GNU) et .gitignore ✅
 - architecture cookiecutter --> pbs tests unitaires 
-- Mettre les données sur S3 (SSPCLoud) (mtn)
-- Interfacer DOCKER avec GITHUB (à la fin)
-- StreamLit (créer une page dashboard pour monitorer l'appli) (mtn)
-- Automatiser l’ingestion des données en entrée pour que le site web se mette à jour régulièrement (mtn)
-- Industrialiser le déploiement en mode GitOps avec ArgoCD (attendre le cours dessus)
-- Gérer le monitoring de l’application : logs, métriques de suivi des performances, etc. (mtn)
+- Mettre les données sur S3 (SSPCLoud) 
+- Interfacer DOCKER avec GITHUB ✅ [![Build and Push Docker Image](https://github.com/marcderoo/SUMOT/actions/workflows/prod.yml/badge.svg)](https://github.com/marcderoo/SUMOT/actions/workflows/prod.yml)
+- Industrialiser le déploiement en mode GitOps avec ArgoCD
+- Automatiser l’ingestion des données en entrée pour que le site web se mette à jour régulièrement 
+- DAHSBOARD : Gérer le monitoring de l’application : logs, métriques de suivi des performances, etc. 
 
 ---
 
