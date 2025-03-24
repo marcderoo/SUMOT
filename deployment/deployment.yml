@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sumot-deployment
+  labels:
+    app: sumot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sumot
+  template:
+    metadata:
+      labels:
+        app: sumot
+    spec:
+      containers:
+      - name: sumot
+        image: mderoo4/application:latest
+        ports:
+        - containerPort: 8000
