@@ -317,5 +317,9 @@ canvas {
 /** Own grid */
 .own-grid {
     grid-template-columns: repeat(3, calc(1/3 * 100% - 2rem / 3));
-    grid-template-rows: repeat(5, calc(20% - 0.8rem));
+    grid-template-rows: calc(1/6 * 100% - 0.8rem) calc(2/6 * 100% - 0.8rem) repeat(3, calc(1/6 * 100% - 0.8rem));
+}
+
+.full-height {
+    height: 100%;
 }

@@ -71,23 +71,10 @@ generateChart('chart1', {
     options: {
         plugins: {
             title: {
-                display: true,
-                text: 'Nombre d\'utilisateurs quotidiens',
-                font: {
-                    size: 18
-                },
-                padding: {
-                    top: 10,
-                    bottom: 5
-                }
+                display: false
             },
             subtitle: {
-                display: true,
-                text: 'Du 18 au 24 mars 2025',
-                font: {
-                    size: 14
-                },
-                color: '#666'
+                display: false
             },
             legend: {
                 display: false
@@ -142,9 +129,6 @@ const idToISO3 = {
   .then((data) => {
     const countries = ChartGeo.topojson.feature(data, data.objects.countries).features;
 
-    // Force la hauteur du canvas
-    document.getElementById('chart2').style.height = '200px';
-
     generateChart('chart2', {
       type: 'choropleth',
       data: {
@@ -188,11 +172,7 @@ const idToISO3 = {
             }
           },
           title: {
-            display: true,
-            text: 'Répartition des utilisateurs dans le monde',
-            font: {
-              size: 18
-            }
+            display: false
           }
         },
         responsive: true,
@@ -200,69 +180,6 @@ const idToISO3 = {
       }
     });
   });
-
-
-
-
-
-// PAS UN GRAPH
-  generateChart('chart3', {
-    type: 'bar',
-    data: {
-        labels: [
-            "Moins de 10s",
-            "10-30s",
-            "30-60s",
-            "1-2 min",
-            "2-5 min",
-            "5+ min"
-        ],
-        datasets: [{
-            label: "Nombre de joueurs",
-            data: [12, 30, 45, 25, 15, 4], // Données fictives
-            backgroundColor: '#EC643C'
-        }]
-    },
-    options: {
-        plugins: {
-            title: {
-                display: true,
-                text: "Répartition des temps pour trouver le mot en mode solo",
-                font: {
-                    size: 16
-                },
-                padding: {
-                    bottom: 10
-                }
-            },
-            legend: {
-                display: false
-            }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: "Nombre de joueurs"
-                }
-            },
-            x: {
-                title: {
-                    display: true,
-                    text: "Temps écoulé"
-                }
-            }
-        },
-        responsive: true,
-        maintainAspectRatio: false
-    }
-})
-
-
-
-// Forcer la taille du canvas
-document.getElementById('chart4-1').style.height = '220px';
 
 generateChart('chart4-1', {
     type: 'pie',
@@ -277,7 +194,7 @@ generateChart('chart4-1', {
         plugins: {
             title: {
                 display: true,
-                text: "Taux de victoire - Mode facile",
+                text: "Facile",
                 font: {
                     size: 16
                 },
@@ -301,11 +218,6 @@ generateChart('chart4-1', {
         maintainAspectRatio: false
     }
 });
-
-
-
-
-document.getElementById('chart4-2').style.height = '220px';
 
   generateChart('chart4-2', {
     type: 'pie',
@@ -320,7 +232,7 @@ document.getElementById('chart4-2').style.height = '220px';
         plugins: {
             title: {
                 display: true,
-                text: "Taux de victoire - Mode Moyen",
+                text: "Moyen",
                 font: {
                     size: 16
                 },
@@ -344,11 +256,6 @@ document.getElementById('chart4-2').style.height = '220px';
         maintainAspectRatio: false
     }
 });
-
-
-
-
-document.getElementById('chart4-3').style.height = '220px';
 
   generateChart('chart4-3', {
     type: 'pie',
@@ -363,7 +270,7 @@ document.getElementById('chart4-3').style.height = '220px';
         plugins: {
             title: {
                 display: true,
-                text: "Taux de victoire - Mode Difficile",
+                text: "Difficile",
                 font: {
                     size: 16
                 },
@@ -387,11 +294,6 @@ document.getElementById('chart4-3').style.height = '220px';
         maintainAspectRatio: false
     }
 });
-
-
-
-
-document.getElementById('chart4-4').style.height = '220px';
 
   generateChart('chart4-4', {
     type: 'pie',
@@ -406,7 +308,7 @@ document.getElementById('chart4-4').style.height = '220px';
         plugins: {
             title: {
                 display: true,
-                text: "Taux de victoire - Mode Expert",
+                text: "Expert",
                 font: {
                     size: 16
                 },
@@ -430,10 +332,6 @@ document.getElementById('chart4-4').style.height = '220px';
         maintainAspectRatio: false
     }
 });
-
-
-
-document.getElementById('chart5').style.height = '220px';
 
   generateChart('chart5', {
     type: 'bar',
@@ -455,14 +353,7 @@ document.getElementById('chart5').style.height = '220px';
     options: {
         plugins: {
             title: {
-                display: true,
-                text: "Répartition des temps pour trouver le mot",
-                font: {
-                    size: 16
-                },
-                padding: {
-                    bottom: 10
-                }
+                display: false
             },
             legend: {
                 display: false
@@ -488,10 +379,6 @@ document.getElementById('chart5').style.height = '220px';
     }
 })
 
-
-
-document.getElementById('chart6').style.height = '220px';
-
   generateChart('chart6', {
     type: 'pie',
     data: {
@@ -504,14 +391,7 @@ document.getElementById('chart6').style.height = '220px';
     options: {
         plugins: {
             title: {
-                display: true,
-                text: "Répartition du nombre de partie par mode de jeu",
-                font: {
-                    size: 16
-                },
-                padding: {
-                    bottom: 10
-                }
+                display: false
             },
             legend: {
                 display: true,
@@ -549,22 +429,14 @@ document.getElementById('chart6').style.height = '220px';
         plugins: {
             title: {
                 display: true,
-                text: 'Evolution du nombre d\'utilisateurs (solo)',
+                text: 'Solo',
                 font: {
-                    size: 10
+                    size: 16
                 },
                 padding: {
                     top: 10,
                     bottom: 5
                 }
-            },
-            subtitle: {
-                display: true,
-                text: 'Du 18 au 24 mars 2025',
-                font: {
-                    size: 14
-                },
-                color: '#666'
             },
             legend: {
                 display: false
@@ -603,22 +475,14 @@ document.getElementById('chart6').style.height = '220px';
         plugins: {
             title: {
                 display: true,
-                text: 'Evolution du nombre d\'utilisateurs (mot du jour)',
+                text: 'Mot du jour',
                 font: {
-                    size: 10
+                    size: 16
                 },
                 padding: {
                     top: 10,
                     bottom: 5
                 }
-            },
-            subtitle: {
-                display: true,
-                text: 'Du 18 au 24 mars 2025',
-                font: {
-                    size: 14
-                },
-                color: '#666'
             },
             legend: {
                 display: false
@@ -657,22 +521,14 @@ document.getElementById('chart6').style.height = '220px';
         plugins: {
             title: {
                 display: true,
-                text: 'Evolution du nombre d\'utilisateurs (IA)',
+                text: 'IA',
                 font: {
-                    size: 10
+                    size: 16
                 },
                 padding: {
                     top: 10,
                     bottom: 5
                 }
-            },
-            subtitle: {
-                display: true,
-                text: 'Du 18 au 24 mars 2025',
-                font: {
-                    size: 14
-                },
-                color: '#666'
             },
             legend: {
                 display: false
