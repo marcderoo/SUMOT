@@ -47,12 +47,12 @@ promises = Array.from(requests_elmts).map(elmt => new Promise((resolve)  => {
         res.text().then(txt  => resolve([txt, elmt]));
     })
 }));
-Promise.all(promises).then(proms => proms.forEach(prom =>  {
+Promise.all(promises).then(proms => {
+    proms.forEach(prom =>  {
     [txt, elmt] = prom;
     document.getElementById(elmt.getAttribute("aria-txt")).innerHTML = txt;
-    elmt.classList.add('hidden');
-    document.getElementById(elmt.getAttribute("aria-related")).classList.remove('hidden');
-}));
+    Array.from(document.querySelectorAll(".skeleton")).forEach(elmt => elmt.remove())
+})});
 
 /** Differents charts */
 
