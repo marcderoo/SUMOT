@@ -44,15 +44,15 @@ document.addEventListener("DOMContentLoaded", function () {
 requests_elmts = document.querySelectorAll(".request");
 promises = Array.from(requests_elmts).map(elmt => new Promise((resolve)  => {
     fetch("fetch?" + elmt.getAttribute("aria-params")).then((res) =>{
-        res.text().then(txt => {
-            document.querySelector(elmt.getAttribute("aria-txt")).innerHTML = txt;
-            elmt.classList.add('hidden');
-            document.querySelector(elmt.getAttribute("aria-related")).classList.remove('hidden');
-            resolve();
-        });
+        res.text().then(txt  => resolve([txt, elmt]));
     })
 }));
-Promise.all(promises);
+Promise.all(promises).then(proms => proms.forEach(prom =>  {
+    [txt, elmt] = prom;
+    document.getElementById(elmt.getAttribute("aria-txt")).innerHTML = txt;
+    elmt.classList.add('hidden');
+    document.getElementById(elmt.getAttribute("aria-related")).classList.remove('hidden');
+}));
 
 /** Differents charts */
 

@@ -119,6 +119,10 @@ h3 {
     justify-content: space-between;
 }
 
+.advanced-kpi--top.text-cell {
+    flex : 1;
+}
+
 .advanced-kpi--top .title {
     font-size: 1.2em;
     margin: 0;
@@ -128,6 +132,11 @@ h3 {
     color: #565656;
     font-size: 1em;
     font-weight: 400;
+}
+
+.advanced-kpi--middle.text-cell {
+    flex : 3;
+    justify-content: center;
 }
 
 .advanced-kpi--middle {
@@ -145,6 +154,11 @@ h3 {
     color: var(--highlight);
     font-weight: 500;
     font-size: 2.5rem;
+}
+
+.advanced-kpi--bottom.text-cell {
+    flex : 1;
+    place-content: flex-end;
 }
 
 .advanced-kpi--bottom {
@@ -296,6 +310,6 @@ canvas {
 
 /** Own grid */
 .own-grid {
-    grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(5, 1fr);
+    grid-template-columns: repeat(3, calc(1/3 * 100% - 2rem / 3));
+    grid-template-rows: repeat(5, calc(20% - 0.8rem));
 }
