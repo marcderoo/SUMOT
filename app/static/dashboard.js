@@ -227,7 +227,7 @@ const idToISO3 = {
         plugins: {
             title: {
                 display: true,
-                text: "Répartition des temps pour trouver le mot",
+                text: "Répartition des temps pour trouver le mot en mode solo",
                 font: {
                     size: 16
                 },
@@ -304,74 +304,136 @@ generateChart('chart4-1', {
 
 
 
+
+document.getElementById('chart4-2').style.height = '220px';
+
   generateChart('chart4-2', {
-    type: 'line',
+    type: 'pie',
     data: {
-        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        labels: ["Victoire", "Défaite"],
         datasets: [{
-          label: 'Mon premier jeu de données',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          fill: false,
-          borderColor: '#EC643C',
-          tension: 0.1
+            data: [55, 45],
+            backgroundColor: ["#4CAF50", "#EC643C"]
         }]
     },
     options: {
         plugins: {
+            title: {
+                display: true,
+                text: "Taux de victoire - Mode Moyen",
+                font: {
+                    size: 16
+                },
+                padding: {
+                    bottom: 10
+                }
+            },
             legend: {
-                display: false // Désactive l'affichage de la légende
+                display: true,
+                position: 'bottom'
+            },
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        return `${context.label} : ${context.parsed}%`;
+                    }
+                }
             }
         },
-        responsive: true,  // Active le redimensionnement automatique
-        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
+        responsive: true,
+        maintainAspectRatio: false
     }
-  })
+});
+
+
+
+
+document.getElementById('chart4-3').style.height = '220px';
 
   generateChart('chart4-3', {
-    type: 'line',
+    type: 'pie',
     data: {
-        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        labels: ["Victoire", "Défaite"],
         datasets: [{
-          label: 'Mon premier jeu de données',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          fill: false,
-          borderColor: '#EC643C',
-          tension: 0.1
+            data: [35, 65],
+            backgroundColor: ["#4CAF50", "#EC643C"]
         }]
     },
     options: {
         plugins: {
+            title: {
+                display: true,
+                text: "Taux de victoire - Mode Difficile",
+                font: {
+                    size: 16
+                },
+                padding: {
+                    bottom: 10
+                }
+            },
             legend: {
-                display: false // Désactive l'affichage de la légende
+                display: true,
+                position: 'bottom'
+            },
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        return `${context.label} : ${context.parsed}%`;
+                    }
+                }
             }
         },
-        responsive: true,  // Active le redimensionnement automatique
-        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
+        responsive: true,
+        maintainAspectRatio: false
     }
-  })
+});
+
+
+
+
+document.getElementById('chart4-4').style.height = '220px';
 
   generateChart('chart4-4', {
-    type: 'line',
+    type: 'pie',
     data: {
-        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        labels: ["Victoire", "Défaite"],
         datasets: [{
-          label: 'Mon premier jeu de données',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          fill: false,
-          borderColor: '#EC643C',
-          tension: 0.1
+            data: [5, 95],
+            backgroundColor: ["#4CAF50", "#EC643C"]
         }]
     },
     options: {
         plugins: {
+            title: {
+                display: true,
+                text: "Taux de victoire - Mode Expert",
+                font: {
+                    size: 16
+                },
+                padding: {
+                    bottom: 10
+                }
+            },
             legend: {
-                display: false // Désactive l'affichage de la légende
+                display: true,
+                position: 'bottom'
+            },
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        return `${context.label} : ${context.parsed}%`;
+                    }
+                }
             }
         },
-        responsive: true,  // Active le redimensionnement automatique
-        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
+        responsive: true,
+        maintainAspectRatio: false
     }
-  })
+});
+
+
+
+document.getElementById('chart5').style.height = '220px';
 
   generateChart('chart5', {
     type: 'bar',
@@ -428,94 +490,204 @@ generateChart('chart4-1', {
 
 
 
+document.getElementById('chart6').style.height = '220px';
+
   generateChart('chart6', {
-    type: 'line',
+    type: 'pie',
     data: {
-        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        labels: ["Solo", "IA", "Mot du jour"],
         datasets: [{
-          label: 'Mon premier jeu de données',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          fill: false,
-          borderColor: '#EC643C',
-          tension: 0.1
+            data: [20,50,30],
+            backgroundColor: ["#BA68C8", "#FFB74D", "#4FC3F7"]
         }]
     },
     options: {
         plugins: {
+            title: {
+                display: true,
+                text: "Répartition du nombre de partie par mode de jeu",
+                font: {
+                    size: 16
+                },
+                padding: {
+                    bottom: 10
+                }
+            },
             legend: {
-                display: false // Désactive l'affichage de la légende
+                display: true,
+                position: 'bottom'
+            },
+            tooltip: {
+                callbacks: {
+                    label: function (context) {
+                        return `${context.label} : ${context.parsed}%`;
+                    }
+                }
             }
         },
-        responsive: true,  // Active le redimensionnement automatique
-        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
+        responsive: true,
+        maintainAspectRatio: false
     }
-  })
+});
+
+
+
 
   generateChart('chart7-1', {
     type: 'line',
     data: {
-        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        labels: ['18/03', '19/03', '20/03', '21/03', '22/03', '23/03', '24/03'],
         datasets: [{
-          label: 'Mon premier jeu de données',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          fill: false,
-          borderColor: '#EC643C',
-          tension: 0.1
+            label: 'Utilisateurs par jour',
+            data: [1, 3, 5, 4, 6, 3, 9],
+            fill: false,
+            borderColor: '#EC643C',
+            tension: 0.2
         }]
     },
     options: {
         plugins: {
+            title: {
+                display: true,
+                text: 'Evolution du nombre d\'utilisateurs (solo)',
+                font: {
+                    size: 10
+                },
+                padding: {
+                    top: 10,
+                    bottom: 5
+                }
+            },
+            subtitle: {
+                display: true,
+                text: 'Du 18 au 24 mars 2025',
+                font: {
+                    size: 14
+                },
+                color: '#666'
+            },
             legend: {
-                display: false // Désactive l'affichage de la légende
+                display: false
             }
         },
-        responsive: true,  // Active le redimensionnement automatique
-        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'utilisateurs'
+                }
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false
     }
-  })
+})
+
+
+
 
   generateChart('chart7-2', {
     type: 'line',
     data: {
-        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        labels: ['18/03', '19/03', '20/03', '21/03', '22/03', '23/03', '24/03'],
         datasets: [{
-          label: 'Mon premier jeu de données',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          fill: false,
-          borderColor: '#EC643C',
-          tension: 0.1
+            label: 'Utilisateurs par jour',
+            data: [5, 13, 15, 14, 16, 17, 3],
+            fill: false,
+            borderColor: '#EC643C',
+            tension: 0.2
         }]
     },
     options: {
         plugins: {
+            title: {
+                display: true,
+                text: 'Evolution du nombre d\'utilisateurs (mot du jour)',
+                font: {
+                    size: 10
+                },
+                padding: {
+                    top: 10,
+                    bottom: 5
+                }
+            },
+            subtitle: {
+                display: true,
+                text: 'Du 18 au 24 mars 2025',
+                font: {
+                    size: 14
+                },
+                color: '#666'
+            },
             legend: {
-                display: false // Désactive l'affichage de la légende
+                display: false
             }
         },
-        responsive: true,  // Active le redimensionnement automatique
-        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'utilisateurs'
+                }
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false
     }
-  })
+})
+
+
+
 
   generateChart('chart7-3', {
     type: 'line',
     data: {
-        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        labels: ['18/03', '19/03', '20/03', '21/03', '22/03', '23/03', '24/03'],
         datasets: [{
-          label: 'Mon premier jeu de données',
-          data: [65, 59, 80, 81, 56, 55, 40],
-          fill: false,
-          borderColor: '#EC643C',
-          tension: 0.1
+            label: 'Utilisateurs par jour',
+            data: [2, 3, 5, 4, 6, 7, 9],
+            fill: false,
+            borderColor: '#EC643C',
+            tension: 0.2
         }]
     },
     options: {
         plugins: {
+            title: {
+                display: true,
+                text: 'Evolution du nombre d\'utilisateurs (IA)',
+                font: {
+                    size: 10
+                },
+                padding: {
+                    top: 10,
+                    bottom: 5
+                }
+            },
+            subtitle: {
+                display: true,
+                text: 'Du 18 au 24 mars 2025',
+                font: {
+                    size: 14
+                },
+                color: '#666'
+            },
             legend: {
-                display: false // Désactive l'affichage de la légende
+                display: false
             }
         },
-        responsive: true,  // Active le redimensionnement automatique
-        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: 'utilisateurs'
+                }
+            }
+        },
+        responsive: true,
+        maintainAspectRatio: false
     }
-  })
+})
