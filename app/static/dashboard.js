@@ -129,7 +129,76 @@ generateChart('chart2', {
     }
   })
 
-  generateChart('chart4', {
+  generateChart('chart4-1', {
+    type: 'line',
+    data: {
+        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        datasets: [{
+          label: 'Mon premier jeu de données',
+          data: [65, 59, 80, 81, 56, 55, 40],
+          fill: false,
+          borderColor: '#EC643C',
+          tension: 0.1
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: false // Désactive l'affichage de la légende
+            }
+        },
+        responsive: true,  // Active le redimensionnement automatique
+        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
+    }
+  })
+
+  generateChart('chart4-2', {
+    type: 'line',
+    data: {
+        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        datasets: [{
+          label: 'Mon premier jeu de données',
+          data: [65, 59, 80, 81, 56, 55, 40],
+          fill: false,
+          borderColor: '#EC643C',
+          tension: 0.1
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: false // Désactive l'affichage de la légende
+            }
+        },
+        responsive: true,  // Active le redimensionnement automatique
+        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
+    }
+  })
+
+  generateChart('chart4-3', {
+    type: 'line',
+    data: {
+        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        datasets: [{
+          label: 'Mon premier jeu de données',
+          data: [65, 59, 80, 81, 56, 55, 40],
+          fill: false,
+          borderColor: '#EC643C',
+          tension: 0.1
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: false // Désactive l'affichage de la légende
+            }
+        },
+        responsive: true,  // Active le redimensionnement automatique
+        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
+    }
+  })
+
+  generateChart('chart4-4', {
     type: 'line',
     data: {
         labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
@@ -198,7 +267,53 @@ generateChart('chart2', {
     }
   })
 
-  generateChart('chart7', {
+  generateChart('chart7-1', {
+    type: 'line',
+    data: {
+        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        datasets: [{
+          label: 'Mon premier jeu de données',
+          data: [65, 59, 80, 81, 56, 55, 40],
+          fill: false,
+          borderColor: '#EC643C',
+          tension: 0.1
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: false // Désactive l'affichage de la légende
+            }
+        },
+        responsive: true,  // Active le redimensionnement automatique
+        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
+    }
+  })
+
+  generateChart('chart7-2', {
+    type: 'line',
+    data: {
+        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
+        datasets: [{
+          label: 'Mon premier jeu de données',
+          data: [65, 59, 80, 81, 56, 55, 40],
+          fill: false,
+          borderColor: '#EC643C',
+          tension: 0.1
+        }]
+    },
+    options: {
+        plugins: {
+            legend: {
+                display: false // Désactive l'affichage de la légende
+            }
+        },
+        responsive: true,  // Active le redimensionnement automatique
+        maintainAspectRatio: false, // Permet d'adapter la hauteur indépendamment de la largeur
+    }
+  })
+
+  generateChart('chart7-3', {
     type: 'line',
     data: {
         labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet"],
