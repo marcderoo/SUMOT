@@ -2,8 +2,24 @@ import unittest
 from unittest.mock import mock_open, patch, MagicMock
 import random
 from typing import List, Tuple, Optional
-from mode_battleIA import charger_dictionnaire, mode_battle_ia
 import os
+import sys
+
+# Ajouter le chemin racine du projet au PYTHONPATH
+current_dir = os.path.dirname(os.path.abspath(__file__))
+# Remonter jusqu'à la racine du projet
+root_dir = current_dir
+while not os.path.exists(os.path.join(root_dir, "LICENSE")):
+    parent_dir = os.path.dirname(root_dir)
+    if parent_dir == root_dir:  # Éviter une boucle infinie
+        raise FileNotFoundError("LICENSE file not found")
+    root_dir = parent_dir
+
+# Ajouter la racine du projet au chemin d'importation
+sys.path.append(root_dir)
+
+# Maintenant, importez les modules avec le chemin complet
+from app.experiments.mode_battleIA import charger_dictionnaire, mode_battle_ia
 
 def get_path(full_path: str) -> str:
     """
@@ -17,7 +33,7 @@ def get_path(full_path: str) -> str:
         if new_root == root:  # Évite une boucle infinie
             raise FileNotFoundError("LICENSE file not found")
         root = new_root
-    if "\\" in root :
+    if "\\" in root:
         full_path = full_path.replace("/", "\\")
     else:
         full_path = full_path.replace("\\", "/")
@@ -40,9 +56,8 @@ class TestChargerDictionnaire(unittest.TestCase):
             mocked_file.assert_called_once_with(fichier, "r", encoding="utf-8")
             self.assertEqual(result, expected_output)
     
-
-    @patch("mode_battleIA.random.choice")
-    @patch("mode_battleIA.charger_dictionnaire")
+    @patch("app.experiments.mode_battleIA.random.choice")  # Chemin complet
+    @patch("app.experiments.mode_battleIA.charger_dictionnaire")  # Chemin complet
     def test_mode_battle_ia(self, mock_charger_dictionnaire, mock_random_choice):
         # Simulate a dictionary of words
         mock_charger_dictionnaire.return_value = ["mot1", "mot2", "mot3"]
@@ -51,7 +66,7 @@ class TestChargerDictionnaire(unittest.TestCase):
         mock_random_choice.side_effect = (x for x in ["mot1"] * 10000)  # Infinite generator
 
         # Mock os.path.exists to ensure the dictionary file is "found"
-        with patch("mode_battleIA.os.path.exists", return_value=True):
+        with patch("app.experiments.mode_battleIA.os.path.exists", return_value=True):  # Chemin complet
             # Run the function
             mode_battle_ia()
 
@@ -60,9 +75,6 @@ class TestChargerDictionnaire(unittest.TestCase):
 
             # Log the call count to verify behavior
             print(f"random.choice called {mock_random_choice.call_count} times")
-    
-
-    
 
 if __name__ == "__main__":
     unittest.main()
