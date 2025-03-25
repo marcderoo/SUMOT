@@ -49,10 +49,11 @@ promises = Array.from(requests_elmts).map(elmt => new Promise((resolve)  => {
 }));
 Promise.all(promises).then(proms => {
     proms.forEach(prom =>  {
-    [txt, elmt] = prom;
-    document.getElementById(elmt.getAttribute("aria-txt")).innerHTML = txt;
-    Array.from(document.querySelectorAll(".skeleton")).forEach(elmt => elmt.remove())
-})});
+        [txt, elmt] = prom;
+        document.getElementById(elmt.getAttribute("aria-txt")).innerHTML = txt;
+        Array.from(document.querySelectorAll(".skeleton")).forEach(elmt => elmt.remove());
+    });
+});
 
 /** Differents charts */
 
@@ -333,20 +334,23 @@ generateChart('chart4-1', {
     }
 });
 
+
+
+
+
+fetch("/api/dashboard-data")
+.then(res => res.json())
+.then(data => {
+  const labels = Object.keys(data);
+  const values = Object.values(data);
+
   generateChart('chart5', {
     type: 'bar',
     data: {
-        labels: [
-            "Moins de 10s",
-            "10-30s",
-            "30-60s",
-            "1-2 min",
-            "2-5 min",
-            "5+ min"
-        ],
+        labels: labels,
         datasets: [{
             label: "Nombre de joueurs",
-            data: [12, 30, 45, 25, 15, 4], // Données fictives
+            data: values,
             backgroundColor: '#EC643C'
         }]
     },
@@ -377,7 +381,15 @@ generateChart('chart4-1', {
         responsive: true,
         maintainAspectRatio: false
     }
+  });
 })
+.catch(err => {
+  console.error("Erreur chargement chart5 :", err);
+});
+
+
+
+
 
   generateChart('chart6', {
     type: 'pie',

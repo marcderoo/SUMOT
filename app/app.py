@@ -117,6 +117,53 @@ def get_daily_word():
     daily_word = random.choice(dico).upper()
     print("Mot du jour (mot aleatoire) :", daily_word)
 
+
+
+# AJOUT MAX
+from flask import jsonify
+from pymongo import MongoClient
+from dotenv import load_dotenv
+
+load_dotenv()
+client = MongoClient(os.getenv("MONGODB_URI"))
+db = client["sumot"]
+logs_collection = db["logs"]
+
+@app.route('/api/dashboard-data')
+def dashboard_data():
+    # Exemple d'agrégation pour le nombre de parties par tranche de temps
+    bins = {
+        "0-10s": 0,
+        "10-30s": 0,
+        "30-60s": 0,
+        "1-2min": 0,
+        "2-5min": 0,
+        "5+min": 0
+    }
+
+    for log in logs_collection.find({"temps": {"$ne": None}}):
+        t = log["temps"]
+        if t <= 10:
+            bins["0-10s"] += 1
+        elif t <= 30:
+            bins["10-30s"] += 1
+        elif t <= 60:
+            bins["30-60s"] += 1
+        elif t <= 120:
+            bins["1-2min"] += 1
+        elif t <= 300:
+            bins["2-5min"] += 1
+        else:
+            bins["5+min"] += 1
+
+    return jsonify(bins)
+
+
+
+
+
+
+
 @app.route('/') 
 def menu()-> str:
     return render_template('menu.html')
@@ -334,4 +381,4 @@ if __name__ == '__main__':
 
     get_daily_word()
 
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=8000, debug=True)
