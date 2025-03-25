@@ -1,3 +1,7 @@
+// AJOUT MAX
+let startTime = Date.now();  // Enregistre le début
+
+
 /** Use saved score */
 score = Math.max(score, appUtils.loadKey("score", 0));
 appUtils.updateKey("score", score);
@@ -571,6 +575,9 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                    */
                   if(res.every(e => e === 2)){
                       end = true;
+                      // AJOUT MAX LOG
+                      logGameSession("facile", true); // ou "moyen", "difficile", etc. dynamiquement si besoin
+
                       
                       count += 1;
                       const attemps = Math.floor(cellBeforeFirstEmptyCell.index / NBLETTERS);
@@ -581,8 +588,14 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                       }
                       appUtils.updateKey("score", score);
 
-                      showDialog(false);
+                      showDialog(false ) 
+                      // AJOUT MAX
+                      let elapsedTime = Math.floor((Date.now() - startTime) / 1000); // en secondes
+                      ;
                   } else {/* Otherwise updates the score and modifies the state of game cells */
+                    // AJOUT MAX 
+                    logGameSession("facile", true, elapsedTime); // ou false si défaite
+
                     actScore -= player == 1 ? (3 - aiDifficulty)   * 10 : 15;
                     if(cellBeforeFirstEmptyCell.index !== cells.length - 1){
                         for(let i = 0; i < res.length; i++){
@@ -814,3 +827,25 @@ appUtils.subscribe("helpLetterM", () => {
     score -= 30;
     appUtils.emit("updateHelpersScore");
 })
+
+
+
+
+// AJOUT MAX
+
+function logGameSession(mode, victoire, temps = null) {
+    fetch("/log-session", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            mode: mode,         // "facile", "moyen", etc.
+            victoire: victoire, // true ou false
+            temps: temps        // en secondes
+        })
+    })
+    .then(res => res.json())
+    .then(data => console.log("Session loguée:", data))
+    .catch(err => console.error("Erreur log Mongo:", err));
+}
