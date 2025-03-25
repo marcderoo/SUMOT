@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import mock_open, patch, MagicMock
 import random
 from typing import List, Tuple, Optional
-from mode_battleIA import charger_dictionnaire, mode_battle_ia
+from experiments.mode_battleIA import charger_dictionnaire, mode_battle_ia
 import os
 
 def get_path(full_path: str) -> str:
