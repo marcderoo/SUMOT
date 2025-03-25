@@ -10,6 +10,35 @@ from datetime import datetime, timedelta
 import os
 import json
 import time
+import boto3
+from io import StringIO
+
+# Configuration du client S3
+s3 = boto3.client(
+    "s3",
+    endpoint_url = 'https://minio.lab.sspcloud.fr',
+    aws_access_key_id = '3D7K14JHZO93U5URX8TF',
+    aws_secret_access_key = '1kKUnKbHdlNLDnQzN0P3v2pv8WrrydbXgfrcXUtx',
+    aws_session_token = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiIzRDdLMTRKSFpPOTNVNVVSWDhURiIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sImF1ZCI6WyJtaW5pby1kYXRhbm9kZSIsIm9ueXhpYSIsImFjY291bnQiXSwiYXV0aF90aW1lIjoxNzQyOTE0NzU1LCJhenAiOiJvbnl4aWEiLCJlbWFpbCI6ImxhdXJlbnQudm9uZ0BlbnNhZS5mciIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJleHAiOjE3NDM1MjYzMzgsImZhbWlseV9uYW1lIjoiVm9uZyIsImdpdmVuX25hbWUiOiJMYXVyZW50IiwiZ3JvdXBzIjpbIlVTRVJfT05ZWElBIl0sImlhdCI6MTc0MjkyMTUzOCwiaXNzIjoiaHR0cHM6Ly9hdXRoLmxhYi5zc3BjbG91ZC5mci9hdXRoL3JlYWxtcy9zc3BjbG91ZCIsImp0aSI6IjRkNTFjN2ZjLWM3MjQtNDczMC04Mjc2LTNlNWQwYWZhYmY0NSIsImxvY2FsZSI6ImZyIiwibmFtZSI6IkxhdXJlbnQgVm9uZyIsInBvbGljeSI6InN0c29ubHkiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJsdm9uZyIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiZGVmYXVsdC1yb2xlcy1zc3BjbG91ZCJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJkZWZhdWx0LXJvbGVzLXNzcGNsb3VkIl0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZ3JvdXBzIGVtYWlsIiwic2lkIjoiYWVmNTZlMmMtNGFjZS00YjYxLTg0M2QtZTY4N2IxZTUxMDRmIiwic3ViIjoiODFlZDhlMzktMGNlMy00NGFlLWJjOTAtZGQwMGI4NTUwYzc1IiwidHlwIjoiQmVhcmVyIn0.V0oEOD6wNOlXOOQiO_93nUQSkqAwe_M-nrzelbky2XZ6laupyHczPapPcJtj1LTYfuvxGvijHr3LI-TQlvCHjQ'
+)
+
+# Votre bucket name (à remplacer par votre nom d'utilisateur SSPCloud)
+bucket_name = 'lvong'  # Remplacez par votre bucket
+
+def read_file_from_s3(key):
+    """Lit un fichier depuis S3 et retourne son contenu"""
+    try:
+        response = s3.get_object(Bucket=bucket_name, Key=key)
+        return response['Body'].read().decode('utf-8')
+    except Exception as e:
+        print(f"Erreur lors de la lecture du fichier S3 {key}: {e}")
+        # Fallback vers le fichier local
+        try:
+            with open(key.split('/')[-1], 'r') as file:
+                return file.read()
+        except Exception as local_e:
+            print(f"Erreur lors de la lecture du fichier local {key.split('/')[-1]}: {local_e}")
+            return None
 
 def get_path(full_path: str) -> str:
     """
@@ -35,14 +64,30 @@ app = Flask(__name__)
 
 os.chdir(os.path.dirname(__file__))
 
-with open("small_dico.txt", 'r') as file:
-    dico = [line.strip() for line in file]
+# Chargement du dictionnaire depuis S3
+dico_content = read_file_from_s3('sumot/small_dico.txt')
+if dico_content:
+    dico = [line.strip() for line in dico_content.splitlines()]
+else:
+    # Fallback
+    with open("small_dico.txt", 'r') as file:
+        dico = [line.strip() for line in file]
 
-with open("frequences_lettres.txt", "r") as file:
-    frequences_lettres = {
-        ligne.split(" : ")[0].strip(): float(ligne.split(" : ")[1].strip())
-        for ligne in file if " : " in ligne
-    }
+# Chargement des fréquences de lettres depuis S3
+freq_content = read_file_from_s3('sumot/frequences_lettres.txt')
+if freq_content:
+    frequences_lettres = {}
+    for ligne in freq_content.splitlines():
+        if " : " in ligne:
+            lettre, freq = ligne.split(" : ")
+            frequences_lettres[lettre.strip()] = float(freq.strip())
+else:
+    # Fallback
+    with open("frequences_lettres.txt", "r") as file:
+        frequences_lettres = {
+            ligne.split(" : ")[0].strip(): float(ligne.split(" : ")[1].strip())
+            for ligne in file if " : " in ligne
+        }
 
 def get_daily_word():
     """
@@ -127,6 +172,19 @@ def robots()-> str:
 
 @app.route('/dico/<filename>')
 def get_dico(filename: str)-> Union[str, bytes]:
+    # Essayer de récupérer le fichier depuis S3
+    try:
+        content = read_file_from_s3(f'sumot/dico/{filename}')
+        if content:
+            # Créer un fichier temporaire pour le renvoyer
+            temp_path = os.path.join('/tmp', filename)
+            with open(temp_path, 'w') as f:
+                f.write(content)
+            return send_file(temp_path)
+    except Exception as e:
+        print(f"Erreur lors de la récupération du fichier depuis S3: {e}")
+    
+    # Fallback vers le fichier local
     return send_file('dico/' + filename)
 
 @app.route('/def/<mot>')
@@ -246,8 +304,18 @@ def dashboard()-> str:
 def table()-> str:
     title = request.args.get('title', 'Sans titre')
 
-    with open(get_path("app/static/exemple.json"), 'r', encoding="utf8") as file:
-        data = json.load(file)
+    # Essayer de récupérer le fichier JSON depuis S3
+    try:
+        json_content = read_file_from_s3('sumot/static/exemple.json')
+        if json_content:
+            data = json.loads(json_content)
+        else:
+            with open(get_path("app/static/exemple.json"), 'r', encoding="utf8") as file:
+                data = json.load(file)
+    except Exception as e:
+        print(f"Erreur lors de la récupération du fichier JSON: {e}")
+        with open(get_path("app/static/exemple.json"), 'r', encoding="utf8") as file:
+            data = json.load(file)
 
     return render_template('table.html', data={
         "title" : title,
