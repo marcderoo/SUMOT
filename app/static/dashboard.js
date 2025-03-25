@@ -49,10 +49,11 @@ promises = Array.from(requests_elmts).map(elmt => new Promise((resolve)  => {
 }));
 Promise.all(promises).then(proms => {
     proms.forEach(prom =>  {
-    [txt, elmt] = prom;
-    document.getElementById(elmt.getAttribute("aria-txt")).innerHTML = txt;
-    Array.from(document.querySelectorAll(".skeleton")).forEach(elmt => elmt.remove())
-})});
+        [txt, elmt] = prom;
+        document.getElementById(elmt.getAttribute("aria-txt")).innerHTML = txt;
+        Array.from(document.querySelectorAll(".skeleton")).forEach(elmt => elmt.remove());
+    });
+});
 
 /** Differents charts */
 
