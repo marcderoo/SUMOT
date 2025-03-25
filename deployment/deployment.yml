@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
       - name: sumot
-        image: mderoo4/application:latest
+        image: mderoo4/sumot:latest
         ports:
         - containerPort: 8000
