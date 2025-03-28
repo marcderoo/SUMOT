@@ -1,64 +1,11 @@
 /** Initialisation */
-generateChart = (id, config) => new Chart(document.getElementById(id), config)
-
 Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
 Chart.defaults.font.weight = '400';
 Chart.defaults.color = '#565656';
 
-/** Manage modals */
-function preventScroll(event) {
-    event.preventDefault();
-}
-
-function disableScroll() {
-    document.addEventListener("wheel", preventScroll, { passive: false });
-    document.addEventListener("touchmove", preventScroll, { passive: false });
-}
-
-function enableScroll() {
-    document.removeEventListener("wheel", preventScroll);
-    document.removeEventListener("touchmove", preventScroll);
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    const openModalBtn = document.querySelectorAll(".modal-btn");
-    const modal = document.getElementById("open-modal");
-    const closeModalElements = modal.querySelectorAll(".modal-close, .modal-backdrop");
-    const modalIframe = document.getElementById("modal-iframe");
-
-    openModalBtn.forEach(btn => btn.addEventListener("click", function () {
-        modalIframe.src = "table?" + btn.getAttribute("aria-params");
-        modal.classList.add("active");
-        disableScroll(); // Bloquer le scroll
-    }));
-
-    closeModalElements.forEach(element => {
-        element.addEventListener("click", function () {
-            modal.classList.remove("active");
-            enableScroll(); // Débloquer le scroll
-        });
-    });
-});
-
-/** Manage requests */
-requests_elmts = document.querySelectorAll(".request");
-promises = Array.from(requests_elmts).map(elmt => new Promise((resolve)  => {
-    fetch("fetch?" + elmt.getAttribute("aria-params")).then((res) =>{
-        res.text().then(txt  => resolve([txt, elmt, "txt"]));
-    })
-}));
-Promise.all(promises).then(proms => {
-    proms.forEach(prom =>  {
-        [txt, elmt, type] = prom;
-        if (type == "txt") {
-            document.getElementById(elmt.getAttribute("aria-txt")).innerHTML = txt;
-        }
-    });
-    Array.from(document.querySelectorAll(".skeleton")).forEach(elmt => elmt.remove());
-});
+generateChart = (id, config) => new Chart(document.getElementById(id), config)
 
 /** Differents charts */
-
 generateChart('chart1', {
     type: 'line',
     data: {
