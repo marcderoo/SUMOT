@@ -6,4 +6,5 @@ unidecode
 APScheduler==3.11.0
 fastapi
 uvicorn
-pip freeze | grep dotenv >> requirements.txt
+python-dotenv
+boto3==1.37.23

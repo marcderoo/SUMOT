@@ -1,32 +1,16 @@
 from typing import List, Dict, Optional, Union
-from flask import Flask, render_template, send_file, request
+from flask import Flask, render_template, send_file, request, jsonify
 import random
 import requests
 from bs4 import BeautifulSoup
 from functools import lru_cache
 from apscheduler.schedulers.background import BackgroundScheduler
-from unidecode import unidecode
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import os
 import json
-import time
 import boto3
-from io import StringIO
-
-from log_session import log_bp
-app.register_blueprint(log_bp)
-
-# Configuration du client S3
-s3 = boto3.client(
-    "s3",
-    endpoint_url = 'https://minio.lab.sspcloud.fr',
-    aws_access_key_id = '3D7K14JHZO93U5URX8TF',
-    aws_secret_access_key = '1kKUnKbHdlNLDnQzN0P3v2pv8WrrydbXgfrcXUtx',
-    aws_session_token = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiIzRDdLMTRKSFpPOTNVNVVSWDhURiIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sImF1ZCI6WyJtaW5pby1kYXRhbm9kZSIsIm9ueXhpYSIsImFjY291bnQiXSwiYXV0aF90aW1lIjoxNzQyOTE0NzU1LCJhenAiOiJvbnl4aWEiLCJlbWFpbCI6ImxhdXJlbnQudm9uZ0BlbnNhZS5mciIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJleHAiOjE3NDM1MjYzMzgsImZhbWlseV9uYW1lIjoiVm9uZyIsImdpdmVuX25hbWUiOiJMYXVyZW50IiwiZ3JvdXBzIjpbIlVTRVJfT05ZWElBIl0sImlhdCI6MTc0MjkyMTUzOCwiaXNzIjoiaHR0cHM6Ly9hdXRoLmxhYi5zc3BjbG91ZC5mci9hdXRoL3JlYWxtcy9zc3BjbG91ZCIsImp0aSI6IjRkNTFjN2ZjLWM3MjQtNDczMC04Mjc2LTNlNWQwYWZhYmY0NSIsImxvY2FsZSI6ImZyIiwibmFtZSI6IkxhdXJlbnQgVm9uZyIsInBvbGljeSI6InN0c29ubHkiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJsdm9uZyIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiZGVmYXVsdC1yb2xlcy1zc3BjbG91ZCJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJkZWZhdWx0LXJvbGVzLXNzcGNsb3VkIl0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZ3JvdXBzIGVtYWlsIiwic2lkIjoiYWVmNTZlMmMtNGFjZS00YjYxLTg0M2QtZTY4N2IxZTUxMDRmIiwic3ViIjoiODFlZDhlMzktMGNlMy00NGFlLWJjOTAtZGQwMGI4NTUwYzc1IiwidHlwIjoiQmVhcmVyIn0.V0oEOD6wNOlXOOQiO_93nUQSkqAwe_M-nrzelbky2XZ6laupyHczPapPcJtj1LTYfuvxGvijHr3LI-TQlvCHjQ'
-)
-
-
-bucket_name = 'lvong'  # Remplacez par votre bucket
+from pymongo import MongoClient
+from dotenv import load_dotenv
 
 def read_file_from_s3(key):
     """Lit un fichier depuis S3 et retourne son contenu"""
@@ -60,6 +44,23 @@ def get_path(full_path: str) -> str:
     else:
         full_path = full_path.replace("\\", "/")
     return str(os.path.join(root, full_path))
+
+# Configuration du client S3
+s3 = boto3.client(
+    "s3",
+    endpoint_url = 'https://minio.lab.sspcloud.fr',
+    aws_access_key_id = '3D7K14JHZO93U5URX8TF',
+    aws_secret_access_key = '1kKUnKbHdlNLDnQzN0P3v2pv8WrrydbXgfrcXUtx',
+    aws_session_token = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiIzRDdLMTRKSFpPOTNVNVVSWDhURiIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sImF1ZCI6WyJtaW5pby1kYXRhbm9kZSIsIm9ueXhpYSIsImFjY291bnQiXSwiYXV0aF90aW1lIjoxNzQyOTE0NzU1LCJhenAiOiJvbnl4aWEiLCJlbWFpbCI6ImxhdXJlbnQudm9uZ0BlbnNhZS5mciIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJleHAiOjE3NDM1MjYzMzgsImZhbWlseV9uYW1lIjoiVm9uZyIsImdpdmVuX25hbWUiOiJMYXVyZW50IiwiZ3JvdXBzIjpbIlVTRVJfT05ZWElBIl0sImlhdCI6MTc0MjkyMTUzOCwiaXNzIjoiaHR0cHM6Ly9hdXRoLmxhYi5zc3BjbG91ZC5mci9hdXRoL3JlYWxtcy9zc3BjbG91ZCIsImp0aSI6IjRkNTFjN2ZjLWM3MjQtNDczMC04Mjc2LTNlNWQwYWZhYmY0NSIsImxvY2FsZSI6ImZyIiwibmFtZSI6IkxhdXJlbnQgVm9uZyIsInBvbGljeSI6InN0c29ubHkiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJsdm9uZyIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiZGVmYXVsdC1yb2xlcy1zc3BjbG91ZCJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJkZWZhdWx0LXJvbGVzLXNzcGNsb3VkIl0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZ3JvdXBzIGVtYWlsIiwic2lkIjoiYWVmNTZlMmMtNGFjZS00YjYxLTg0M2QtZTY4N2IxZTUxMDRmIiwic3ViIjoiODFlZDhlMzktMGNlMy00NGFlLWJjOTAtZGQwMGI4NTUwYzc1IiwidHlwIjoiQmVhcmVyIn0.V0oEOD6wNOlXOOQiO_93nUQSkqAwe_M-nrzelbky2XZ6laupyHczPapPcJtj1LTYfuvxGvijHr3LI-TQlvCHjQ'
+)
+
+
+bucket_name = 'lvong'
+
+load_dotenv()
+client = MongoClient(os.getenv("MONGODB_URI"))
+db = client["sumot"]
+logs_collection = db["logs"]
 
 daily_word = "DEFAUT"
 
@@ -119,53 +120,6 @@ def get_daily_word():
     """
     daily_word = random.choice(dico).upper()
     print("Mot du jour (mot aleatoire) :", daily_word)
-
-
-
-# AJOUT MAX
-from flask import jsonify
-from pymongo import MongoClient
-from dotenv import load_dotenv
-
-load_dotenv()
-client = MongoClient(os.getenv("MONGODB_URI"))
-db = client["sumot"]
-logs_collection = db["logs"]
-
-@app.route('/api/dashboard-data')
-def dashboard_data():
-    # Exemple d'agrégation pour le nombre de parties par tranche de temps
-    bins = {
-        "0-10s": 0,
-        "10-30s": 0,
-        "30-60s": 0,
-        "1-2min": 0,
-        "2-5min": 0,
-        "5+min": 0
-    }
-
-    for log in logs_collection.find({"temps": {"$ne": None}}):
-        t = log["temps"]
-        if t <= 10:
-            bins["0-10s"] += 1
-        elif t <= 30:
-            bins["10-30s"] += 1
-        elif t <= 60:
-            bins["30-60s"] += 1
-        elif t <= 120:
-            bins["1-2min"] += 1
-        elif t <= 300:
-            bins["2-5min"] += 1
-        else:
-            bins["5+min"] += 1
-
-    return jsonify(bins)
-
-
-
-
-
-
 
 @app.route('/') 
 def menu()-> str:
@@ -374,7 +328,25 @@ def table()-> str:
 
 @app.route('/fetch')
 def fetch()-> str:
+    # logs_collection
     return "65,241,241"
+
+@app.route('/log-session', methods=['POST'])
+def log_session():
+    try:
+        data = request.get_json()
+
+        log = {
+            "ip": request.remote_addr,
+            "timestamp": datetime.now(timezone.utc),
+            **data
+        }
+
+        logs_collection.insert_one(log)
+
+        return jsonify({"status": "success", "log": log}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 if __name__ == '__main__':
     # Configuration de APScheduler

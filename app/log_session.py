@@ -20,10 +20,8 @@ def log_session():
 
         log = {
             "ip": request.remote_addr,
-            "mode": data.get("mode"),
-            "victoire": data.get("victoire"),
-            "temps": data.get("temps"),
-            "timestamp": datetime.utcnow()
+            "timestamp": datetime.now(datetime.timezone.utc),
+            **data
         }
 
         collection.insert_one(log)

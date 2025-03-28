@@ -334,23 +334,13 @@ generateChart('chart4-1', {
     }
 });
 
-
-
-
-
-fetch("/api/dashboard-data")
-.then(res => res.json())
-.then(data => {
-  const labels = Object.keys(data);
-  const values = Object.values(data);
-
   generateChart('chart5', {
     type: 'bar',
     data: {
-        labels: labels,
+        labels: ["May"],
         datasets: [{
             label: "Nombre de joueurs",
-            data: values,
+            data: [5],
             backgroundColor: '#EC643C'
         }]
     },
@@ -382,14 +372,6 @@ fetch("/api/dashboard-data")
         maintainAspectRatio: false
     }
   });
-})
-.catch(err => {
-  console.error("Erreur chargement chart5 :", err);
-});
-
-
-
-
 
   generateChart('chart6', {
     type: 'pie',
