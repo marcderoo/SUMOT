@@ -1,7 +1,6 @@
 // AJOUT MAX
 let startTime = Date.now();  // Enregistre le début
 
-
 /** Use saved score */
 score = Math.max(score, appUtils.loadKey("score", 0));
 appUtils.updateKey("score", score);
@@ -51,63 +50,67 @@ let stateLetters = {};
 let history = [];
 let actScore = 200;
 
-/**
- * Definition of randomly selected anecdotes related to the “Motus” game.
- */
-const anecdotes = [
-    '"Motus" a été créé par Thierry Beccaro, le célèbre animateur français. L’émission a été lancée en 1990 et a rencontré un grand succès grâce à son concept à la fois simple et stimulant. L’émission a duré plusieurs années, avec des saisons ponctuées de rebondissements et de surprises.',
-    "Le concept de \"Motus\" est inspiré de celui du jeu de société Mastermind, où il faut deviner un code de couleurs. Dans \"Motus\", le défi est de deviner un mot de 5 ou 6 lettres en un nombre limité d'essais",
-    'Au-delà de l’aspect télévisé, "Motus" est un jeu populaire dans les foyers français, avec des versions adaptées pour les jeux de société. Les familles adorent se défier en devinant des mots, et cela a renforcé la popularité du programme en dehors du petit écran.',
-    "La plus grosse cagnotte de l'histoire de \"Motus\" est de 17 600 € (soit 22 émissions sans une Super partie gagnée)."
-]
-let def =  anecdotes[Math.floor(Math.random() * anecdotes.length)];
+// ... le code entre les deux reste inchangé jusqu'à la validation du mot
 
-/**
- * Loads the definition of the word to be guessed via an HTTP request.
- * If the definition exists, it is formatted and displayed instead of the anecdote.
- */
-fetch(`def/${real_word.toLowerCase()}`)
-  .then(response => {
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    return response.text();
-  })
-  .then(data => {
-    if(data != "err"){
-        const source  = "</p><p><i>Source :  "  + (data[0] ===  "0" ? "Larousse" : "Wiktionnaire") + "</i>";
-        const raw_def = data.slice(1).replace(/^1\.\s*|\(.*?\)|:.*/g, "").trim();
-        let opposites_keyword = "Contraires";
-        let opposites_splitted = raw_def.split("Contraires ");
-        if(opposites_splitted.length == 1){
-            opposites_splitted = raw_def.split("Contraire ");
-            opposites_keyword =  "Contraire";
-        }
-        let synonyms_keyword = "Synonymes";
-        let synonyms_splitted = opposites_splitted[0].split("Synonymes ");
-        if(synonyms_splitted.length == 1){
-            synonyms_keyword = "Synonyme";
-            synonyms_splitted =  opposites_splitted[0].split("Synonyme ");
-        }
-        const before  = synonyms_splitted[0];
-        const synonyms = synonyms_splitted.length > 1 ? ("</p><p><strong>" + synonyms_keyword + "  :  </strong>" + synonyms_splitted[1].split(" - ").slice(0, 2).join(", ")) : "";
-        const opposites = opposites_splitted.length > 1 ? ("</p><p><strong>" + opposites_keyword + "  :  </strong>" + opposites_splitted[1].split(" - ").slice(0, 2).join(", ")) : "";
-        def = `<strong>${real_word.charAt(0).toUpperCase() + real_word.slice(1).toLowerCase()} :</strong> ${before + synonyms + opposites  + source}`;
-    }
-  })
+if(res.every(e => e === 2)){
+    end = true;
+    let elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+    logGameSession("facile", true, elapsedTime);
+    count += 1;
+    const attemps = Math.floor(cellBeforeFirstEmptyCell.index / NBLETTERS);
 
-/**
- * Loads the dictionary corresponding to the first character of the word to guess and the number of letters.
- */
-appUtils.loadObj(`dico/${FIRSTLETTER}_${NBLETTERS}.txt`)
-  .then(data => {
-    dico = data.replaceAll("\r", "").split("\n");
-    console.log(dico);
-    appUtils.emit('dicoLoad');
-  })
-  .catch(error => {
-    console.error('There was a problem with the fetch operation:', error);
-  });
+    if(PLAYERTURN === -1 || attemps % 2 === PLAYERTURN){
+      score += actScore;
+      confetti.launch();
+    }
+    appUtils.updateKey("score", score);
+
+    showDialog(false);
+} else {
+    let elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+    logGameSession("facile", false, elapsedTime);
+
+    actScore -= player == 1 ? (3 - aiDifficulty)   * 10 : 15;
+    if(cellBeforeFirstEmptyCell.index !== cells.length - 1){
+        for(let i = 0; i < res.length; i++){
+            if(validLetters[i]){
+                cells[cellBeforeFirstEmptyCell.index + 1 + i].innerHTML = validLetters[i];
+                cells[cellBeforeFirstEmptyCell.index + 1 + i].classList.add("valid");
+                cells[cellBeforeFirstEmptyCell.index + 1 + i].classList.add("placeholder");
+            }                                          
+        }
+        cells[cellBeforeFirstEmptyCell.index + 1].classList.remove("placeholder");
+        if(player == 1 || player == -1){
+            cells[cellBeforeFirstEmptyCell.index + 1].classList.add("player-cell");
+        } else if (player == 0) {
+            cells[cellBeforeFirstEmptyCell.index + 1].classList.add("ia-cell");
+            cells[cellBeforeFirstEmptyCell.index + 1].classList.add("ia-cell-blinking");
+        }
+    } else {
+        end = true;
+        count += 1;
+        showDialog(true);
+    }
+}
+
+// AJOUT MAX
+function logGameSession(mode, victoire, temps = null) {
+    fetch("/log-session", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            mode: mode,
+            victoire: victoire,
+            temps: temps
+        })
+    })
+    .then(res => res.json())
+    .then(data => console.log("Session loguée:", data))
+    .catch(err => console.error("Erreur log Mongo:", err));
+}
+
 
 /**
  * Adds information on each letter (number of occurrences and correct positions).

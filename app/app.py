@@ -13,6 +13,9 @@ import time
 import boto3
 from io import StringIO
 
+from log_session import log_bp
+app.register_blueprint(log_bp)
+
 # Configuration du client S3
 s3 = boto3.client(
     "s3",

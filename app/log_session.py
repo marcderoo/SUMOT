@@ -1,28 +1,33 @@
 from flask import Blueprint, request, jsonify
 from pymongo import MongoClient
-import os
 from dotenv import load_dotenv
+import os
+from datetime import datetime
 
 load_dotenv()
 
-log_bp = Blueprint('log', __name__)
+MONGO_URI = os.getenv("MONGO_URI")
+client = MongoClient(MONGO_URI)
+db = client["sumot"]              # Nom de ta base
+collection = db["logs"]          # Nom de ta collection
 
-client = MongoClient(os.getenv("MONGODB_URI"))
-db = client["sumot"]
-logs_collection = db["logs"]
+log_bp = Blueprint('log_session', __name__)
 
 @log_bp.route('/log-session', methods=['POST'])
 def log_session():
-    data = request.get_json()
-    ip = request.remote_addr or request.headers.get("X-Forwarded-For", "Unknown")
+    try:
+        data = request.get_json()
 
-    log_data = {
-        "ip": ip,
-        "mode": data.get("mode"),
-        "victoire": data.get("victoire", False),
-        "temps": data.get("temps", None),
-    }
+        log = {
+            "ip": request.remote_addr,
+            "mode": data.get("mode"),
+            "victoire": data.get("victoire"),
+            "temps": data.get("temps"),
+            "timestamp": datetime.utcnow()
+        }
 
-    logs_collection.insert_one(log_data)
+        collection.insert_one(log)
 
-    return jsonify({"status": "ok", "message": "Log enregistré"})
+        return jsonify({"status": "success", "log": log}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
