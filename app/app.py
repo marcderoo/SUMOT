@@ -11,6 +11,7 @@ import json
 import boto3
 from pymongo import MongoClient
 from dotenv import load_dotenv
+import time
 
 def read_file_from_s3(key):
     """Lit un fichier depuis S3 et retourne son contenu"""
@@ -329,18 +330,45 @@ def table()-> str:
 @app.route('/fetch')
 def fetch()-> str:
     # logs_collection
-    return "65,241,241"
+    return jsonify([{"_id" :"65,241,241"}])
 
 @app.route('/log-session', methods=['POST'])
 def log_session():
+    """
+    Exemple de log:
+    {
+        "ip":"127.0.0.1",
+        "timestamp":"2025-03-29 09:46:49",
+        "country":"FR",
+        "mode":"solo",
+        "word":"TRINITE",
+        "time":10923,
+        "score":110,
+        "attemps":5,
+        "count":2,
+        "success":False
+    }    
+    """
     try:
+        # Récupérer le pays de l'utilisateur
+        # Utilisation de ipinfo.io pour obtenir le pays à partir de l'IP
+        ip = request.remote_addr
+        if ip == "127.0.0.1":
+            country = None
+        else:
+            res = requests.get(f"https://ipinfo.io/{ip}/json").json()
+            country = res.get('country', None)
+
         data = request.get_json()
 
         log = {
             "ip": request.remote_addr,
-            "timestamp": datetime.now(timezone.utc),
+            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+            "country": country,
             **data
         }
+
+        print("Log reçu :", log)
 
         logs_collection.insert_one(log)
 

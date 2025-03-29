@@ -1,6 +1,4 @@
 /** Initialisation */
-generateChart = (id, config) => new Chart(document.getElementById(id), config)
-
 Chart.defaults.font.family = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
 Chart.defaults.font.weight = '400';
 Chart.defaults.color = '#565656';
@@ -41,24 +39,59 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 /** Manage requests */
-requests_elmts = document.querySelectorAll(".request");
-promises = Array.from(requests_elmts).map(elmt => new Promise((resolve)  => {
-    fetch("fetch?" + elmt.getAttribute("aria-params")).then((res) =>{
-        res.text().then(txt  => resolve([txt, elmt, "txt"]));
-    })
-}));
-Promise.all(promises).then(proms => {
-    proms.forEach(prom =>  {
-        [txt, elmt, type] = prom;
-        if (type == "txt") {
-            document.getElementById(elmt.getAttribute("aria-txt")).innerHTML = txt;
-        }
+function multipleFetch(urls) {
+    const promises = Object.keys(urls).map(key => new Promise((resolve)  => {
+        fetch(key).then((res) => {
+            res.json().then((json) => {
+                urls[key]["json"] = json;
+                resolve();
+            });
+        });
+    }));
+    return Promise.all(promises).then(() => {
+        Object.keys(urls).forEach(key => {
+            if (urls[key].callback) {
+                urls[key].callback(urls);
+            }
+        });
     });
-    Array.from(document.querySelectorAll(".skeleton")).forEach(elmt => elmt.remove());
-});
+}
+
+function generateChart(id, config, request){
+    /*
+    const url = new URL("fetch?" + request, window.location.origin).href;
+    urls[url] = {
+        callback: (urls) => {
+            if (urls[url].res) {
+                new Chart(document.getElementById(id), config(url));
+            }
+        }
+    };
+    */
+    new Chart(document.getElementById(id), config);
+}
+
+function disableSkeleton() {
+    const skeletons = document.querySelectorAll(".skeleton");
+    skeletons.forEach(skeleton => {
+        skeleton.remove();
+    });
+}
+
+requests_elmts = document.querySelectorAll(".request");
+const urls = Array.from(requests_elmts).reduce((acc, elmt) => {
+    const url = new URL("fetch?" + elmt.getAttribute("aria-params"), window.location.origin).href;
+    acc[url] = {
+        callback: (urls) => {
+            if (urls[url].json) {
+                document.getElementById(elmt.getAttribute("aria-txt")).innerHTML = urls[url].json[0]["_id"];
+            }
+        }
+    };
+    return acc;
+}, {});
 
 /** Differents charts */
-
 generateChart('chart1', {
     type: 'line',
     data: {
@@ -543,3 +576,7 @@ generateChart('chart4-1', {
         maintainAspectRatio: false
     }
 })
+
+multipleFetch(urls).then(() => {
+    disableSkeleton();
+});
