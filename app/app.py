@@ -344,7 +344,7 @@ def log_session():
         "word":"TRINITE",
         "time":10923,
         "score":110,
-        "attemps":5,
+        "attemps":6,
         "count":2,
         "success":False
     }    
