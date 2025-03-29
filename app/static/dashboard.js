@@ -68,7 +68,7 @@ function generateChart(id, config, request){
         }
     };
     */
-    new Chart(document.getElementById(id), config);
+    return new Chart(document.getElementById(id), config);
 }
 
 function disableSkeleton() {
@@ -92,7 +92,7 @@ const urls = Array.from(requests_elmts).reduce((acc, elmt) => {
 }, {});
 
 /** Differents charts */
-generateChart('chart1', {
+const chart1 = generateChart('chart1', {
     type: 'line',
     data: {
         labels: ['18/03', '19/03', '20/03', '21/03', '22/03', '23/03', '24/03'],
@@ -160,12 +160,12 @@ const idToISO3 = {
   };
   
   
-  fetch('https://unpkg.com/world-atlas/countries-50m.json')
+  fetch(new URL("static/libs/countries-50m.json", window.location.origin).href)
   .then((response) => response.json())
   .then((data) => {
     const countries = ChartGeo.topojson.feature(data, data.objects.countries).features;
 
-    generateChart('chart2', {
+    const chart2 = generateChart('chart2', {
       type: 'choropleth',
       data: {
         labels: countries.map(d => d.properties.name),
@@ -217,7 +217,7 @@ const idToISO3 = {
     });
   });
 
-generateChart('chart4-1', {
+const chart4_1 =  generateChart('chart4-1', {
     type: 'pie',
     data: {
         labels: ["Victoire", "Défaite"],
@@ -255,7 +255,7 @@ generateChart('chart4-1', {
     }
 });
 
-  generateChart('chart4-2', {
+const chart4_2 = generateChart('chart4-2', {
     type: 'pie',
     data: {
         labels: ["Victoire", "Défaite"],
@@ -293,7 +293,7 @@ generateChart('chart4-1', {
     }
 });
 
-  generateChart('chart4-3', {
+const chart4_3 = generateChart('chart4-3', {
     type: 'pie',
     data: {
         labels: ["Victoire", "Défaite"],
@@ -331,7 +331,7 @@ generateChart('chart4-1', {
     }
 });
 
-  generateChart('chart4-4', {
+const chart4_4 = generateChart('chart4-4', {
     type: 'pie',
     data: {
         labels: ["Victoire", "Défaite"],
@@ -369,7 +369,7 @@ generateChart('chart4-1', {
     }
 });
 
-  generateChart('chart5', {
+const chart5 = generateChart('chart5', {
     type: 'bar',
     data: {
         labels: ["May"],
@@ -408,7 +408,7 @@ generateChart('chart4-1', {
     }
   });
 
-  generateChart('chart6', {
+const chart6 = generateChart('chart6', {
     type: 'pie',
     data: {
         labels: ["Solo", "IA", "Mot du jour"],
@@ -442,7 +442,7 @@ generateChart('chart4-1', {
 
 
 
-  generateChart('chart7-1', {
+const chart7_1 = generateChart('chart7-1', {
     type: 'line',
     data: {
         labels: ['18/03', '19/03', '20/03', '21/03', '22/03', '23/03', '24/03'],
@@ -488,7 +488,7 @@ generateChart('chart4-1', {
 
 
 
-  generateChart('chart7-2', {
+const chart7_2 = generateChart('chart7-2', {
     type: 'line',
     data: {
         labels: ['18/03', '19/03', '20/03', '21/03', '22/03', '23/03', '24/03'],
@@ -534,7 +534,7 @@ generateChart('chart4-1', {
 
 
 
-  generateChart('chart7-3', {
+const chart7_3 = generateChart('chart7-3', {
     type: 'line',
     data: {
         labels: ['18/03', '19/03', '20/03', '21/03', '22/03', '23/03', '24/03'],
@@ -577,6 +577,6 @@ generateChart('chart4-1', {
     }
 })
 
-multipleFetch(urls).then(() => {
+multipleFetch(urls).then(() => {    
     disableSkeleton();
 });
