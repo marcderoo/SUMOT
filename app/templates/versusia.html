@@ -262,17 +262,19 @@
             }
         });
 
-        fetch("/log-session", {
+        appUtils.subscribe("endGame", (data) => {
+            fetch("/log-session", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(Object.assign({
-                    mode  : "daily",
+                    mode  : "solo",
                     word  : real_word,
                     time : Date.now()   - TIME_START,
                     difficulty : difficultyVal
                 }, data))
+            });
         });
     </script>
 </head>
