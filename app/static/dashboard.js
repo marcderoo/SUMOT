@@ -78,13 +78,40 @@ function disableSkeleton() {
     });
 }
 
+function formatTimespan(milliseconds) {
+    const seconds = Math.floor(parseFloat(milliseconds / 1000));
+    const units = [
+        { label: "h", plural: "h", value: 3600 },
+        { label: "m", plural: "m", value: 60 },
+        { label: "s", plural: "s", value: 1 }
+    ];
+    
+    let remainingSeconds = seconds;
+    let result = [];
+
+    for (let { label, plural, value } of units) {
+        const count = Math.floor(remainingSeconds / value);
+        remainingSeconds %= value;
+        if (count > 0) {
+            result.push(`${count} ${count > 1 ? plural : label}`);
+        }
+    }
+
+    return result.join(" ") || "0 s";
+}
+
 requests_elmts = document.querySelectorAll(".request");
 const urls = Array.from(requests_elmts).reduce((acc, elmt) => {
     const url = new URL("fetch?" + elmt.getAttribute("aria-params"), window.location.origin).href;
     acc[url] = {
         callback: (urls) => {
             if (urls[url].json) {
-                document.getElementById(elmt.getAttribute("aria-txt")).innerHTML = urls[url].json[0]["_id"];
+                let res = urls[url].json[0]["_id"];
+                if (elmt.hasAttribute("aria-func")) {
+                    const func = elmt.getAttribute("aria-func");
+                    res = eval(func + "(" + res +")");
+                }
+                document.getElementById(elmt.getAttribute("aria-txt")).innerHTML = res;
             }
         }
     };

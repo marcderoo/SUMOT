@@ -27,10 +27,10 @@
             </div>
             <div class="grid own-grid">
               <div style="grid-area: 1 / 1 / 2 / 2; aspect-ratio: 1;" class="box white flat" id="cell1">
-                <div class="box flat content skeleton request" aria-txt="txt-cell1" aria-params="collection=logs&aggs='PIPELINE'"></div>
+                <div class="box flat content skeleton request" aria-txt="txt-cell1" aria-params='collection=logs&aggs=[{"$group": {"_id": "$ip"}}, {"$group": {"_id": null, "total_unique_users": { "$sum": 1 }}}, {"$project": {"_id": "$total_unique_users"}}]'></div>
                 <div class="advanced-kpi">
                   <div class="advanced-kpi--top text-cell">
-                    <h3 class="title"> Population </h3>
+                    <h3 class="title"> Nombre d'utilisateurs uniques</h3>
                     <p class="description"> en 2012 </p>
                   </div>
                   <div class="advanced-kpi--middle centered text-cell">
@@ -133,10 +133,10 @@
                 </div>
               </div>
               <div style="grid-area: 4 / 3 / 5 / 4; aspect-ratio: 1;" class="box white flat" id="cell2">
-                <div class="box flat content skeleton request" aria-txt="txt-cell2" aria-params="collection=logs&aggs='PIPELINE2'"></div>
+                <div class="box flat content skeleton request" aria-txt="txt-cell2" aria-params='collection=logs&aggs=[{"$match": {"mode": "solo", "success": true}}, {"$group": {"_id": {"$avg": "$time"}}}]' aria-func="formatTimespan"></div>
                 <div class="advanced-kpi">
                   <div class="advanced-kpi--top text-cell">
-                    <h3 class="title"> Population </h3>
+                    <h3 class="title"> Temps moyen </h3>
                     <p class="description"> en 2012 </p>
                   </div>
                   <div class="advanced-kpi--middle centered text-cell">

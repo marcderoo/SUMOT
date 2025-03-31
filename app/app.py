@@ -11,7 +11,7 @@ import json
 import boto3
 from pymongo import MongoClient
 from dotenv import load_dotenv
-import time
+import ast
 
 def read_file_from_s3(key):
     """Lit un fichier depuis S3 et retourne son contenu"""
@@ -329,7 +329,9 @@ def table()-> str:
 @app.route('/fetch')
 def fetch()-> str:
     collection = db[request.args.get('collection', 'logs')]
-    aggs = json.loads(request.args.get('aggs', {}))
+    raw_aggs = request.args.get('aggs', "{}").replace("%20", "")
+    print(raw_aggs)
+    aggs = json.loads(raw_aggs)
     res = collection.aggregate(aggs)
     data = list(res)
     if not data:
