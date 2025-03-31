@@ -19,3 +19,32 @@ spec:
         image: mderoo4/sumot:latest
         ports:
         - containerPort: 8000
+        env:
+        - name: S3_ENDPOINT_URL
+          value: "https://minio.lab.sspcloud.fr"
+        - name: S3_BUCKET_NAME
+          value: "lvong"
+        - name: S3_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: sumot-secrets
+              key: S3_ACCESS_KEY
+              optional: true
+        - name: S3_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: sumot-secrets
+              key: S3_SECRET_KEY
+              optional: true
+        - name: S3_SESSION_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: sumot-secrets
+              key: S3_SESSION_TOKEN
+              optional: true
+        - name: MONGODB_URI
+          valueFrom:
+            secretKeyRef:
+              name: sumot-secrets
+              key: MONGODB_URI
+              optional: true

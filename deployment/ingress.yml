@@ -1,14 +1,14 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: sumot-ingress
+  name: sumot-ingress # Vous pouvez garder ce nom, il est unique dans votre namespace
 spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - sumot.lab.sspcloud.fr
+    - sumot-marcdro.lab.sspcloud.fr # <--- MODIFIÉ ICI
   rules:
-  - host: sumot.lab.sspcloud.fr
+  - host: sumot-marcdro.lab.sspcloud.fr # <--- MODIFIÉ ICI
     http:
       paths:
       - path: /
