@@ -36,7 +36,7 @@ jobs:
           sed -i "s|image: ${{ secrets.DOCKERHUB_USERNAME }}/sumot:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/sumot:latest|g" deployment/deployment.yaml
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
-          git add deployment/deployment.yaml
+          git add deployment/deployment.yml
           git commit -m "Update image to latest"
           git push https://x-access-token:${{ secrets.DEPLOYMENT_REPO_TOKEN }}@github.com/marcderoo/SUMOT-deployment.git main
 
