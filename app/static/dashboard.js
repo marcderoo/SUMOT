@@ -82,8 +82,8 @@ function formatTimespan(milliseconds) {
     const seconds = Math.floor(parseFloat(milliseconds / 1000));
     const units = [
         { label: "h", plural: "h", value: 3600 },
-        { label: "m", plural: "m", value: 60 },
-        { label: "s", plural: "s", value: 1 }
+        { label: "min", plural: "min", value: 60 },
+        { label: "sec", plural: "sec", value: 1 }
     ];
     
     let remainingSeconds = seconds;
@@ -119,45 +119,69 @@ const urls = Array.from(requests_elmts).reduce((acc, elmt) => {
 }, {});
 
 /** Differents charts */
-const chart1 = generateChart('chart1', {
-    type: 'line',
-    data: {
-        labels: ['18/03', '19/03', '20/03', '21/03', '22/03', '23/03', '24/03'],
-        datasets: [{
-            label: 'Utilisateurs par jour',
-            data: [12, 13, 15, 14, 16, 17, 19],
-            fill: false,
-            borderColor: '#EC643C',
-            tension: 0.2
-        }]
-    },
-    options: {
-        plugins: {
-            title: {
-                display: false
-            },
-            subtitle: {
-                display: false
-            },
-            legend: {
-                display: false
+const url_chart1 = new URL('fetch?collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"' + new Date(new Date() - 7 * 24 * 60 * 60 * 1000).toISOString() + '"}}},{"$group":{"_id":{"day":{"$dateToString":{"format":"%Y-%m-%d","date":"$timestamp"}},"ip":"$ip"}}},{"$group":{"_id":"$_id.day","uniqueUsers":{"$sum":1}}},{"$sort":{"_id":1}}]', window.location.origin).href;
+urls[url_chart1] = {
+    callback: (urls) => {
+        if (urls[url_chart1].json) {
+            let today = new Date();
+
+            // Tableau pour stocker les jours de la semaine et leurs dates
+            let daysOfWeek = [];
+
+            // Remplir le tableau avec les jours (7 jours avant)
+            for (let i = 6; i >= 0; i--) {
+                let day = new Date(today);
+                day.setDate(today.getDate() - i); // Soustrait i jours à la date actuelle
+                daysOfWeek.push({
+                    day: day.toLocaleString('fr-FR', { weekday: 'long' }), // Nom du jour
+                    date: day.toLocaleDateString('fr-FR'), // Date au format JJ/MM/AAAA,
+                    dateISO: day.toISOString().split('T')[0] // Date au format ISO (YYYY-MM-DD)
+                });
             }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'Nombre d’utilisateurs'
+
+            generateChart('chart1', {
+                type: 'line',
+                data: {
+                    labels: daysOfWeek.map(d => d.date),
+                    datasets: [{
+                        label: 'Utilisateurs par jour',
+                        data: daysOfWeek.map(d => {
+                            const dayData = urls[url_chart1].json.find(item => item._id === d.dateISO);
+                            return dayData ? dayData.uniqueUsers : 0;
+                        }),
+                        fill: false,
+                        borderColor: '#EC643C',
+                        tension: 0.2
+                    }]
+                },
+                options: {
+                    plugins: {
+                        title: {
+                            display: false
+                        },
+                        subtitle: {
+                            display: false
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Nombre d’utilisateurs'
+                            }
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
                 }
-            }
-        },
-        responsive: true,
-        maintainAspectRatio: false
+            })
+        }
     }
-})
-
-
+};
 
 /** Chart 2 - Carte du monde avec utilisateurs */
 const idToISO3 = {
@@ -244,227 +268,177 @@ const idToISO3 = {
     });
   });
 
-const chart4_1 =  generateChart('chart4-1', {
-    type: 'pie',
-    data: {
-        labels: ["Victoire", "Défaite"],
-        datasets: [{
-            data: [75, 25],
-            backgroundColor: ["#4CAF50", "#EC643C"]
-        }]
-    },
-    options: {
-        plugins: {
-            title: {
-                display: true,
-                text: "Facile",
-                font: {
-                    size: 16
+const url_chart4 = new URL('fetch?collection=logs&aggs=[{"$match":{"mode":"ai"}},{"$group":{"_id":{"difficulty":"$difficulty","success":"$success"},"count":{"$sum":1}}},{"$group":{"_id":"$_id.difficulty","total":{"$sum":"$count"},"wins":{"$sum":{"$cond":[{"$eq":["$_id.success",true]},"$count",0]}},"losses":{"$sum":{"$cond":[{"$eq":["$_id.success",false]},"$count",0]}}}},{"$project":{"_id":0,"difficulty":"$_id","winRate":{"$round":[{"$multiply":[{"$divide":["$wins","$total"]},100]},1]},"lossRate":{"$round":[{"$multiply":[{"$divide":["$losses","$total"]},100]},1]},"totalGames":"$total"}},{"$sort":{"difficulty":1}}]', window.location.origin).href;
+urls[url_chart4] = {
+    callback: (urls) => {
+        if (urls[url_chart4].json) {
+            const data = urls[url_chart4].json.map((d) => {
+                return {
+                    difficulty: d.difficulty,
+                    winRate: d.winRate,
+                    lossRate: d.lossRate
+                };
+            });
+            const charts = ["chart4-1", "chart4-2", "chart4-3", "chart4-4"];
+            const difficulties = ["Facile", "Moyen", "Difficile", "Expert"];
+            for (let i = 0; i < 4; i++) {
+                vals = data.filter((d) => d.difficulty === i).map((d) => [d.winRate, d.lossRate]);
+                vals = vals[0] ? vals[0] : [0, 0];
+                generateChart(charts[i], {
+                    type: 'pie',
+                    data: {
+                        labels: ["Victoire", "Défaite"],
+                        datasets: [{
+                            data: vals,
+                            backgroundColor: ["#4CAF50", "#EC643C"]
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: difficulties[i],
+                                font: {
+                                    size: 16
+                                },
+                                padding: {
+                                    bottom: 10
+                                }
+                            },
+                            legend: {
+                                display: true,
+                                position: 'bottom'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function (context) {
+                                        return `${context.label} : ${context.parsed}%`;
+                                    }
+                                }
+                            }
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                });
+            }
+        }
+    }
+};
+
+const url_chart5 = new URL('fetch?collection=logs&aggs=[{"$match":{"mode":"solo"}},{"$project":{"time":1,"bin":{"$switch":{"branches":[{"case":{"$lt":["$time",30000]},"then":"< 30 sec"},{"case":{"$lt":["$time",60000]},"then":"30-60 sec"},{"case":{"$lt":["$time",120000]},"then":"1-2 min"},{"case":{"$lt":["$time",240000]},"then":"2-4 min"},{"case":{"$gt":["$time",300000]},"then":"> 5 min"}],"default":"4-5 min"}}}},{"$group":{"_id":"$bin","count":{"$sum":1}}},{"$sort":{"_id":1}}]', window.location.origin).href;
+urls[url_chart5] = {
+    callback: (urls) => {
+        if (urls[url_chart5].json) {
+            let data = urls[url_chart5].json.map((d) => {
+                return {
+                    bin: d._id,
+                    count: d.count
+                };
+            });
+
+            data = data.sort((a, b) => {
+                const order = ["< 30 sec", "30-60 sec", "1-2 min", "2-4 min", "4-5 min", "> 5 min"];
+                return order.indexOf(a.bin) - order.indexOf(b.bin);
+            });
+
+            const labels = data.map((d) => d.bin);
+            const counts = data.map((d) => d.count);
+            generateChart('chart5', {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: "Nombre de parties",
+                        data: counts,
+                        backgroundColor: '#EC643C'
+                    }]
                 },
-                padding: {
-                    bottom: 10
+                options: {
+                    plugins: {
+                        title: {
+                            display: false
+                        },
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: "Nombre de joueurs"
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: "Temps écoulé"
+                            }
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
                 }
-            },
-            legend: {
-                display: true,
-                position: 'bottom'
-            },
-            tooltip: {
-                callbacks: {
-                    label: function (context) {
-                        return `${context.label} : ${context.parsed}%`;
-                    }
-                }
-            }
-        },
-        responsive: true,
-        maintainAspectRatio: false
+              });
+        }
     }
-});
+};
 
-const chart4_2 = generateChart('chart4-2', {
-    type: 'pie',
-    data: {
-        labels: ["Victoire", "Défaite"],
-        datasets: [{
-            data: [55, 45],
-            backgroundColor: ["#4CAF50", "#EC643C"]
-        }]
-    },
-    options: {
-        plugins: {
-            title: {
-                display: true,
-                text: "Moyen",
-                font: {
-                    size: 16
+const url_chart6 = new URL('fetch?collection=logs&aggs=[{"$group":{"_id":"$mode","count":{"$sum":1}}},{"$project":{"_id":0,"mode":"$_id","count":1}}]', window.location.origin).href;
+urls[url_chart6] = {
+    callback: (urls) => {
+        if (urls[url_chart6].json) {
+            let data = urls[url_chart6].json.map((d) => {
+                return {
+                    mode: d.mode,
+                    count: d.count
+                };
+            });
+
+            const labels = ["Solo", "IA", "Mot du jour"]
+            let counts =[];
+            for (let i = 0; i < labels.length; i++) {
+                const mode = data.find((d) => d.mode === ["solo", "ai", "daily"][i].toLowerCase());
+                counts.push(mode ? mode.count : 0);
+            }
+
+            counts = counts.map((d) => d / counts.reduce((a, b) => a + b, 0) * 100);
+
+            generateChart('chart6', {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: counts,
+                        backgroundColor: ["#BA68C8", "#FFB74D", "#4FC3F7"]
+                    }]
                 },
-                padding: {
-                    bottom: 10
+                options: {
+                    plugins: {
+                        title: {
+                            display: false
+                        },
+                        legend: {
+                            display: true,
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return `${context.label} : ${context.parsed}%`;
+                                }
+                            }
+                        }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
                 }
-            },
-            legend: {
-                display: true,
-                position: 'bottom'
-            },
-            tooltip: {
-                callbacks: {
-                    label: function (context) {
-                        return `${context.label} : ${context.parsed}%`;
-                    }
-                }
-            }
-        },
-        responsive: true,
-        maintainAspectRatio: false
+            });
+        }
     }
-});
-
-const chart4_3 = generateChart('chart4-3', {
-    type: 'pie',
-    data: {
-        labels: ["Victoire", "Défaite"],
-        datasets: [{
-            data: [35, 65],
-            backgroundColor: ["#4CAF50", "#EC643C"]
-        }]
-    },
-    options: {
-        plugins: {
-            title: {
-                display: true,
-                text: "Difficile",
-                font: {
-                    size: 16
-                },
-                padding: {
-                    bottom: 10
-                }
-            },
-            legend: {
-                display: true,
-                position: 'bottom'
-            },
-            tooltip: {
-                callbacks: {
-                    label: function (context) {
-                        return `${context.label} : ${context.parsed}%`;
-                    }
-                }
-            }
-        },
-        responsive: true,
-        maintainAspectRatio: false
-    }
-});
-
-const chart4_4 = generateChart('chart4-4', {
-    type: 'pie',
-    data: {
-        labels: ["Victoire", "Défaite"],
-        datasets: [{
-            data: [5, 95],
-            backgroundColor: ["#4CAF50", "#EC643C"]
-        }]
-    },
-    options: {
-        plugins: {
-            title: {
-                display: true,
-                text: "Expert",
-                font: {
-                    size: 16
-                },
-                padding: {
-                    bottom: 10
-                }
-            },
-            legend: {
-                display: true,
-                position: 'bottom'
-            },
-            tooltip: {
-                callbacks: {
-                    label: function (context) {
-                        return `${context.label} : ${context.parsed}%`;
-                    }
-                }
-            }
-        },
-        responsive: true,
-        maintainAspectRatio: false
-    }
-});
-
-const chart5 = generateChart('chart5', {
-    type: 'bar',
-    data: {
-        labels: ["May"],
-        datasets: [{
-            label: "Nombre de joueurs",
-            data: [5],
-            backgroundColor: '#EC643C'
-        }]
-    },
-    options: {
-        plugins: {
-            title: {
-                display: false
-            },
-            legend: {
-                display: false
-            }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: "Nombre de joueurs"
-                }
-            },
-            x: {
-                title: {
-                    display: true,
-                    text: "Temps écoulé"
-                }
-            }
-        },
-        responsive: true,
-        maintainAspectRatio: false
-    }
-  });
-
-const chart6 = generateChart('chart6', {
-    type: 'pie',
-    data: {
-        labels: ["Solo", "IA", "Mot du jour"],
-        datasets: [{
-            data: [20,50,30],
-            backgroundColor: ["#BA68C8", "#FFB74D", "#4FC3F7"]
-        }]
-    },
-    options: {
-        plugins: {
-            title: {
-                display: false
-            },
-            legend: {
-                display: true,
-                position: 'bottom'
-            },
-            tooltip: {
-                callbacks: {
-                    label: function (context) {
-                        return `${context.label} : ${context.parsed}%`;
-                    }
-                }
-            }
-        },
-        responsive: true,
-        maintainAspectRatio: false
-    }
-});
+};
 
 
 
