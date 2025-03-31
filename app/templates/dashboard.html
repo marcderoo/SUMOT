@@ -27,11 +27,11 @@
             </div>
             <div class="grid own-grid">
               <div style="grid-area: 1 / 1 / 2 / 2; aspect-ratio: 1;" class="box white flat" id="cell1">
-                <div class="box flat content skeleton request" aria-txt="txt-cell1" aria-params='collection=logs&aggs=[{"$group": {"_id": "$ip"}}, {"$group": {"_id": null, "total_unique_users": { "$sum": 1 }}}, {"$project": {"_id": "$total_unique_users"}}]'></div>
+                <div class="box flat content skeleton request" aria-desc="cell1-desc" aria-txt="txt-cell1" aria-params='collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"__DATEYEAR"}}}, {"$group": {"_id": "$ip"}}, {"$group": {"_id": null, "total_unique_users": { "$sum": 1 }}}, {"$project": {"_id": "$total_unique_users"}}]'></div>
                 <div class="advanced-kpi">
                   <div class="advanced-kpi--top text-cell">
                     <h3 class="title"> Nombre d'utilisateurs uniques</h3>
-                    <p class="description"> en 2012 </p>
+                    <p class="description" id="cell1-desc"></p>
                   </div>
                   <div class="advanced-kpi--middle centered text-cell">
                     <p class="value" id="txt-cell1"></p>
@@ -50,7 +50,7 @@
                 <div class="advanced-kpi">
                   <div class="advanced-kpi--top">
                     <h3 class="title">Nombre d'utilisateurs quotidiens uniques</h3>
-                    <p class="description">Du 18 au 24 mars 2025</p>
+                    <p class="description" id="chart1-desc"></p>
                   </div>
                   <div class="advanced-kpi--middle no-bg mb-0 full-height">
                       <canvas id="chart1"></canvas>
@@ -133,11 +133,11 @@
                 </div>
               </div>
               <div style="grid-area: 4 / 3 / 5 / 4; aspect-ratio: 1;" class="box white flat" id="cell2">
-                <div class="box flat content skeleton request" aria-txt="txt-cell2" aria-params='collection=logs&aggs=[{"$match": {"mode": "solo", "success": true}}, {"$group": {"_id": {"$avg": "$time"}}}]' aria-func="formatTimespan"></div>
+                <div class="box flat content skeleton request" aria-desc="cell2-desc" aria-txt="txt-cell2" aria-params='collection=logs&aggs=[{"$match": {"timestamp":{"$gte":"__DATEYEAR"}, "mode": "solo", "success": true}}, {"$group": {"_id": {"$avg": "$time"}}}]' aria-func="formatTimespan"></div>
                 <div class="advanced-kpi">
                   <div class="advanced-kpi--top text-cell">
                     <h3 class="title"> Temps moyen mode solo </h3>
-                    <p class="description"> en 2012 </p>
+                    <p class="description" id="cell2-desc"></p>
                   </div>
                   <div class="advanced-kpi--middle centered text-cell">
                     <p class="value" id="txt-cell2"></p>
@@ -174,7 +174,7 @@
                 <div class="box flat content skeleton"></div>
                 <div class="advanced-kpi">
                   <div class="advanced-kpi--top">
-                    <h3 class="title">Evolution du nombre de parties /h3>
+                    <h3 class="title">Evolution du nombre de parties </h3>
                     <p class="description">Du 18 au 24 mars 2025</p>
                   </div>
                   <div class="advanced-kpi--middle no-bg mb-0 full-height" style="display: grid; grid-template-columns: repeat(3, calc(1/3  * 100%)); grid-template-rows: 1fr; grid-column-gap: 0px; grid-row-gap: 0px;">

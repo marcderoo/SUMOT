@@ -102,7 +102,8 @@ function formatTimespan(milliseconds) {
 
 requests_elmts = document.querySelectorAll(".request");
 const urls = Array.from(requests_elmts).reduce((acc, elmt) => {
-    const url = new URL("fetch?" + elmt.getAttribute("aria-params"), window.location.origin).href;
+    const params = elmt.getAttribute("aria-params").replace("__DATEYEAR", new Date(new Date().getFullYear(), 0, 1).toISOString());
+    const url = new URL("fetch?" + params, window.location.origin).href;
     acc[url] = {
         callback: (urls) => {
             if (urls[url].json) {
@@ -110,6 +111,9 @@ const urls = Array.from(requests_elmts).reduce((acc, elmt) => {
                 if (elmt.hasAttribute("aria-func")) {
                     const func = elmt.getAttribute("aria-func");
                     res = eval(func + "(" + res +")");
+                }
+                if (elmt.hasAttribute("aria-desc")) {
+                    document.getElementById(elmt.getAttribute("aria-desc")).innerHTML = "En " + new Date().getFullYear();
                 }
                 document.getElementById(elmt.getAttribute("aria-txt")).innerHTML = res;
             }
@@ -138,6 +142,9 @@ urls[url_chart1] = {
                     dateISO: day.toISOString().split('T')[0] // Date au format ISO (YYYY-MM-DD)
                 });
             }
+
+            const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+            document.getElementById("chart1-desc").innerHTML =  "Du " + daysOfWeek[0].date.split("/")[0] + " " + months[parseInt(daysOfWeek[0].date.split("/")[1]) - 1] + " au " + daysOfWeek[6].date.split("/")[0] + " " + months[parseInt(daysOfWeek[6].date.split("/")[1]) - 1] + " " + daysOfWeek[6].date.split("/")[2];
 
             generateChart('chart1', {
                 type: 'line',
