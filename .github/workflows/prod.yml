@@ -28,15 +28,20 @@ jobs:
       - name: Push Docker Image
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/sumot:latest
 
-      # name: Deploy to Kubernetes
       - name: Update Deployment Repo
         run: |
           git clone https://github.com/marcderoo/SUMOT-deployment.git
           cd SUMOT-deployment
+
           sed -i "s|image: ${{ secrets.DOCKERHUB_USERNAME }}/sumot:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/sumot:latest|g" deployment/deployment.yml
+
+          sudo apt-get install -y yq  # Installer yq si absent
+          yq -i '.metadata.annotations.timestamp = strftime("%s")' deployment/deployment.yml
+
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
           git add deployment/deployment.yml
-          git commit -m "Update image to latest"
+          git commit -m "Update image to latest + timestamp"
           git push https://x-access-token:${{ secrets.DEPLOYMENT_REPO_TOKEN }}@github.com/marcderoo/SUMOT-deployment.git main
+
 
