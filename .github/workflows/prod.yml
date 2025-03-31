@@ -36,7 +36,8 @@ jobs:
           sed -i "s|image: ${{ secrets.DOCKERHUB_USERNAME }}/sumot:.*|image: ${{ secrets.DOCKERHUB_USERNAME }}/sumot:latest|g" deployment/deployment.yml
 
           sudo apt-get install -y yq  # Installer yq si absent
-          yq -y -i '.metadata.annotations.timestamp = strftime("%s")' deployment/deployment.yml
+          TIMESTAMP=$(date +%s)
+          yq -y -i ".metadata.annotations.timestamp = \"$TIMESTAMP\"" deployment/deployment.yml
 
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
