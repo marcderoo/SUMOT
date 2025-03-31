@@ -363,7 +363,7 @@ def log_session():
 
         log = {
             "ip": request.remote_addr,
-            "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S"),
+            "timestamp": datetime.now(timezone.utc),
             "country": country,
             **data
         }
