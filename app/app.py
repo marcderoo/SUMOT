@@ -309,18 +309,17 @@ def dashboard()-> str:
 def table()-> str:
     title = request.args.get('title', 'Sans titre')
 
+    params = request.args.to_dict()
+    params.pop('title', None)  # Supprimer le paramètre 'title' de la liste des paramètres
+
     # Essayer de récupérer le fichier JSON depuis S3
-    try:
-        json_content = read_file_from_s3('sumot/static/exemple.json')
-        if json_content:
-            data = json.loads(json_content)
+    with app.test_client() as client:
+        response = client.get('/fetch', query_string=params)
+        if response.status_code == 200:
+            data = response.get_json()
         else:
-            with open(get_path("app/static/exemple.json"), 'r', encoding="utf8") as file:
-                data = json.load(file)
-    except Exception as e:
-        print(f"Erreur lors de la récupération du fichier JSON: {e}")
-        with open(get_path("app/static/exemple.json"), 'r', encoding="utf8") as file:
-            data = json.load(file)
+            # Fallback vers une liste vide si la récupération échoue
+            data = []
 
     return render_template('table.html', data={
         "title" : title,
@@ -329,8 +328,16 @@ def table()-> str:
 
 @app.route('/fetch')
 def fetch()-> str:
-    # logs_collection
-    return jsonify([{"_id" :"65,241,241"}])
+    collection = db[request.args.get('collection', 'logs')]
+    aggs = json.loads(request.args.get('aggs', {}))
+    res = collection.aggregate(aggs)
+    data = list(res)
+    if not data:
+        return jsonify([])
+    if "_id" in data[0]:
+        for i in range(len(data)):
+            data[i]["_id"] = str(data[i]["_id"])
+    return jsonify(data)
 
 @app.route('/log-session', methods=['POST'])
 def log_session():
