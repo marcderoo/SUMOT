@@ -30,28 +30,21 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r app/requirements.txt
 
-      # Étape 4 : Ajouter app/ au PYTHONPATH
-      - name: Set PYTHONPATH
-        run: echo "PYTHONPATH=$(pwd)/app" >> $GITHUB_ENV
-
-      - name: List files in the project
-        run: |
-          ls -R
-
-
-      # Étape 5 : Exécuter les tests unitaires et capturer la sortie
+      # Étape 4 : Exécuter les tests unitaires et capturer la sortie
       - name: Run unit tests
         run: |
           cd tests
-          python -m unittest test_tusmo_app.py > test_output.log 2>&1
-          cat test_output.log
+          python test_tusmo_app.py > test_output.log 2>&1
+          tail -n 1 test_output.log > last_line.log
         env:
           PYTHONIOENCODING: "utf-8"
 
-      # Étape 6 : Vérifier si les tests ont réussi
+      # Étape 5 : Vérifier si les tests ont réussi
       - name: Check test result
         run: |
-          if grep -q "✅ All tests passed" test_output.log; then
+          cd tests
+          cat test_output.log
+          if grep -q "✅ All tests passed" last_line.log; then
             echo "Tests passed successfully!"
           else
             echo "Tests failed!" && exit 1
