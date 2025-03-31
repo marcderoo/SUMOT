@@ -42,11 +42,11 @@ jobs:
       # Étape 5 : Exécuter les tests unitaires et capturer la sortie
       - name: Run unit tests
         run: |
+          export PYTHONPATH=${PWD}/app  # Ajoute le dossier 'app' au PYTHONPATH
           cd tests
           python -m unittest test_tusmo_app.py > test_output.log 2>&1
           cat test_output.log
-        env:
-          PYTHONIOENCODING: "utf-8"
+
 
       # Étape 6 : Vérifier si les tests ont réussi
       - name: Check test result

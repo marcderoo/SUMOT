@@ -7,6 +7,10 @@ import subprocess
 import sys
 import os
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../app')))
+from app.app import get_daily_word, somme_frequences
+
+
 def get_path(full_path):
     """
     Get the full path of a file in the project.
