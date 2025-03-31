@@ -1,7 +1,6 @@
 """
 Unit tests for the Flask application
 """
-
 import unittest
 import os
 from unittest.mock import patch, MagicMock
@@ -9,7 +8,6 @@ import json
 import importlib.util
 import requests
 
-from app.app import get_daily_word, somme_frequences
 
 def get_path(full_path):
     """
