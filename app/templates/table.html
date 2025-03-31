@@ -99,13 +99,17 @@
       }
 
     function loadContent(){
-      data = JSON.parse("{{data.content}}".replace(/&#34;/g, '"').replace(/&#39;/g, "'"));
+      const data = JSON.parse("{{data.content}}".replace(/&#34;/g, '"').replace(/&#39;/g, "'"));
 
       document.getElementById("table-title").textContent = "{{data.title}}".replace(/&#34;/g, '"').replace(/&#39;/g, "'");
 
-      columns = Object.keys(data[0]);
-      headCol =  document.getElementById("head-col");
-      tbody = document.querySelector("tbody");
+      const columns = ["timestamp", "ip", "country", "mode", "difficulty", "success", "time",  "word", "attemps", "count", "score"].filter(
+        col => data.some(
+          line => Object.keys(line).includes(col)
+        )
+      )
+      const headCol =  document.getElementById("head-col");
+      const tbody = document.querySelector("tbody");
 
       columns.forEach(col => {
         const th = document.createElement("th");
@@ -114,11 +118,14 @@
         th.textContent = col;
 
         headCol.append(th);
-      })
+      });
 
       let maxSizeColumns = columns.map(col => col.length);
       data.forEach(line => {
-        Object.values(line).forEach((elmt, index) => {
+        const keys = Object.keys(line);
+        columns.map(col => 
+          keys.includes(col) ? line[col] : ""
+        ).forEach((elmt, index) => {
           maxSizeColumns[index] = Math.max(maxSizeColumns[index], elmt ? elmt.length : 0);
         });
       })
@@ -127,8 +134,11 @@
         const tr = document.createElement("tr");
         tr.className = "hover:bg-gray-50";
 
+        const keys = Object.keys(line);
         let i = 0;
-        Object.values(line).forEach(elmt => {
+        columns.map(col => 
+          keys.includes(col) ? line[col] : ""
+        ).forEach(elmt => {
           elmt = elmt == null ? "" : elmt;
           const td = document.createElement("td");
           td.className = i == 0 ? "px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" : "px-6 py-4 whitespace-nowrap text-sm text-gray-500";
