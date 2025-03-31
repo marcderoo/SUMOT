@@ -34,6 +34,11 @@ jobs:
       - name: Set PYTHONPATH
         run: echo "PYTHONPATH=$(pwd)/app" >> $GITHUB_ENV
 
+      - name: List files in the project
+        run: |
+          ls -R
+
+
       # Étape 5 : Exécuter les tests unitaires et capturer la sortie
       - name: Run unit tests
         run: |

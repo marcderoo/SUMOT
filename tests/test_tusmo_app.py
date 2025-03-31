@@ -37,7 +37,7 @@ def test_flask_app():
     print(f"Running tests in test_app.py...")
 
     result = subprocess.run(
-        [sys.executable, "-m", "unittest", get_path("tests/test_app.py")],
+        ["python", "-m", "unittest", "tests.test_app"],  # Utilisation de tests.test_app au lieu du chemin absolu
         capture_output=True,
         text=True,
         env=env,  # Use the updated environment
@@ -52,6 +52,7 @@ def test_flask_app():
     print(f"✅ Tests passed in test_app.py.")
 
     return True
+
 
 
 if __name__ == "__main__":
