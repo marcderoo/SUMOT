@@ -18,6 +18,7 @@ jobs:
 
       - name: Create .env file
         run : |
+          mkdir -p /app
           echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> /app/.env
 
       - name: Build Docker Image
