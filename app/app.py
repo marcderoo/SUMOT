@@ -368,23 +368,19 @@ def log_session():
     }    
     """
     try:
-        # Récupérer le pays de l'utilisateur
-        # Utilisation de ipinfo.io pour obtenir le pays à partir de l'IP
-        ip = request.remote_addr
-        if ip == "127.0.0.1":
-            country = None
-        else:
-            res = requests.get(f"https://ipinfo.io/{ip}/json").json()
-            country = res.get('country', None)
-
         data = request.get_json()
 
         log = {
-            "ip": request.remote_addr,
             "timestamp": datetime.now(timezone.utc),
-            "country": country,
             **data
         }
+
+        # Récupérer le pays de l'utilisateur
+        # Utilisation de ipinfo.io pour obtenir le pays à partir de l'IP
+        if "ip" in data.keys():
+            ip = data["ip"]
+            res = requests.get(f"https://ipinfo.io/{ip}/json").json()
+            log["country"] = res.get('country', None)
 
         print("Log reçu :", log)
 

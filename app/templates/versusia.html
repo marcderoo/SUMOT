@@ -263,17 +263,20 @@
         });
 
         appUtils.subscribe("endGame", (data) => {
-            fetch("/log-session", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(Object.assign({
-                    mode  : "ai",
-                    word  : real_word,
-                    time : Date.now()   - TIME_START,
-                    difficulty : difficultyVal
-                }, data))
+            appUtils.getIp().then(ip => {
+                fetch("/log-session", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(Object.assign({
+                        mode  : "ai",
+                        word  : real_word,
+                        time : Date.now()   - TIME_START,
+                        difficulty : difficultyVal,
+                        ip : ip
+                    }, data))
+                });
             });
         });
     </script>

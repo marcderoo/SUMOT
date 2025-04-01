@@ -262,6 +262,22 @@ class AppUtils {
         `);
       setTimeout(()  => window.location = url, 100);
     }
+
+    /**
+     * Get user ip adress.
+     * @returns {string} Id adress or null.
+     */
+    getIp(){
+        return new Promise(resolve => fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                resolve(data.ip);
+            })
+            .catch(error => {
+                resolve();
+            })
+        )
+    }
 }
 
 /**

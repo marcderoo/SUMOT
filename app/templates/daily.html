@@ -154,16 +154,19 @@
         appUtils.subscribe("keydown", (key) => enterKey(key));
 
         appUtils.subscribe("endGame", (data) => {
-            fetch("/log-session", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(Object.assign({
-                    mode  : "daily",
-                    word  : real_word,
-                    time : Date.now()   - TIME_START
-                }, data))
+            appUtils.getIp().then(ip => {
+                fetch("/log-session", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(Object.assign({
+                        mode  : "daily",
+                        word  : real_word,
+                        time : Date.now()   - TIME_START,
+                        ip : ip
+                    }, data))
+                });
             });
         });
     </script>
