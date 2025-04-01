@@ -7,7 +7,7 @@
 - fichiers LICENSE (GNU) et .gitignore ✅
 - architecture cookiecutter --> pbs tests unitaires 
 - Mettre les données sur S3 (SSPCLoud) 
-- Interfacer DOCKER avec GITHUB ✅ [![Build and Push Docker Image](https://github.com/marcderoo/SUMOT/actions/workflows/prod.yml/badge.svg)](https://github.com/marcderoo/SUMOT/actions/workflows/prod.yml)
+- Interfacer DOCKER avec GITHUB ✅ 
 - Industrialiser le déploiement en mode GitOps avec ArgoCD ✅
    - le déploiement de l'application est controlé par un autre dépôt : https://github.com/marcderoo/SUMOT-deployment.git
 - Automatiser l’ingestion des données en entrée pour que le site web se mette à jour régulièrement 
