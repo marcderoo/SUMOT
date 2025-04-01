@@ -71,6 +71,16 @@ function generateChart(id, config, request){
     return new Chart(document.getElementById(id), config);
 }
 
+function updateDate() {
+    const options = { day: 'numeric', month: 'short', year: 'numeric' };
+    const date = new Date(Date.now());
+    const formattedDate = date.toLocaleDateString('fr-FR', options).replace('.', '');
+
+    document.querySelectorAll(".dateNow").forEach(elmt => {
+        elmt.innerHTML = formattedDate;
+    })
+}
+
 function disableSkeleton() {
     const skeletons = document.querySelectorAll(".skeleton");
     skeletons.forEach(skeleton => {
@@ -128,23 +138,18 @@ urls[url_chart1] = {
     callback: (urls) => {
         if (urls[url_chart1].json) {
             let today = new Date();
-
-            // Tableau pour stocker les jours de la semaine et leurs dates
             let daysOfWeek = [];
-
-            // Remplir le tableau avec les jours (7 jours avant)
             for (let i = 6; i >= 0; i--) {
                 let day = new Date(today);
-                day.setDate(today.getDate() - i); // Soustrait i jours à la date actuelle
+                day.setDate(today.getDate() - i);
                 daysOfWeek.push({
-                    day: day.toLocaleString('fr-FR', { weekday: 'long' }), // Nom du jour
-                    date: day.toLocaleDateString('fr-FR'), // Date au format JJ/MM/AAAA,
-                    dateISO: day.toISOString().split('T')[0] // Date au format ISO (YYYY-MM-DD)
+                    day: day.toLocaleString('fr-FR', { weekday: 'long' }),
+                    date: day.toLocaleDateString('fr-FR'),
+                    dateISO: day.toISOString().split('T')[0]
                 });
             }
-
             const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
-            document.getElementById("chart1-desc").innerHTML =  "Du " + daysOfWeek[0].date.split("/")[0] + " " + months[parseInt(daysOfWeek[0].date.split("/")[1]) - 1] + " au " + daysOfWeek[6].date.split("/")[0] + " " + months[parseInt(daysOfWeek[6].date.split("/")[1]) - 1] + " " + daysOfWeek[6].date.split("/")[2];
+            document.getElementById("chart1-desc").innerHTML =  "Du " + daysOfWeek[0].date.split("/")[0] + (daysOfWeek[0].date.split("/")[1] === daysOfWeek[6].date.split("/")[1] ? "" : (" " + months[parseInt(daysOfWeek[0].date.split("/")[1]) - 1])) + " au " + daysOfWeek[6].date.split("/")[0] + " " + months[parseInt(daysOfWeek[6].date.split("/")[1]) - 1] + " " + daysOfWeek[6].date.split("/")[2];
 
             generateChart('chart1', {
                 type: 'line',
@@ -191,94 +196,127 @@ urls[url_chart1] = {
 };
 
 /** Chart 2 - Carte du monde avec utilisateurs */
-const idToISO3 = {
-    250: 'FRA',
-    840: 'USA',
-    76:  'BRA',
-    156: 'CHN',
-    356: 'IND',
-    276: 'DEU',
-    643: 'RUS',
-    124: 'CAN',
-    36:  'AUS',
-    710: 'ZAF'
-  };
-
   const utilisateurs = {
-    'FRA': 250,
-    'USA': 800,
-    'BRA': 420,
-    'CHN': 600,
-    'IND': 550,
-    'DEU': 300,
-    'RUS': 320,
-    'CAN': 150,
-    'AUS': 180,
-    'ZAF': 90
+    'FR': 250,
+    'US': 800,
+    'BR': 420,
+    'CN': 600,
+    'IN': 550,
+    'DE': 300,
+    'RU': 320,
+    'CA': 150,
+    'AU': 180,
+    'ZA': 90
   };
   
-  
-  fetch(new URL("static/libs/countries-50m.json", window.location.origin).href)
-  .then((response) => response.json())
-  .then((data) => {
-    const countries = ChartGeo.topojson.feature(data, data.objects.countries).features;
+  const url_chart2_map = new URL("static/libs/countries-50m.json", window.location.origin).href;
+  urls[url_chart2_map] = {};
+  const url_chart2_iso = new URL("static/libs/iso-3166.json", window.location.origin).href;
+  urls[url_chart2_iso] = {};
 
-    const chart2 = generateChart('chart2', {
-      type: 'choropleth',
-      data: {
-        labels: countries.map(d => d.properties.name),
-        datasets: [{
-          label: 'Utilisateurs par pays',
-          data: countries.map(d => {
-            const iso = idToISO3[d.id];
-            return {
-              feature: d,
-              value: utilisateurs[iso] || 0
-            };
-          })
-        }]
-      },
-      options: {
-        showOutline: true,
-        showGraticule: false,
-        scales: {
-          projection: {
-            axis: 'x',
-            projection: 'equalEarth'
-          },
-          color: {
-            axis: 'color',
-            quantize: 5,
-            legend: {
-              position: 'bottom-right',
-              title: 'Nombre d’utilisateurs'
+  const url_chart2 = new URL('fetch?collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"' + new Date(new Date() - 7 * 24 * 60 * 60 * 1000).toISOString() + '"}}},{"$group":{"_id":"$ip","country":{"$first":"$country"},"documents":{"$push":"$$ROOT"}}},{"$match":{"country":{"$ne":null}}},{"$group":{"_id":"$country","userCount":{"$sum":1}}}]', window.location.origin).href;
+  urls[url_chart2] = {
+    callback: (urls) => {
+        if (urls[url_chart2_map].json && urls[url_chart2_iso].json && urls[url_chart2].json) {
+            let today = new Date();
+            let daysOfWeek = [];
+            for (let i = 6; i >= 0; i--) {
+                let day = new Date(today);
+                day.setDate(today.getDate() - i);
+                daysOfWeek.push({
+                    day: day.toLocaleString('fr-FR', { weekday: 'long' }),
+                    date: day.toLocaleDateString('fr-FR'),
+                    dateISO: day.toISOString().split('T')[0]
+                });
             }
-          }
-        },
-        plugins: {
-          legend: {
-            display: false
-          },
-          tooltip: {
-            callbacks: {
-              label: ctx =>
-                `${ctx.chart.data.labels[ctx.dataIndex]} : ${ctx.raw.value} utilisateurs`
-            }
-          },
-          title: {
-            display: false
-          }
-        },
-        responsive: true,
-        maintainAspectRatio: false
-      }
-    });
-  });
+            const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+            document.getElementById("chart2-desc").innerHTML =  "Du " + daysOfWeek[0].date.split("/")[0] + (daysOfWeek[0].date.split("/")[1] === daysOfWeek[6].date.split("/")[1] ? "" : (" " + months[parseInt(daysOfWeek[0].date.split("/")[1]) - 1])) + " au " + daysOfWeek[6].date.split("/")[0] + " " + months[parseInt(daysOfWeek[6].date.split("/")[1]) - 1] + " " + daysOfWeek[6].date.split("/")[2];
 
-const url_chart4 = new URL('fetch?collection=logs&aggs=[{"$match":{"mode":"ai"}},{"$group":{"_id":{"difficulty":"$difficulty","success":"$success"},"count":{"$sum":1}}},{"$group":{"_id":"$_id.difficulty","total":{"$sum":"$count"},"wins":{"$sum":{"$cond":[{"$eq":["$_id.success",true]},"$count",0]}},"losses":{"$sum":{"$cond":[{"$eq":["$_id.success",false]},"$count",0]}}}},{"$project":{"_id":0,"difficulty":"$_id","winRate":{"$round":[{"$multiply":[{"$divide":["$wins","$total"]},100]},1]},"lossRate":{"$round":[{"$multiply":[{"$divide":["$losses","$total"]},100]},1]},"totalGames":"$total"}},{"$sort":{"difficulty":1}}]', window.location.origin).href;
+
+            const map = urls[url_chart2_map].json;
+            const iso = urls[url_chart2_iso].json;
+            const data = urls[url_chart2].json;
+
+            const countries = ChartGeo.topojson.feature(map, map.objects.countries).features;
+            const result = data.reduce((acc, line) => {
+                const countryCode = iso.find(elmt => elmt["alpha-2"] === line["_id"])["country-code"];
+                acc[countryCode] = line["userCount"];
+                return acc;
+            }, {});
+            
+
+            generateChart('chart2', {
+                type: 'choropleth',
+                data: {
+                    labels: countries.map(d => d.properties.name),
+                    datasets: [{
+                    label: 'Utilisateurs par pays',
+                    data: countries.map(d => {
+                        return {
+                            feature: d,
+                            value: result[d.id] || 0
+                        };
+                    })
+                    }]
+                },
+                options: {
+                    showOutline: true,
+                    showGraticule: false,
+                    scales: {
+                    projection: {
+                        axis: 'x',
+                        projection: 'equalEarth'
+                    },
+                    color: {
+                        axis: 'color',
+                        quantize: 5,
+                        legend: {
+                        position: 'bottom-right',
+                        title: 'Nombre d’utilisateurs'
+                        }
+                    }
+                    },
+                    plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                        label: ctx =>
+                            `${ctx.chart.data.labels[ctx.dataIndex]} : ${ctx.raw.value} utilisateurs`
+                        }
+                    },
+                    title: {
+                        display: false
+                    }
+                    },
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+    }
+  }
+
+
+const url_chart4 = new URL('fetch?collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"' + new Date(new Date() - 7 * 24 * 60 * 60 * 1000).toISOString() + '"}, "mode":"ai"}},{"$group":{"_id":{"difficulty":"$difficulty","success":"$success"},"count":{"$sum":1}}},{"$group":{"_id":"$_id.difficulty","total":{"$sum":"$count"},"wins":{"$sum":{"$cond":[{"$eq":["$_id.success",true]},"$count",0]}},"losses":{"$sum":{"$cond":[{"$eq":["$_id.success",false]},"$count",0]}}}},{"$project":{"_id":0,"difficulty":"$_id","winRate":{"$round":[{"$multiply":[{"$divide":["$wins","$total"]},100]},1]},"lossRate":{"$round":[{"$multiply":[{"$divide":["$losses","$total"]},100]},1]},"totalGames":"$total"}},{"$sort":{"difficulty":1}}]', window.location.origin).href;
 urls[url_chart4] = {
     callback: (urls) => {
         if (urls[url_chart4].json) {
+            let today = new Date();
+            let daysOfWeek = [];
+            for (let i = 6; i >= 0; i--) {
+                let day = new Date(today);
+                day.setDate(today.getDate() - i);
+                daysOfWeek.push({
+                    day: day.toLocaleString('fr-FR', { weekday: 'long' }),
+                    date: day.toLocaleDateString('fr-FR'),
+                    dateISO: day.toISOString().split('T')[0]
+                });
+            }
+            const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+            document.getElementById("chart4-desc").innerHTML =  "Du " + daysOfWeek[0].date.split("/")[0] + (daysOfWeek[0].date.split("/")[1] === daysOfWeek[6].date.split("/")[1] ? "" : (" " + months[parseInt(daysOfWeek[0].date.split("/")[1]) - 1])) + " au " + daysOfWeek[6].date.split("/")[0] + " " + months[parseInt(daysOfWeek[6].date.split("/")[1]) - 1] + " " + daysOfWeek[6].date.split("/")[2];
+
             const data = urls[url_chart4].json.map((d) => {
                 return {
                     difficulty: d.difficulty,
@@ -333,10 +371,24 @@ urls[url_chart4] = {
     }
 };
 
-const url_chart5 = new URL('fetch?collection=logs&aggs=[{"$match":{"mode":"solo"}},{"$project":{"time":1,"bin":{"$switch":{"branches":[{"case":{"$lt":["$time",30000]},"then":"< 30 sec"},{"case":{"$lt":["$time",60000]},"then":"30-60 sec"},{"case":{"$lt":["$time",120000]},"then":"1-2 min"},{"case":{"$lt":["$time",240000]},"then":"2-4 min"},{"case":{"$gt":["$time",300000]},"then":"> 5 min"}],"default":"4-5 min"}}}},{"$group":{"_id":"$bin","count":{"$sum":1}}},{"$sort":{"_id":1}}]', window.location.origin).href;
+const url_chart5 = new URL('fetch?collection=logs&aggs=[{"$match":{"mode":"solo","timestamp":{"$gte":"' + new Date(new Date() - 7 * 24 * 60 * 60 * 1000).toISOString() + '"}}},{"$project":{"time":1,"bin":{"$switch":{"branches":[{"case":{"$lt":["$time",30000]},"then":"< 30 sec"},{"case":{"$lt":["$time",60000]},"then":"30-60 sec"},{"case":{"$lt":["$time",120000]},"then":"1-2 min"},{"case":{"$lt":["$time",240000]},"then":"2-4 min"},{"case":{"$gt":["$time",300000]},"then":"> 5 min"}],"default":"4-5 min"}}}},{"$group":{"_id":"$bin","count":{"$sum":1}}},{"$sort":{"_id":1}}]', window.location.origin).href;
 urls[url_chart5] = {
     callback: (urls) => {
         if (urls[url_chart5].json) {
+            let today = new Date();
+            let daysOfWeek = [];
+            for (let i = 6; i >= 0; i--) {
+                let day = new Date(today);
+                day.setDate(today.getDate() - i);
+                daysOfWeek.push({
+                    day: day.toLocaleString('fr-FR', { weekday: 'long' }),
+                    date: day.toLocaleDateString('fr-FR'),
+                    dateISO: day.toISOString().split('T')[0]
+                });
+            }
+            const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+            document.getElementById("chart5-desc").innerHTML =  "Du " + daysOfWeek[0].date.split("/")[0] + (daysOfWeek[0].date.split("/")[1] === daysOfWeek[6].date.split("/")[1] ? "" : (" " + months[parseInt(daysOfWeek[0].date.split("/")[1]) - 1])) + " au " + daysOfWeek[6].date.split("/")[0] + " " + months[parseInt(daysOfWeek[6].date.split("/")[1]) - 1] + " " + daysOfWeek[6].date.split("/")[2];
+
             let data = urls[url_chart5].json.map((d) => {
                 return {
                     bin: d._id,
@@ -393,10 +445,24 @@ urls[url_chart5] = {
     }
 };
 
-const url_chart6 = new URL('fetch?collection=logs&aggs=[{"$group":{"_id":"$mode","count":{"$sum":1}}},{"$project":{"_id":0,"mode":"$_id","count":1}}]', window.location.origin).href;
+const url_chart6 = new URL('fetch?collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"' + new Date(new Date() - 7 * 24 * 60 * 60 * 1000).toISOString() + '"}}},{"$group":{"_id":"$mode","count":{"$sum":1}}},{"$project":{"_id":0,"mode":"$_id","count":1}}]', window.location.origin).href;
 urls[url_chart6] = {
     callback: (urls) => {
         if (urls[url_chart6].json) {
+            let today = new Date();
+            let daysOfWeek = [];
+            for (let i = 6; i >= 0; i--) {
+                let day = new Date(today);
+                day.setDate(today.getDate() - i);
+                daysOfWeek.push({
+                    day: day.toLocaleString('fr-FR', { weekday: 'long' }),
+                    date: day.toLocaleDateString('fr-FR'),
+                    dateISO: day.toISOString().split('T')[0]
+                });
+            }
+            const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+            document.getElementById("chart6-desc").innerHTML =  "Du " + daysOfWeek[0].date.split("/")[0] + (daysOfWeek[0].date.split("/")[1] === daysOfWeek[6].date.split("/")[1] ? "" : (" " + months[parseInt(daysOfWeek[0].date.split("/")[1]) - 1])) + " au " + daysOfWeek[6].date.split("/")[0] + " " + months[parseInt(daysOfWeek[6].date.split("/")[1]) - 1] + " " + daysOfWeek[6].date.split("/")[2];
+
             let data = urls[url_chart6].json.map((d) => {
                 return {
                     mode: d.mode,
@@ -586,5 +652,6 @@ const chart7_3 = generateChart('chart7-3', {
 })
 
 multipleFetch(urls).then(() => {    
+    updateDate();
     disableSkeleton();
 });

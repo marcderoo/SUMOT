@@ -388,7 +388,7 @@ def log_session():
 
         print("Log reçu :", log)
 
-        logs_collection.insert_one(log)
+        logs_collection.insert_one(log.copy())
 
         return jsonify({"status": "success", "log": log}), 200
     except Exception as e:
