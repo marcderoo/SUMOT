@@ -141,6 +141,10 @@
                 const nextButton = document.querySelector("div.next-button");
                 nextButton.innerHTML = nextButton.innerHTML.replace("Mot Suivant", "Retour au menu");
                 nextButton.addEventListener("click", () => appUtils.emit("keydown", "ENTER"));
+                appUtils.goToLocation("/");
+
+                const form = document.querySelector("form");
+                form.action = window.location.origin;
             }
         })(showDialog);
 

@@ -437,6 +437,9 @@
           if  (Object.keys(line).includes("time")){
             line["time"] = formatTimespan(line["time"]);
           }
+          if (Object.keys(line).includes("difficulty")){
+            line["difficulty"] = ["Facile", "Moyen", "Difficile", "Expert"][line["difficulty"]];
+          }
           return line
       });
 
