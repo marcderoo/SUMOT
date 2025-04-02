@@ -9,7 +9,6 @@ body {
   font-family: sans-serif;
   text-align: center;
   display: grid;
-  justify-content: center;
   align-items: center;
   grid-template-rows: 1.5rem 3fr 1fr;
   gap: 3vh;
@@ -93,6 +92,7 @@ img.noodles {
   justify-content: center;
   gap: 0.5rem;
   height: 100%;
+  width: 100%;
 }
 
 .alphabet-cell {
