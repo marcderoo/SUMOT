@@ -12,6 +12,7 @@ import boto3
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from dateutil import parser
+from unidecode import unidecode
 
 def read_file_from_s3(key):
     """Lit un fichier depuis S3 et retourne son contenu"""
@@ -95,13 +96,12 @@ else:
         }
 
 def get_daily_word():
-    """
     global daily_word
     try:
         url = "https://api.magicapi.dev/api/v1/datarise/twitter/trends/?woeid=23424819"
         response = requests.get(url, headers={
             "accept": "application/json",
-            "x-magicapi-key": "cm85xxupg0008k003ggyouam3"
+            "x-magicapi-key": "cm8zndr1n006eib03otrcr1qm"
         },
         timeout=5)
         response.raise_for_status()
@@ -118,9 +118,7 @@ def get_daily_word():
 
     except Exception as e:
         print(f"Erreur lors de la récupération des tendances : {e}")
-    """
-    daily_word = random.choice(dico).upper()
-    print("Mot du jour (mot aleatoire) :", daily_word)
+        daily_word = random.choice(dico).upper()
 
 @app.route('/') 
 def menu()-> str:
@@ -395,7 +393,6 @@ if __name__ == '__main__':
     scheduler = BackgroundScheduler()
     scheduler.add_job(get_daily_word, 'interval', days=1, next_run_time=datetime.now().replace(hour=0, minute=0, second=0, microsecond=0) + timedelta(days=1))  # À partir du 13 mars 2025
     scheduler.start()
-
     get_daily_word()
 
     app.run(host="0.0.0.0", port=8000, debug=True)
