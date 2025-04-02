@@ -578,10 +578,10 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                       if(PLAYERTURN === -1 || attemps % 2 === PLAYERTURN){
                         score += actScore;
                         confetti.launch();
-                        appUtils.emit("endGame", {score : actScore, attemps : attemps + 1, count : count, success : true});
+                        appUtils.emit("endGame", {score : actScore, attemps : attemps + 1, count : count - 1, success : true});
                       }
                       else {
-                        appUtils.emit("endGame", {score : actScore, attemps : attemps +  1, count : count, success : false});
+                        appUtils.emit("endGame", {score : actScore, attemps : attemps +  1, count : count - 1, success : false});
                       }
                       appUtils.updateKey("score", score);
 
@@ -608,7 +608,7 @@ const enterKey = function(key, player = -1, aiDifficulty = -1) {// Player -1, 0 
                         
                         count += 1;
 
-                        appUtils.emit("endGame", {score : actScore, attemps : Math.floor(cellBeforeFirstEmptyCell.index / NBLETTERS) + 1, count : count, success : false});
+                        appUtils.emit("endGame", {score : actScore, attemps : Math.floor(cellBeforeFirstEmptyCell.index / NBLETTERS) + 1, count : count - 1, success : false});
                         
                         /* Show looser dialog */
                         showDialog(true);
