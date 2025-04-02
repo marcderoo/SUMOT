@@ -384,7 +384,7 @@ appUtils.subscribe('DOMContentLoaded', () => {
     appUtils.linkRuleTo("UpdateHelpersWidth", "alphabetCellResize", () => {
         return `@media (max-width: calc(9 / 6 *  3 * (23vh - 4px  -  0.375rem) - 2vh + 20px + 6vw + 10em)) {
             .help-container {
-                width : ${alphabetContainer.offsetWidth}px !important;
+                width : calc(9 * 0.5rem + ${10 * lastCellAlphabet.offsetWidth}px) !important;
             }
         }`
     });

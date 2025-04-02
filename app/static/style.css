@@ -11,6 +11,7 @@ body {
   display: grid;
   align-items: center;
   grid-template-rows: 1.5rem 3fr 1fr;
+  grid-template-columns: 100%;
   gap: 3vh;
   padding: 1vh;
   height: calc(100% - 1vh - 1.5rem);
@@ -20,6 +21,7 @@ body {
   background-size: auto; /* No resizing */
   animation-name: opacityAnimation;
   animation-duration: 0.1s;
+  place-content: center;
 }
 
 .grid-container {
