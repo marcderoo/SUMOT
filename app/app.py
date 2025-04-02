@@ -120,7 +120,7 @@ def get_daily_word():
         print(f"Erreur lors de la récupération des tendances : {e}")
         daily_word = random.choice(dico).upper()
 
-@app.route('/') 
+@app.route('/', methods=['POST', 'GET']) 
 def menu()-> str:
     return render_template('menu.html')
 
