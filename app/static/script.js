@@ -386,7 +386,7 @@ appUtils.subscribe('DOMContentLoaded', () => {
             .help-container {
                 width : calc(9 * 0.5rem + ${10 * lastCellAlphabet.offsetWidth}px) !important;
             }
-        }
+        }`
     });
 
     const resizeObserverAlphabetCell = new ResizeObserver(() => {
