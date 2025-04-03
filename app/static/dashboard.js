@@ -513,143 +513,75 @@ urls[url_chart6] = {
     }
 };
 
-
-
-
-const chart7_1 = generateChart('chart7-1', {
-    type: 'line',
-    data: {
-        labels: ['18/03', '19/03', '20/03', '21/03', '22/03', '23/03', '24/03'],
-        datasets: [{
-            label: 'Utilisateurs par jour',
-            data: [1, 3, 5, 4, 6, 3, 9],
-            fill: false,
-            borderColor: '#EC643C',
-            tension: 0.2
-        }]
-    },
-    options: {
-        plugins: {
-            title: {
-                display: true,
-                text: 'Solo',
-                font: {
-                    size: 16
-                },
-                padding: {
-                    top: 10,
-                    bottom: 5
-                }
-            },
-            legend: {
-                display: false
+const url_chart7 = new URL('fetch?collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"' + new Date(new Date() - 7 * 24 * 60 * 60 * 1000).toISOString() + '"}}},{"$group":{"_id":{"date":{"$dateToString":{"format":"%d/%m","date":"$timestamp"}},"mode":"$mode"},"unique_ips":{"$addToSet":"$ip"}}},{"$project":{"_id":0,"count":{"$size":"$unique_ips"},"date":"$_id.date","mode":"$_id.mode"}}]', window.location.origin).href;
+urls[url_chart7] = {
+    callback: (urls) => {
+        if (urls[url_chart7].json) {
+            let today = new Date();
+            let daysOfWeek = [];
+            for (let i = 6; i >= 0; i--) {
+                let day = new Date(today);
+                day.setDate(today.getDate() - i);
+                daysOfWeek.push({
+                    day: day.toLocaleString('fr-FR', { weekday: 'long' }),
+                    date: day.toLocaleDateString('fr-FR'),
+                    dateISO: day.toISOString().split('T')[0],
+                    shortDate: day.toLocaleDateString('fr-FR').split("/").slice(0, 2).join("/")
+                });
             }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'utilisateurs'
-                }
+            const months = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+            document.getElementById("chart7-desc").innerHTML =  "Du " + daysOfWeek[0].date.split("/")[0] + (daysOfWeek[0].date.split("/")[1] === daysOfWeek[6].date.split("/")[1] ? "" : (" " + months[parseInt(daysOfWeek[0].date.split("/")[1]) - 1])) + " au " + daysOfWeek[6].date.split("/")[0] + " " + months[parseInt(daysOfWeek[6].date.split("/")[1]) - 1] + " " + daysOfWeek[6].date.split("/")[2];
+
+            const mode_str = ['Solo', 'Mot du jour', 'IA'];
+            const mode_raw = ["solo", "daily", "ai"];
+            const graph_ids = ['chart7-1', 'chart7-2', 'chart7-3'];
+            for(let i = 0; i < 3; i++){
+                generateChart(graph_ids[i], {
+                    type: 'line',
+                    data: {
+                        labels: daysOfWeek.map(day => day.shortDate),
+                        datasets: [{
+                            label: 'Utilisateurs par jour',
+                            data: daysOfWeek.map(day => urls[url_chart7].json.find(elmt => elmt.date === day.shortDate && elmt.mode === mode_raw[i]) ? urls[url_chart7].json.find(elmt => elmt.date === day.shortDate && elmt.mode === mode_raw[i]).count : 0),
+                            fill: false,
+                            borderColor: '#EC643C',
+                            tension: 0.2
+                        }]
+                    },
+                    options: {
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: mode_str[i],
+                                font: {
+                                    size: 16
+                                },
+                                padding: {
+                                    top: 10,
+                                    bottom: 5
+                                }
+                            },
+                            legend: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'utilisateurs'
+                                }
+                            }
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false
+                    }
+                })
             }
-        },
-        responsive: true,
-        maintainAspectRatio: false
+        }
     }
-})
-
-
-
-
-const chart7_2 = generateChart('chart7-2', {
-    type: 'line',
-    data: {
-        labels: ['18/03', '19/03', '20/03', '21/03', '22/03', '23/03', '24/03'],
-        datasets: [{
-            label: 'Utilisateurs par jour',
-            data: [5, 13, 15, 14, 16, 17, 3],
-            fill: false,
-            borderColor: '#EC643C',
-            tension: 0.2
-        }]
-    },
-    options: {
-        plugins: {
-            title: {
-                display: true,
-                text: 'Mot du jour',
-                font: {
-                    size: 16
-                },
-                padding: {
-                    top: 10,
-                    bottom: 5
-                }
-            },
-            legend: {
-                display: false
-            }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'utilisateurs'
-                }
-            }
-        },
-        responsive: true,
-        maintainAspectRatio: false
-    }
-})
-
-
-
-
-const chart7_3 = generateChart('chart7-3', {
-    type: 'line',
-    data: {
-        labels: ['18/03', '19/03', '20/03', '21/03', '22/03', '23/03', '24/03'],
-        datasets: [{
-            label: 'Utilisateurs par jour',
-            data: [2, 3, 5, 4, 6, 7, 9],
-            fill: false,
-            borderColor: '#EC643C',
-            tension: 0.2
-        }]
-    },
-    options: {
-        plugins: {
-            title: {
-                display: true,
-                text: 'IA',
-                font: {
-                    size: 16
-                },
-                padding: {
-                    top: 10,
-                    bottom: 5
-                }
-            },
-            legend: {
-                display: false
-            }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: 'utilisateurs'
-                }
-            }
-        },
-        responsive: true,
-        maintainAspectRatio: false
-    }
-})
+}
 
 multipleFetch(urls).then(() => {    
     updateDate();
