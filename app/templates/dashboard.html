@@ -22,8 +22,8 @@
         <ods-dataset-context>
           <div class="container">
             <div class="header">
-              <h1> Observatoire statistiques de la population Française </h1>
-              <p> Ensemble de données synthétiques pour les thèmes suivants : population, logement, revenus, emploi-chômage et établissements. </p>
+              <h1> Tableau de bord </h1>
+              <p> Ce tableau de bord offre une vue d’ensemble détaillée des performances et des activités du jeu Sumot. Il rassemble diverses statistiques générales, telles que le temps moyen de jeu, le taux de victoire des joueurs, ainsi que d’autres indicateurs clés permettant d’analyser les tendances et d’évaluer les performances.  </p>
             </div>
             <div class="grid own-grid">
               <div style="grid-area: 1 / 1 / 2 / 2; aspect-ratio: 1;" class="box white flat" id="cell1">
@@ -39,7 +39,7 @@
                   <div class="advanced-kpi--bottom text-cell">
                     <div class="advanced-kpi--bottom-second-stage">
                       <span class="date dateNow"></span>
-                      <a class="source modal-btn" aria-params='title=Utilisateurs&collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"__DATEYEAR"}}}, {"$sort":{"timestamp":1}},{"$group":{"_id":"$ip","firstCountry":{"$first":"$country"}}},{"$project":{"_id":0,"ip":"$_id","country":"$firstCountry"}}]'>Source <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                      <a class="source modal-btn" aria-params='title=Utilisateurs - Depuis le 1er Janvier&collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"__DATEYEAR"}}}, {"$sort":{"timestamp":1}},{"$group":{"_id":"$ip","firstCountry":{"$first":"$country"}}},{"$project":{"_id":0,"ip":"$_id","country":"$firstCountry"}}]'>Source <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
                       </a>
                     </div>
                   </div>
@@ -58,7 +58,7 @@
                   <div class="advanced-kpi--bottom">
                     <div class="advanced-kpi--bottom-second-stage">
                       <span class="date dateNow"></span>
-                      <a class="source modal-btn" aria-params='title=Utilisateurs quotidiens&collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"__DATEWEEK"}}}, {"$group":{"_id":{"ip":"$ip","date":{"$dateToString":{"format":"%d/%m","date":"$timestamp"}}},"firstCountry":{"$first":"$country"},"timestamp":{"$first":"$timestamp"}}},{"$sort":{"timestamp":-1}},{"$project":{"_id":0,"ip":"$_id.ip","timestamp":"$timestamp","country":"$firstCountry"}}]'>Source <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                      <a class="source modal-btn" aria-params='title=Utilisateurs quotidiens - 7 derniers jours&collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"__DATEWEEK"}}}, {"$group":{"_id":{"ip":"$ip","date":{"$dateToString":{"format":"%d/%m","date":"$timestamp"}}},"firstCountry":{"$first":"$country"},"timestamp":{"$first":"$timestamp"}}},{"$sort":{"timestamp":-1}},{"$project":{"_id":0,"ip":"$_id.ip","timestamp":"$timestamp","country":"$firstCountry"}}]'>Source <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
                       </a>
                     </div>
                   </div>
@@ -77,7 +77,7 @@
                   <div class="advanced-kpi--bottom">
                     <div class="advanced-kpi--bottom-second-stage">
                       <span class="date dateNow"></span>
-                      <a class="source modal-btn" aria-params='title=Utilisateurs&collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"__DATEWEEK"}}}, {"$sort":{"timestamp":1}},{"$group":{"_id":"$ip","firstCountry":{"$first":"$country"}}},{"$project":{"_id":0,"ip":"$_id","country":"$firstCountry"}}]'>Source <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                      <a class="source modal-btn" aria-params='title=Utilisateurs - 7 derniers jours&collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"__DATEWEEK"}}}, {"$sort":{"timestamp":1}},{"$group":{"_id":"$ip","firstCountry":{"$first":"$country"}}},{"$project":{"_id":0,"ip":"$_id","country":"$firstCountry"}}]'>Source <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
                       </a>
                     </div>
                   </div>
@@ -87,7 +87,7 @@
                 <div class="box flat content skeleton"></div>
                 <div class="advanced-kpi">
                   <div class="advanced-kpi--top">
-                    <h3 class="title">Taux de victoire</h3>
+                    <h3 class="title">Taux de victoire contre l'IA</h3>
                     <p class="description"  id="chart4-desc"></p>
                   </div>
                   <div class="advanced-kpi--middle no-bg mb-0 full-height" style="display: grid; grid-template-columns: repeat(4, 25%); grid-template-rows: 1fr; grid-column-gap: 0px; grid-row-gap: 0px;">
@@ -107,7 +107,7 @@
                   <div class="advanced-kpi--bottom">
                     <div class="advanced-kpi--bottom-second-stage">
                       <span class="date dateNow"></span>
-                      <a class="source modal-btn" aria-params='title=Logs&collection=logs&aggs=[{"$sort":{"timestamp":-1}},{"$project":{"_id":false}}]'>Source <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                      <a class="source modal-btn" aria-params='title=Résultats Versus IA - 7 derniers jours&collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"__DATEWEEK"}, "mode":"ai"}},{"$sort":{"timestamp":-1}},{"$project":{"_id":false, "ip" : false, "country": false, "mode":false}}]'>Source <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
                       </a>
                     </div>
                   </div>
@@ -126,7 +126,7 @@
                   <div class="advanced-kpi--bottom">
                     <div class="advanced-kpi--bottom-second-stage">
                       <span class="date dateNow"></span>
-                      <a class="source modal-btn" aria-params='title=Logs&collection=logs&aggs=[{"$sort":{"timestamp":-1}},{"$project":{"_id":false}}]'>Source <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                      <a class="source modal-btn" aria-params='title=Résultats Solo - 7 derniers jours&collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"__DATEWEEK"}, "mode":"ai"}},{"$sort":{"timestamp":-1}},{"$project":{"_id":false, "ip" : false, "country": false, "mode":false}}]'>Source <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
                       </a>
                     </div>
                   </div>
@@ -145,7 +145,7 @@
                   <div class="advanced-kpi--bottom text-cell">
                     <div class="advanced-kpi--bottom-second-stage">
                       <span class="date dateNow"></span>
-                      <a class="source modal-btn" aria-params='title=Logs&collection=logs&aggs=[{"$sort":{"timestamp":-1}},{"$project":{"_id":false}}]'>Source <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                      <a class="source modal-btn" aria-params='title=Résultats Solo - Depuis le 1er Janvier&collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"__DATEYEAR"}, "mode":"solo"}},{"$sort":{"timestamp":-1}},{"$project":{"_id":false, "ip" : false, "country": false, "mode":false}}]'>Source <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
                       </a>
                     </div>
                   </div>
@@ -164,7 +164,7 @@
                   <div class="advanced-kpi--bottom">
                     <div class="advanced-kpi--bottom-second-stage">
                       <span class="date dateNow"></span>
-                      <a class="source modal-btn" aria-params='title=Logs&collection=logs&aggs=[{"$sort":{"timestamp":-1}},{"$project":{"_id":false}}]'>Source <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                      <a class="source modal-btn" aria-params='title=Parties jouées - 7 derniers jours&collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"__DATEWEEK"}}},{"$sort":{"timestamp":-1}},{"$project":{"_id":false}}]'>Source <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
                       </a>
                     </div>
                   </div>
@@ -191,7 +191,7 @@
                   <div class="advanced-kpi--bottom">
                     <div class="advanced-kpi--bottom-second-stage">
                       <span class="date dateNow"></span>
-                      <a class="source modal-btn" aria-params='title=Logs&collection=logs&aggs=[{"$sort":{"timestamp":-1}},{"$project":{"_id":false}}]'>Source <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
+                      <a class="source modal-btn" aria-params='title=Parties jouées - 7 derniers jours&collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"__DATEWEEK"}}},{"$sort":{"timestamp":-1}},{"$project":{"_id":false}}]'>Source <i class="fa fa-long-arrow-right" aria-hidden="true"></i>
                       </a>
                     </div>
                   </div>
