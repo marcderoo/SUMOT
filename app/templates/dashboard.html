@@ -19,7 +19,7 @@
   <body>
     <div ng-app="ods-widgets">
       <section>
-        <ods-dataset-context context="stats" stats-dataset="resume-statistique-communes-departements-et-regions-france-2012-2013-2014" stats-domain="public">
+        <ods-dataset-context>
           <div class="container">
             <div class="header">
               <h1> Observatoire statistiques de la population Française </h1>
@@ -133,7 +133,7 @@
                 </div>
               </div>
               <div style="grid-area: 4 / 3 / 5 / 4; aspect-ratio: 1;" class="box white flat" id="cell2">
-                <div class="box flat content skeleton request" aria-desc="cell2-desc" aria-txt="txt-cell2" aria-params='collection=logs&aggs=[{"$match": {"timestamp":{"$gte":"__DATEYEAR"}, "mode": "solo", "success": true}}, {"$group": {"_id": {"$avg": "$time"}}}]' aria-func="formatTimespan"></div>
+                <div class="box flat content skeleton request" aria-desc="cell2-desc" aria-txt="txt-cell2" aria-params='collection=logs&aggs=[{"$match": {"timestamp":{"$gte":"__DATEYEAR"}, "mode": "solo", "success": true}}, {"$match":{"mode":"solo","success":true}},{"$group":{"_id":null,"averageTime":{"$avg":"$time"}}},{"$project":{"_id":"$averageTime"}}]' aria-func="formatTimespan"></div>
                 <div class="advanced-kpi">
                   <div class="advanced-kpi--top text-cell">
                     <h3 class="title"> Temps moyen mode solo </h3>
