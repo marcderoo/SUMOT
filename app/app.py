@@ -51,9 +51,9 @@ def get_path(full_path: str) -> str:
 s3 = boto3.client(
     "s3",
     endpoint_url = 'https://minio.lab.sspcloud.fr',
-    aws_access_key_id = 'U0LY5WI4SFXDXZVZ4NPB',
-    aws_secret_access_key = 'lXHdQoF4147981rktlPwUNygT86mQTLFWvxEXhbz',
-    aws_session_token = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3NLZXkiOiJVMExZNVdJNFNGWERYWlZaNE5QQiIsImFsbG93ZWQtb3JpZ2lucyI6WyIqIl0sImF1ZCI6WyJtaW5pby1kYXRhbm9kZSIsIm9ueXhpYSIsImFjY291bnQiXSwiYXV0aF90aW1lIjoxNzQzNDI0NTUxLCJhenAiOiJvbnl4aWEiLCJlbWFpbCI6ImxhdXJlbnQudm9uZ0BlbnNhZS5mciIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJleHAiOjE3NDQwMzA4NjAsImZhbWlseV9uYW1lIjoiVm9uZyIsImdpdmVuX25hbWUiOiJMYXVyZW50IiwiZ3JvdXBzIjpbIlVTRVJfT05ZWElBIl0sImlhdCI6MTc0MzQyNjA2MCwiaXNzIjoiaHR0cHM6Ly9hdXRoLmxhYi5zc3BjbG91ZC5mci9hdXRoL3JlYWxtcy9zc3BjbG91ZCIsImp0aSI6ImIxNzNkNjA4LTIyY2ItNDIyMS05NjA0LWQwZDhmZDQ4NjViOCIsImxvY2FsZSI6ImZyIiwibmFtZSI6IkxhdXJlbnQgVm9uZyIsInBvbGljeSI6InN0c29ubHkiLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJsdm9uZyIsInJlYWxtX2FjY2VzcyI6eyJyb2xlcyI6WyJvZmZsaW5lX2FjY2VzcyIsInVtYV9hdXRob3JpemF0aW9uIiwiZGVmYXVsdC1yb2xlcy1zc3BjbG91ZCJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyIsInZpZXctcHJvZmlsZSJdfX0sInJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iLCJkZWZhdWx0LXJvbGVzLXNzcGNsb3VkIl0sInNjb3BlIjoib3BlbmlkIHByb2ZpbGUgZ3JvdXBzIGVtYWlsIiwic2lkIjoiNGUxODRmNTQtMmU0YS00MDAxLWE4M2ItMzM2NjAyZmY2OTg5Iiwic3ViIjoiODFlZDhlMzktMGNlMy00NGFlLWJjOTAtZGQwMGI4NTUwYzc1IiwidHlwIjoiQmVhcmVyIn0.x2oOk8E6zFbJEzDJi-eF2kSzpW2ngA3Ei85ngwJPnyidvAzjqpOh0ZeeDYKKieL8CLBsVESx9nRKjS0JrwYXGA'
+    aws_access_key_id = os.getenv("AWS_ACCESS_KEY_ID"),
+    aws_secret_access_key = os.getenv("AWS_SECRET_ACCESS_KEY"),
+    aws_session_token = os.getenv("AWS_SESSION_TOKEN")
 )
 
 
@@ -101,7 +101,7 @@ def get_daily_word():
         url = "https://api.magicapi.dev/api/v1/datarise/twitter/trends/?woeid=23424819"
         response = requests.get(url, headers={
             "accept": "application/json",
-            "x-magicapi-key": "cm8zndr1n006eib03otrcr1qm"
+            "x-magicapi-key": os.getenv("X-MAGICAPI-KEY")
         },
         timeout=5)
         response.raise_for_status()
@@ -118,7 +118,8 @@ def get_daily_word():
 
     except Exception as e:
         print(f"Erreur lors de la récupération des tendances : {e}")
-        daily_word = random.choice(dico).upper()
+    
+    daily_word = random.choice(dico).upper()
 
 @app.route('/', methods=['POST', 'GET']) 
 def menu()-> str:
