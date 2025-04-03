@@ -337,7 +337,7 @@ def fetch()-> str:
         return d
 
     collection = db[request.args.get('collection', 'logs')]
-    raw_aggs = request.args.get('aggs', "{}").replace("%20", "")
+    raw_aggs = request.args.get('aggs', "[]").replace("%20", "").replace("__DATEYEAR", datetime(datetime.now().year, 1, 1).isoformat())
     print(raw_aggs)
     aggs = json.loads(raw_aggs, object_hook=custom_decoder)
     res = collection.aggregate(aggs)

@@ -112,7 +112,7 @@ function formatTimespan(milliseconds) {
 
 requests_elmts = document.querySelectorAll(".request");
 const urls = Array.from(requests_elmts).reduce((acc, elmt) => {
-    const params = elmt.getAttribute("aria-params").replace("__DATEYEAR", new Date(new Date().getFullYear(), 0, 1).toISOString());
+    const params = elmt.getAttribute("aria-params");
     const url = new URL("fetch?" + params, window.location.origin).href;
     acc[url] = {
         callback: (urls) => {
