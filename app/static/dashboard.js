@@ -513,7 +513,7 @@ urls[url_chart6] = {
     }
 };
 
-const url_chart7 = new URL('fetch?collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"' + new Date(new Date() - 7 * 24 * 60 * 60 * 1000).toISOString() + '"}}},{"$group":{"_id":{"date":{"$dateToString":{"format":"%d/%m","date":"$timestamp"}},"mode":"$mode"},"unique_ips":{"$addToSet":"$ip"}}},{"$project":{"_id":0,"count":{"$size":"$unique_ips"},"date":"$_id.date","mode":"$_id.mode"}}]', window.location.origin).href;
+const url_chart7 = new URL('fetch?collection=logs&aggs=[{"$match":{"timestamp":{"$gte":"' + new Date(new Date() - 7 * 24 * 60 * 60 * 1000).toISOString() + '"}}},{"$group":{"_id":{"date":{"$dateToString":{"format":"%d/%m","date":"$timestamp"}},"mode":"$mode"}, "count": { "$sum": 1 }}},{"$project":{"_id":0,"count":1,"date":"$_id.date","mode":"$_id.mode"}}]', window.location.origin).href;
 urls[url_chart7] = {
     callback: (urls) => {
         if (urls[url_chart7].json) {
@@ -541,7 +541,7 @@ urls[url_chart7] = {
                     data: {
                         labels: daysOfWeek.map(day => day.shortDate),
                         datasets: [{
-                            label: 'Utilisateurs par jour',
+                            label: 'Nombre de parties',
                             data: daysOfWeek.map(day => urls[url_chart7].json.find(elmt => elmt.date === day.shortDate && elmt.mode === mode_raw[i]) ? urls[url_chart7].json.find(elmt => elmt.date === day.shortDate && elmt.mode === mode_raw[i]).count : 0),
                             fill: false,
                             borderColor: '#EC643C',
@@ -570,7 +570,7 @@ urls[url_chart7] = {
                                 beginAtZero: true,
                                 title: {
                                     display: true,
-                                    text: 'utilisateurs'
+                                    text: 'Nombre de parties'
                                 }
                             }
                         },
