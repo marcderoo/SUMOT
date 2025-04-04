@@ -33,6 +33,34 @@
                 }, 100);
             });
         })
+
+        /**
+         * Loads the dashboard image from the cache and applies it to the document.
+         *
+         * @function loadObj - Utility function to load resources.
+         * @param {string} url - URL of the image to load.
+         * @param {boolean} [base64=false] - Whether to convert the response to Base64 format.
+         * @returns {Promise<string>} The loaded data.
+         */
+        appUtils.loadObj("/static/dashboard.webp", true).then((res) => {
+            /**
+             * Executes a function when the DOM is loaded.
+             *
+             * @function doIfOrWhen - Utility function to wait for events.
+             * @param {string} eventName - Name of the event (here, DOMContentLoaded).
+             * @param {function} callback - Function to execute once the event is triggered.
+             */
+            appUtils.doIfOrWhen("DOMContentLoaded", () => {
+                setTimeout(() => {
+                    // Applies the image to the dashboard button of the document
+                    const button = document.querySelector('.dashboard-button');
+                    button.src = `${res}`;
+                    button.onclick = () => {
+                        window.location = '/dashboard';
+                    };
+                }, 100);
+            });
+        })
     </script>
 
     <!-- Metadata for encoding, responsiveness and SEO -->
@@ -63,5 +91,6 @@
             <button class="menu-button" onclick="appUtils.goToLocation('/regles')">Règles</button>
         </div>
     </div>
+    <img class="dashboard-button"></img>
 </body>
 </html>

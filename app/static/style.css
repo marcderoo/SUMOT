@@ -205,6 +205,23 @@ img.noodles {
   transform: scale(1.05);
 }
 
+/* Dashboard button */
+.dashboard-button {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  height: 2rem;
+  width: 2rem;
+  padding: 0.5rem;
+}
+
+.dashboard-button:hover {
+  cursor: pointer;
+  filter: brightness(75%); /* Reduces brightness to 75% */
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 20%;
+}
+
 /* Home button */
 .home-button {
   background: #f0f0f0;
@@ -269,15 +286,12 @@ dialog button {
 
 dialog::backdrop {
   opacity: 0;
-  will-change: opacity;
-
   background: radial-gradient(circle at center, rgba(50,50,50,0.5), rgba(0,0,0,0.5));
-  animation: backdrop 500ms ease forwards 1;
+  transition: opacity 500ms ease-in-out;
 }
 
-@keyframes backdrop {
-  from { opacity: 0; }
-  to { opacity: 1; }
+dialog[open]::backdrop {
+  opacity: 1;
 }
 
 .next-button {
