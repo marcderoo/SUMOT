@@ -31,5 +31,3 @@ docker-compose.override.yml
 .vercel/
 
 *.exe
-
-.DS_Store
