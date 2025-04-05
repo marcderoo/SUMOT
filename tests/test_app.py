@@ -3,6 +3,7 @@ Unit tests for the Flask application
 """
 import unittest
 import os
+import sys  # Ajout de l'import sys
 from unittest.mock import patch, MagicMock
 import json
 import importlib.util
@@ -31,6 +32,10 @@ def get_path(full_path):
 MODULE_NAME = "app"  # Nom du module sans l'extension
 spec = importlib.util.spec_from_file_location(MODULE_NAME, get_path("app/app.py"))
 app_ = importlib.util.module_from_spec(spec)
+
+# CORRECTION : Ajouter le module au sys.modules pour permettre les imports
+sys.modules[MODULE_NAME] = app_
+
 spec.loader.exec_module(app_)
 
 # Accès aux objets du module via app_
