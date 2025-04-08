@@ -7,7 +7,6 @@ WORKDIR /app
 # Copier les fichiers nécessaires dans le conteneur
 COPY /app/requirements.txt /app/requirements.txt
 COPY app /app
-COPY tests /tests
 COPY . .
 
 # Installer les dépendances
@@ -17,4 +16,4 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 EXPOSE 5000
 
 # Démarrer l'application
-CMD ["python", "tests/start_app.py"]
+CMD ["python", "app.py"]
