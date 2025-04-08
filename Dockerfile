@@ -16,4 +16,4 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 EXPOSE 5000
 
 # Démarrer l'application
-CMD ["python", "start_app.py"]
+CMD ["python", "tests/start_app.py"]
