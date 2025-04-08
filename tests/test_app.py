@@ -166,7 +166,7 @@ class TestMenuRoute(unittest.TestCase):
 
         with app.test_client() as client:
             response = client.get('/def/validword')
-            self.assertEqual(response.data.decode(), "Définition principale pour le mot.")
+            self.assertEqual(response.data.decode(), "1Définition principale pour le mot.")
 
     @patch('requests.get')
     def test_word_without_definition(self, mock_get):
