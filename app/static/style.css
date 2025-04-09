@@ -350,6 +350,9 @@ header {
   position: absolute;
   top: calc(1vh + 10px - 0.25em);
   justify-self: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .rules-title .R { background-color: #4caf50; }
