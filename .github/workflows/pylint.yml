@@ -4,7 +4,6 @@ on: [push, pull_request]
 
 jobs:
   lint:
-    name: Run Pylint
     runs-on: ubuntu-latest
 
     steps:
@@ -18,20 +17,19 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install -y bc
           python -m pip install --upgrade pip
           pip install pylint
 
-          - name: Run Pylint with score check
-          run: |
-            output=$(pylint **/*.py | tee pylint-output.txt)
-            score=$(echo "$output" | grep "rated at" | grep -oP '[0-9]+\.[0-9]+(?=/10)')
-            echo "Pylint score: $score"
-            # compare score < 7.0 (bash version)
-            if (( $(echo "$score < 7.0" | bc -l) )); then
-              echo "❌ Pylint score too low (must be >= 7.0)"
-              exit 1
-            else
-              echo "✅ Pylint score is acceptable"
-            fi
-
-
+      - name: Run Pylint with score check
+        run: |
+          output=$(pylint **/*.py | tee pylint-output.txt)
+          score=$(echo "$output" | grep "rated at" | grep -oP '[0-9]+\.[0-9]+(?=/10)')
+          echo "Pylint score: $score"
+          if (( $(echo "$score < 7.0" | bc -l) )); then
+            echo "❌ Pylint score too low (must be >= 7.0)"
+            exit 1
+          else
+            echo "✅ Pylint score is acceptable"
+          fi
