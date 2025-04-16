@@ -1,8 +1,7 @@
+"""Tests unitaires du mode battle IA."""
+
 import unittest
-from unittest.mock import mock_open, patch, MagicMock
-import random
-from typing import List, Tuple, Optional
-from experiments.mode_battleIA import charger_dictionnaire, mode_battle_ia
+from unittest.mock import mock_open, patch
 import os
 import sys
 
@@ -60,6 +59,8 @@ class TestChargerDictionnaire(unittest.TestCase):
     @patch("app.experiments.mode_battleIA.random.choice")  # Chemin complet
     @patch("app.experiments.mode_battleIA.charger_dictionnaire")  # Chemin complet
     def test_mode_battle_ia(self, mock_charger_dictionnaire, mock_random_choice):
+        """Classe de tests pour le mode Battle IA."""
+
         # Simulate a dictionary of words
         mock_charger_dictionnaire.return_value = ["mot1", "mot2", "mot3"]
 

@@ -1,7 +1,12 @@
-import unittest
-from unittest.mock import patch, MagicMock,mock_open
-import importlib.util
+"""Tests unitaires pour le mode duel."""
+# 1. Imports standards
 import os
+import importlib.util
+import unittest
+
+# 2. Imports de modules externes
+from unittest.mock import patch, MagicMock, mock_open
+
 
 def get_path(full_path: str) -> str:
     """
@@ -22,8 +27,8 @@ def get_path(full_path: str) -> str:
     return str(os.path.join(root, full_path))
 
 # Charger dynamiquement le module
-module_name = "mode_duel"  # Nom du module sans l'extension
-spec = importlib.util.spec_from_file_location(module_name, get_path("app/experiments/mode_duel.py"))
+MODULE_NAME = "mode_duel"  # Nom du module sans l'extension
+spec = importlib.util.spec_from_file_location(MODULE_NAME, get_path("app/experiments/mode_duel.py"))
 mode_duel = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mode_duel)
 
@@ -81,17 +86,17 @@ class TestObtenirDefinition(unittest.TestCase):
 
         result = mode_duel.obtenir_definition("test")
         self.assertNotIn("(Source: Larousse)", result)
-    
+
     def test_charger_dictionnaire(self):
         # Mock content of the dictionary file
         mock_file_content = "lapin\nchien\nchat\n\n"
         with patch("builtins.open", mock_open(read_data=mock_file_content)) as mock_file:
             mots = mode_duel.charger_dictionnaire(get_path("app/dictionnaire_clean.txt"))
-            # Verify the content of the loaded list
+            # Verify the content of the loaded lis
             self.assertEqual(mots, ["lapin", "chien", "chat"])
             # Ensure the file was opened correctly
             mock_file.assert_called_once_with(get_path("app/dictionnaire_clean.txt"), "r", encoding="utf-8")
-    
+
     def test_choisir_mot(self):
         # Mock list of words
         mots = ["lapin", "chien", "chat"]
@@ -100,14 +105,14 @@ class TestObtenirDefinition(unittest.TestCase):
             mot = mode_duel.choisir_mot(mots)
             # Verify that the chosen word is "lapin"
             self.assertEqual(mot, "lapin")
-    
+
     def test_no_historic_guesses(self):
         mots_possibles = ["chat", "chien", "lapin"]
         historiques = []
         result = mode_duel.bot_proposition_facile(mots_possibles, historiques)
         self.assertIn(result, mots_possibles)
 
-    
+
     def test_single_valid_word(self):
         mots_possibles = ["lapin", "lapis", "chien"]
         historiques = [("lapin", ["vert", "vert", "vert", "vert", "vert"])]
@@ -125,7 +130,7 @@ class TestObtenirDefinition(unittest.TestCase):
         historiques = [("chat", ["vert", "vert", "absent", "absent"])]
         result = mode_duel.bot_proposition_facile(mots_possibles, historiques)
         self.assertIsNone(result)
-    
+
     def test_no_historic_guesses(self):
         mots_possibles = ["chat", "chien", "lapin"]
         historiques = []
@@ -144,7 +149,7 @@ class TestObtenirDefinition(unittest.TestCase):
         historiques = [("lapin", ["vert", "vert", "absent", "absent"])]
         result = mode_duel.bot_proposition_moyen(mots_possibles, historiques)
         self.assertIsNone(result)
-    
+
     def test_no_historic_guesses(self):
         mots_possibles = ["chat", "chien", "lapin"]
         historiques = []
@@ -155,7 +160,7 @@ class TestObtenirDefinition(unittest.TestCase):
         mots_possibles = [ "chien", "lapin"]
         historiques = [("ch__n", ["vert", "vert", "absent", "absent", "vert"])]
         result = mode_duel.bot_proposition_difficile(mots_possibles, historiques)
-        self.assertIn(result, ["chien"])    
+        self.assertIn(result, ["chien"])
 
     def test_orange_letter_condition(self):
         mots_possibles = ["lapin", "lesar", "palin"]
@@ -163,37 +168,37 @@ class TestObtenirDefinition(unittest.TestCase):
         result = mode_duel.bot_proposition_difficile(mots_possibles, historiques)
         self.assertIn(result, ["lesar"])
 
-    
 
-    
+
+
     def test_all_correct(self):
         mot_propose = "chat"
         mot_a_trouver = "chat"
         result = mode_duel.colorier_mot_graphique(mot_propose, mot_a_trouver)
-        expected = "\033[92mc\033[0m\033[92mh\033[0m\033[92ma\033[0m\033[92mt\033[0m"  
+        expected = "\033[92mc\033[0m\033[92mh\033[0m\033[92ma\033[0m\033[92mt\033[0m"
         self.assertEqual(result, expected)
 
-    
+
 
     def test_some_incorrect_some_wrong(self):
         mot_propose = "cahr"
         mot_a_trouver = "chat"
         result = mode_duel.colorier_mot_graphique(mot_propose, mot_a_trouver)
-        expected = "\x1b[92mc\x1b[0m\x1b[93ma\x1b[0m\x1b[93mh\x1b[0m\x1b[91mr\x1b[0m"  
+        expected = "\x1b[92mc\x1b[0m\x1b[93ma\x1b[0m\x1b[93mh\x1b[0m\x1b[91mr\x1b[0m"
         self.assertEqual(result, expected)
 
     def test_letters_present_but_misplaced(self):
         mot_propose = "atch"
         mot_a_trouver = "chat"
         result = mode_duel.colorier_mot_graphique(mot_propose, mot_a_trouver)
-        expected = "\x1b[93ma\x1b[0m\x1b[93mt\x1b[0m\x1b[93mc\x1b[0m\x1b[93mh\x1b[0m"  
+        expected = "\x1b[93ma\x1b[0m\x1b[93mt\x1b[0m\x1b[93mc\x1b[0m\x1b[93mh\x1b[0m"
         self.assertEqual(result, expected)
 
     def test_letters_not_present(self):
         mot_propose = "abcd"
         mot_a_trouver = "chat"
         result = mode_duel.colorier_mot_graphique(mot_propose, mot_a_trouver)
-        expected = "\x1b[93ma\x1b[0m\x1b[91mb\x1b[0m\x1b[93mc\x1b[0m\x1b[91md\x1b[0m"  
+        expected = "\x1b[93ma\x1b[0m\x1b[91mb\x1b[0m\x1b[93mc\x1b[0m\x1b[91md\x1b[0m"
         self.assertEqual(result, expected)
 
 
@@ -234,7 +239,7 @@ class TestBotPropositionUltime(unittest.TestCase):
         result = mode_duel.bot_proposition_ultime_1(self.mots_possibles, self.historiques)
 
         # Expected result based on filtering and frequency logic
-        expected_result = "laser"  
+        expected_result = "laser"
 
         # Assert that the result is as expected
         self.assertEqual(result, expected_result)
@@ -255,16 +260,16 @@ class TestBotPropositionUltime(unittest.TestCase):
         result = mode_duel.bot_proposition_ultime_1(self.mots_possibles, historiques_multiple_valid)
 
         # Here, we expect the result to be the word with the highest frequency sum
-        expected_result = "laser"  
+        expected_result = "laser"
 
         # Assert that the result is as expected
         self.assertEqual(result, expected_result)
-        
-    
-    
-    
+
+
+
+
     @patch("builtins.input", side_effect=["1", "mottest"])  # Mock user inputs
-    @patch("builtins.print")  # Mock print to suppress output
+    @patch("builtins.print")  # Mock print to suppress outpu
     @patch("os.path.exists", return_value=True)  # Mock file existence check
     @patch("mode_duel.charger_dictionnaire", return_value=["mottest", "autre"])  # Mock dictionary loading
     @patch("mode_duel.choisir_mot", return_value="mottest")  # Mock word selection
@@ -276,35 +281,35 @@ class TestBotPropositionUltime(unittest.TestCase):
         mock_load_dict, mock_exists, mock_print, mock_input
     ):
         mode_duel.jouer()
-    
+
         # Assert the dictionary file was checked for existence
         mock_exists.assert_called_once_with(get_path("app/dictionnaire_clean.txt"))
-        
+
         # Assert the dictionary was loaded
         mock_load_dict.assert_called_once_with(get_path("app/dictionnaire_clean.txt"))
-        
+
         # Assert the chosen word was "mottest"
         mock_choose_word.assert_called_once_with(["mottest", "autre"])
-        
+
         # Assert print was called with the congratulatory message
         mock_print.assert_any_call("🎉 Félicitations, vous avez trouvé le mot !")
         mock_print.assert_any_call("Définition de 'mottest' :", "Un mot de test.")
-        
-        
+
+
     @patch("builtins.input", side_effect=["5", "1", "invalide", "mottest"])  # Mock invalid and valid inputs
-    @patch("builtins.print")  # Mock print to suppress output
+    @patch("builtins.print")  # Mock print to suppress outpu
     @patch("os.path.exists", return_value=False)  # Mock file not found
     def test_jouer_file_not_found(self, mock_exists, mock_print, mock_input):
         mode_duel.jouer()
-        
+
         # Assert the dictionary file was checked for existence
         mock_exists.assert_called_once_with(get_path("app/dictionnaire_clean.txt"))
-        
+
         # Assert print was called with the file-not-found message
         mock_print.assert_any_call("Le fichier dictionnaire_clean.txt est introuvable.")
 
     @patch("builtins.input", side_effect=["1", "mauvailongueur", "mottest"])  # Mock inputs with wrong word length
-    @patch("builtins.print")  # Mock print to suppress output
+    @patch("builtins.print")  # Mock print to suppress outpu
     @patch("os.path.exists", return_value=True)  # Mock file existence check
     @patch("mode_duel.charger_dictionnaire", return_value=["mottest", "autre"])  # Mock dictionary loading
     @patch("mode_duel.choisir_mot", return_value="mottest")  # Mock word selection
@@ -312,13 +317,13 @@ class TestBotPropositionUltime(unittest.TestCase):
         self, mock_choose_word, mock_load_dict, mock_exists, mock_print, mock_input
     ):
         mode_duel.jouer()
-        
+
         # Assert print was called with the length error message
         mock_print.assert_any_call("Le mot proposé n'a pas la bonne longueur.")
-    
 
 
-    
+
+
 
 if __name__ == "__main__":
     unittest.main()
