@@ -1,7 +1,10 @@
-from typing import List, Tuple, Dict, Optional
-import random
+"""Fonctions du jeu SUMOT : logique du jeu, choix du mot, bots et interface console."""
+
+
 import os
+import random
 import requests
+from typing import List, Tuple, Dict, Optional
 from bs4 import BeautifulSoup
 
 def get_path(full_path: str) -> str:
@@ -280,7 +283,10 @@ def bot_proposition_ultime_1(mots_possibles: List[str], historiques: List[Tuple[
     mots_uniques: List[str] = [mot for mot in mots_filtrés if len(set(mot)) == len(mot)]
 
     # Afficher la somme des fréquences pour chaque mot unique
-    print("Somme des fréquences pour chaque mot filtré (lettres uniques uniquement) :")
+    print(
+    "Somme des fréquences pour chaque mot filtré "
+    "(lettres uniques uniquement) :"
+)
     for mot in mots_uniques:
         print(f"{mot} : {somme_frequences(mot)}")
 
