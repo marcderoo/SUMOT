@@ -17,7 +17,7 @@ def get_path(full_path):
         if new_root == root:  # Évite une boucle infinie
             raise FileNotFoundError("LICENSE file not found")
         root = new_root
-    if "\\" in root :
+    if "\\" in root:
         full_path = full_path.replace("/", "\\")
     else:
         full_path = full_path.replace("\\", "/")
@@ -31,22 +31,23 @@ def test_flask_app():
     env = os.environ.copy()
     env["PYTHONIOENCODING"] = "utf-8"  # Force UTF-8 encoding
 
-    print(f"Running tests in test_app.py...")
+    print("Running tests in test_app.py...")
     print(f"RUNNING : {get_path('tests/test_app.py')}")
     result = subprocess.run(
         [sys.executable, "-m", "unittest", get_path("tests/test_app.py")],
         capture_output=True,
         text=True,
         env=env,  # Use the updated environment
+        check=False,
     )
 
     if result.returncode != 0:
-        print(f"❌ Tests failed in test_app.py:")
+        print("❌ Tests failed in test_app.py:")
         print(result.stdout)
         print(result.stderr)
         return False
 
-    print(f"✅ Tests passed in test_app.py.")
+    print("✅ Tests passed in test_app.py.")
 
     return True
 
@@ -55,6 +56,9 @@ if __name__ == "__main__":
         print("✅ All tests passed")
         print("Starting Flask app...")
         print(f"MAIN : {get_path('app/app.py')}")
-        subprocess.run([sys.executable, get_path("app/app.py")])
+        subprocess.run(
+            [sys.executable, get_path("app/app.py")],
+            check=True
+       )
     else:
         print("❌ Tests failed. Flask app will not start.")
