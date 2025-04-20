@@ -7,16 +7,17 @@
 **Parcours dashboard / Application Interactive**
 
 - Mise en place des bonnes pratiques
-  - utlisation de linter automatisée (github action : 8.57/10 en moyenne) ✅
-  - structure Cookiecutter en migrant nos données sur S3 (SSPCLoud) et utilisation de secrets variables ✅
-  - ajout fichiers LICENSE (GNU) et .gitignore ✅
-  - adaptation des tests unitaires et mise en place sur Github Actions ✅
+  - Utilisation de linter automatisée (github action : 8.57/10 en moyenne) ✅
+  - Structure Cookiecutter en migrant nos données sur S3 (SSPCLoud) et utilisation de secrets variables ✅
+  - Ajout fichiers LICENSE (GNU) et .gitignore ✅
+  - Adaptation des tests unitaires et mise en place sur Github Actions ✅
+  - Amélioration continue de la qualité du code avec Pylint ✅
 
 - Création d'un Dashboard Statique qui recueil des statistiques générales sur l'application ✅
-- Création d'un mode "Mot Du Jour" qui s'update automatiquement en cherchant le mot dans le top tendance X ✅
+- Création d'un mode "Mot Du Jour" qui s'update automatiquement en cherchant le mot dans le top tendance Twitter ✅
 - Interfacer DOCKER avec GITHUB : l'image se créer et push automatiquement avec Github Actions ✅
 - Industrialiser le déploiement en mode GitOps avec ArgoCD ✅
-   - le déploiement de l'application est controlé par un autre dépôt : https://github.com/marcderoo/SUMOT-deployment.git
+   - Le déploiement de l'application est controlé par un autre dépôt : https://github.com/marcderoo/SUMOT-deployment.git
 
 ---
 
@@ -48,14 +49,14 @@ Install the necessary dependencies:
 
 
 ```bash
-pip install -r requirements.txt
+pip install -r app/requirements.txt
 ```
 
 Run the application locally (& Unit Tests):
 
 
 ```bash
-python start_app.py
+python tests/start_app.py
 ```
 
 Using Docker:
@@ -69,9 +70,19 @@ Run tests:
 
 
 ```bash
-python test_tusmo_app.py
+python tests/test_tusmo_app.py
 ```
 
+## **Environment variables**
+
+Create a `.env` file at the root of the project with the following variables:
+
+```
+AWS_ACCESS_KEY_ID=your_access_key
+AWS_SECRET_ACCESS_KEY=your_secret_key
+X-MAGICAPI-KEY=your_magicapi_key
+MONGODB_URI=your_mongodb_connection_string
+```
 
 ---
 
@@ -84,7 +95,7 @@ python test_tusmo_app.py
 ---
 
 ## **Application Features** 
-The application includes a main menu with access to three distinct pages:
+The application includes a main menu with access to five distinct pages:
  
 1. **Solo** :
   - Classic gameplay where the player must guess the word in up to 6 attempts.
@@ -108,8 +119,15 @@ The application includes a main menu with access to three distinct pages:
     - **Greyed out (keyboard)** : Letter absent from the word.
  
   - **Interactive keyboard** : A visual keyboard helps track letters and allows gameplay on mobile devices.
+
+2. **Daily Word** :
+  - A new challenge every day with a word selected from trending topics.
+  
+  - Same gameplay mechanics as Solo mode but with a shared word for all players.
+  
+  - Track your daily score and compare with friends.
  
-2. **Versus AI** :
+3. **Versus AI** :
   - Duel mode where the player competes against the AI, taking turns to guess the word.
 
   - The starting player is chosen randomly.
@@ -122,8 +140,22 @@ The application includes a main menu with access to three distinct pages:
     - **Hard** : Includes absent letters in its strategy.
  
     - **Expert** : Optimally uses all information, maximizing letter frequencies while diversifying attempts.
- 
-3. **Rules** :
+
+4. **Dashboard** :
+  - Analytical dashboard showing real-time statistics about the game usage.
+  
+  - Visualize key metrics like:
+    - Number of unique users
+    - Daily active users
+    - Geographic distribution of players
+    - Win rate against AI by difficulty level
+    - Average time to guess words
+    - Distribution of games by mode
+    - Evolution of the number of games over time
+  
+  - All data is stored in MongoDB and aggregated for visualization.
+
+5. **Rules** :
   - A detailed explanation of the game rules.
 
 ### Notes: 
@@ -132,40 +164,86 @@ The application includes a main menu with access to three distinct pages:
 
 - The player can use any valid word from the dictionary for their attempts.
 
+- The Daily Word feature uses Twitter trending topics to select words, ensuring they are current and relevant.
+
+- All game statistics are stored in MongoDB for analysis and displayed in the dashboard.
+
+---
+
+## **MongoDB Integration**
+
+The application uses MongoDB to store various statistics about gameplay:
+
+1. **Data Collection**:
+   - Every game played is logged with details about:
+     - Game mode used
+     - Time taken to complete
+     - Number of attempts
+     - Success/failure
+     - User information (anonymous identifier)
+     - Geographic data (country/region)
+
+2. **Data Structure**:
+   - Main collections:
+     - `logs`: Raw game events
+     - `users`: User information and aggregated statistics
+     - `words`: Information about words used in the game
+     - `daily_stats`: Aggregated daily statistics
+
+3. **Dashboard Analytics**:
+   - The dashboard uses aggregation pipelines to process and visualize:
+     - User engagement metrics
+     - Gameplay statistics
+     - Performance trends over time
+     - Geographic distribution of users
+
+4. **Configuration**:
+   - Connection is managed through the `MONGODB_URI` environment variable
+   - Authentication is handled securely through the connection string
+
+5. **Benefits**:
+   - Real-time updates of gameplay statistics
+   - Persistent storage of user progress
+   - Data-driven game improvements based on analytics
+   - Scalable solution for growing user base
 
 ---
 
 ## **Code Structure** 
-The project is divided into two main parts:
+The project is divided into three main parts:
  
-1. **Experiments** :
-  - Contains experimental code and development trials.
- 
-2. **Root** :
-  - Includes components needed to run the application.
- 
+1. **app** :
+  - Contains the main application code.
+  
   - **`app.py`** : Entry point for the Flask application.
- 
+  
+  - **`templates/`** : HTML templates for the application's pages.
+  
+  - **`static/`** : Contains front-end files.
+  
   - **`requirements.txt`** : List of Python dependencies.
 
-  - **`start_app.py`** : Check validity of unit tests and start the Flask application.
- 
-  - **`templates/`** : HTML templates for the application's pages.
- 
-  - **`static/`** : Contains front-end files: 
-    - **CSS** : Style management.
- 
-    - **JavaScript** : Game logic and interactivity ([Documentation (JSDoc)](/doc.md) ).
- 
-    - **`dico/`** : Includes dictionaries sorted by initial letter and word length.
+2. **tests** :
+  - Contains all unit tests and test utilities.
+  
+  - **`test_app.py`** : Unit tests for the Flask application.
+  
+  - **`test_tusmo_app.py`** : Script to run all unit tests.
+  
+  - **`start_app.py`** : Script to run tests and start the application.
+
+3. **experiments** :
+  - Contains experimental code and development trials.
 
 ### Running the application locally: 
  
-- Execute `start_app.py` after installing the dependencies via `requirements.txt`.
+- Execute `tests/start_app.py` after installing the dependencies via `app/requirements.txt`.
 
 ### Notes: 
 
 - Unit tests are done automatically in github (with "Unit tests CI" workflow in the section Actions of the tab bar)
+- The application can use local files or cloud storage (S3) based on environment configuration
+- MongoDB connection requires proper environment variables to be set
 
 ---
 
@@ -173,67 +251,125 @@ The project is divided into two main parts:
 
 ```
 SUMOT/
-├── .dockerignore            # List of files/folders to exclude from the Docker image
-├── app.py                   # Main entry point of the Flask application
-├── compute_dico.py          # Script for generating or manipulating dictionaries
-├── dictionnaire_clean.txt   # Cleaned dictionary used by the project
-├── doc.md                   # Additional project documentation
-├── docker-compose.yml       # Docker Compose configuration for deployment
-├── Dockerfile               # Docker configuration to build the image
-├── frequences_lettres.txt   # File containing letter frequencies
-├── menu.png                 # Image used in the README
-├── README.md                # Main documentation (this file)
-├── requirements.txt         # List of Python dependencies
-├── small_dico.txt           # Reduced version of the dictionary for using frequents words in the game
-├── start_app.py             # Script to start the application with all Unit tests
-├── test_app.py              # Unit tests for the Flask application
-├── test_tusmo_app.py        # Script to start only all Unit tests
-├── vercel.json              # Configuration for deployment on Vercel
-├── versusia.png             # Another image used in the README
-├── dico/                    # Dictionaries organized by letters and length
-│   ├── A_6.txt              # Words starting with "A" and having 6 letters
-│   ├── A_7.txt              # Words starting with "A" and having 7 letters
-│   ├── A_8.txt              # Words starting with "A" and having 8 letters
-│   ├── A_9.txt              # Words starting with "A" and having 9 letters
-│   ├── B_6.txt              # Words starting with "B" and having 6 letters
-│   ├── ...
-│   └── Z_9.txt              # Words starting with "Z" and having 9 letters
-├── static/                  # Static files (CSS, JS, images)
-│   ├── appUtils.js          # Utility library
-│   ├── appUtils.md          # Documentation for appUtils.js
-│   ├── confetti.js          # JavaScript logic for displaying victory confetti
-│   ├── confetti.md          # Documentation for confetti.js
-│   ├── favicon.png          # Application icon
-│   ├── noodles.webp          # Vector image of a bowl of noodles
-│   ├── script.js            # Main JavaScript logic
-│   ├── script.md            # Documentation for script.js
-│   ├── styles.css           # Main stylesheet
-│   └── wallpaper.webp        # Background image for the application
-├── templates/               # HTML templates for views
-│   ├── menu.html            # Game homepage with the menu
-│   ├── regles.html          # Page explaining the rules
-│   ├── solo.html            # Interface for solo game mode
-│   └── versusia.html        # Interface for the game mode against Artificial Intelligence
-├── experiments/             # Experimental scripts and features
-│   ├── dictionnaire.txt     # Raw dictionary
-|   ├── mode_battleIA_test.py# Unit tests for mode_battleIA.py
-│   ├── mode_battleIA.py     # Battle mode against an AI
-│   ├── mode_duel_test.py    # Unit tests for mode_duel.py
-│   ├── mode_duel.py         # Duel mode between players
-|   ├── solveur_test.py      # Unit tests for solveur.py
-│   └── solveur.py           # Solver for the game
+├── .dockerignore                # Files to ignore in Docker builds
+├── .gitignore                   # Files to ignore in Git
+├── LICENSE                      # GNU License file
+├── README.md                    # Main documentation
+├── docker-compose.yml           # Docker Compose configuration
+├── Dockerfile                   # Docker configuration
+│
+├── .github/                     # GitHub configuration
+│   └── workflows/               # GitHub Actions
+│       ├── docker-image.yml     # Docker workflow
+│       ├── pylint.yml           # Pylint workflow
+│       └── prod.yml             # Production workflow
+├── app/                         # Main application
+│   ├── __init__.py              # Package initialization
+│   ├── app.py                   # Flask entry point
+│   ├── compute_dico.py          # Dictionary processor
+│   ├── frequences_lettres.txt   # Letter frequencies
+│   ├── requirements.txt         # Python dependencies
+│   ├── small_dico.txt           # Reduced dictionary
+│   ├── vercel.json              # Vercel configuration
+│   │
+│   ├── dico/                # Dictionaries organized by letters and length
+│   │   ├── A_6.txt          # Words starting with "A" and having 6 letters
+│   │   └── ...              # Other dictionary files
+│   │
+│   ├── experiments/               # Experiments
+│   │   ├── __init__.py              # Package initialization    
+│   │   ├── dictionnaire.txt         # Raw dictionary
+│   │   ├── mode_battleIA.py         # AI battle mode
+│   │   ├── mode_battleIA_test.py    # Battle mode tests
+│   │   ├── mode_duel.py             # Duel mode
+│   │   ├── mode_duel_test.py        # Duel mode tests
+│   │   ├── solveur.py               # Game solver
+│   │   └── solveur_test.py          # Solver tests
+│   │
+│   ├── static/                  # Static files
+│   │   ├── appUtils.js          # JavaScript utilities
+│   │   ├── appUtils.md          # Utilities documentation
+│   │   ├── confetti.js          # Confetti animation
+│   │   ├── dashboard.css        # Dashboard styles
+│   │   ├── dashboard.js         # Dashboard logic
+│   │   ├── dashboard.webp       
+│   │   ├── favicon.png          # Site icon
+│   │   ├── menu.png             # Menu image
+│   │   ├── noodles.webp         # Noodles image (score)
+│   │   ├── script.js            # Main script
+│   │   ├── script.md            # Main script documentation
+│   │   ├── styles.css           # Main stylesheet
+│   │   ├── versusia.png         # Versus AI image
+│   │   ├── wallpaper.webp       # Background image
+│   │   │
+│   │   └── libs/                # External libraries
+│   │       ├── chart.js         # Chart.js for graphs
+│   │       ├── countries-50.json # Geographic data
+│   │       ├── chartjs-chart-geo.js      
+│   │       ├── iso-3166.json    # ISO country codes
+│   │       ├── material-components-web.min.css
+│   │       ├── normalize.min.css
+│   │       ├── ods.css      
+│   │       ├── ods-widgets.css  # Data widgets styles
+│   │       ├── tailwindcss.js   # Tailwind CSS framework
+│   │       └── theme.css        # Custom theme
+│   │
+│   └── templates/               # HTML templates
+│       ├── daily.html           # Daily word page
+│       ├── dashboard.html       # Analytics dashboard
+│       ├── menu.html            # Main menu
+│       ├── regles.html          # Game rules
+│       ├── solo.html            # Solo mode
+│       ├── table.html           
+│       └── versusia.html        # Versus AI mode
+│
+├── deployment/                  # Kubernetes configuration
+│   ├── deployment.yml           # Pods deployment
+│   ├── ingress.yml              # Ingress configuration
+│   └── service.yml              # Network service
+│
+│
+├── tests/                       # Tests
+│   ├── __init__.py              # Package initialization
+│   ├── start_app.py             # App starter with tests
+│   ├── test_app.py              # Flask tests
+│   └── test_tusmo_app.py        # Global tests
+│
+└── utils/                       # Utilities
+    └── mongo_logger.py          # MongoDB logging
 ```
 
+---
+
+## **Deployment** 
+
+The application can be deployed in multiple ways:
+
+1. **Local Development**:
+   ```bash
+   python tests/start_app.py
+   ```
+
+2. **Docker Container**:
+   ```bash
+   docker compose up -d --build
+   ```
+
+3. **Kubernetes on SSP Cloud**:
+   - The application is configured for deployment on SSP Cloud's Kubernetes cluster
+   - Deployment is managed through ArgoCD in GitOps style
+   - Configurations are stored in a separate deployment repository
+
+4. **CI/CD Pipeline**:
+   - All code commits trigger automated tests and linting
+   - The main branch builds and pushes Docker images automatically
+   - The deployment repository pulls the latest image and updates the Kubernetes deployment
 
 ---
 
 ## **Contributors** 
 - Maxime Chappuis
-
 - Arnaud Cournil
-
 - Marc Deroo
-
 - Meryem El Aissaoui
-
 - Laurent Vong
