@@ -88,8 +88,9 @@ MONGODB_URI=your_mongodb_connection_string
 
 ## **Overview** 
 <p align="center">
-    <img src="./app/static/menu.png" alt="Image 1" height="400" style="margin-right: 10px;">
+    <img src="./app/static/new_menu.png" alt="Image 1" height="400" style="margin-right: 10px;">
     <img src="./app/static/versusia.png" alt="Image 2" height="400">
+    <img src="./app/static/dashboard.png" alt="Image 3" height="400>
 </p>
 
 ---
@@ -292,9 +293,11 @@ SUMOT/
 │   │   ├── confetti.js          # Confetti animation
 │   │   ├── dashboard.css        # Dashboard styles
 │   │   ├── dashboard.js         # Dashboard logic
+│   │   ├── dashboard.png        # Dashboard image
 │   │   ├── dashboard.webp       
 │   │   ├── favicon.png          # Site icon
-│   │   ├── menu.png             # Menu image
+│   │   ├── menu.png             # Old menu image
+│   │   ├── new_menu.png         # Menu image
 │   │   ├── noodles.webp         # Noodles image (score)
 │   │   ├── script.js            # Main script
 │   │   ├── script.md            # Main script documentation
