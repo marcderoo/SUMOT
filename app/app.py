@@ -110,7 +110,7 @@ def get_daily_word():
             url,
             headers={
                 "accept": "application/json",
-                "x-magicapi-key": os.getenv("X-MAGICAPI-KEY"),
+                "x-magicapi-key": os.getenv("X_MAGICAPI_KEY"),
             },
             timeout=5,
         )
