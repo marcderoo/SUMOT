@@ -36,7 +36,7 @@ jobs:
           echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
           echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
           echo "AWS_SESSION_TOKEN=${{ secrets.AWS_SESSION_TOKEN }}" >> .env
-          echo "X-MAGICAPI-KEY=${{ secrets.X-MAGICAPI-KEY }}" >> .env
+          echo "X_MAGICAPI_KEY=${{ secrets.X_MAGICAPI_KEY }}" >> .env
           cd ..
 
       - name: Build Docker Image
